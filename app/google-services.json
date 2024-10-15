@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "474906371378",
+    "project_id": "playconnect-cdb6f",
+    "storage_bucket": "playconnect-cdb6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474906371378:android:5f12eaee6b81032842e32b",
+        "android_client_info": {
+          "package_name": "com.astradevelop.tfg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAk5uWpPnr3i4UfzoS144Mu1qkSGSUvRV8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
