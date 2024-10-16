@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -42,46 +43,7 @@ class SignupActivity : AppCompatActivity() {
         val password1: EditText = findViewById(R.id.passwordET)
         val password2: EditText = findViewById(R.id.passwordET2)
 
-        fun registerAuth(email: String, password: String) {
-            val auth = FirebaseAuth.getInstance()
-
-            if (email.isEmpty() || password.isEmpty()){
-                errorTxt.visibility = View.VISIBLE
-                errorTxt.text = "Error: Fill in all the fields"
-            } else {
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val user = auth.currentUser
-                            val intent = Intent(this, HomeActivity::class.java)
-                            val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
-                            val editor = sharedPref.edit()
-                            editor.putString("userUID", user?.uid)
-                            editor.apply()
-
-                            val usuario = hashMapOf(
-                                "email" to email,
-                                "name" to name.text,
-                                "username" to username.text
-                            )
-
-                            val documentId = user?.uid
-
-                            db.collection("players").document(documentId!!)
-                                .set(usuario)
-                                .addOnCompleteListener {
-                                    startActivity(intent)
-                                }
-                                .addOnFailureListener { e ->
-                                    println("Error: $e")
-                                }
-                        } else {
-                            errorTxt.visibility = View.VISIBLE
-                            errorTxt.text = "Error: ${task.exception?.message}"
-                        }
-                    }
-            }
-        }
+        val dbConnection = FirebaseDBConnection()
 
         val signUpBtn: Button = findViewById(R.id.signupBtn)
         signUpBtn.setOnClickListener {
@@ -90,7 +52,7 @@ class SignupActivity : AppCompatActivity() {
                 errorTxt.text = "Error: Fill in all the fields"
             } else {
                 if (password1.text.toString() == password2.text.toString()) {
-                    registerAuth(email.text.toString(), password1.text.toString())
+                    dbConnection.registerAuth(this, errorTxt, email.text.toString(), password1.text.toString(), name.text.toString(), username.text.toString())
                 } else {
                     errorTxt.visibility = View.VISIBLE
                     errorTxt.text = "Error: Passwords doesn't match"

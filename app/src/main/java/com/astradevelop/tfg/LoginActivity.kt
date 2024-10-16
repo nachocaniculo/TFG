@@ -12,6 +12,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 
@@ -39,34 +42,11 @@ class LoginActivity : AppCompatActivity() {
         val email: EditText = findViewById(R.id.emailET)
         val password: EditText = findViewById(R.id.passwordET)
 
+        val dbConnection = FirebaseDBConnection()
 
-        fun loginAuth(email: String, password: String) {
-            val auth = FirebaseAuth.getInstance()
-
-            if (email.isEmpty() || password.isEmpty()){
-                errorTxt.visibility = View.VISIBLE
-                errorTxt.text = "Error: Fill in all the fields"
-            } else {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val user = auth.currentUser
-                            val intent = Intent(this, HomeActivity::class.java)
-                            val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
-                            val editor = sharedPref.edit()
-                            editor.putString("userUID", user?.uid)
-                            editor.apply()
-                            startActivity(intent)
-                        } else {
-                            errorTxt.visibility = View.VISIBLE
-                            errorTxt.text = "Error: ${task.exception?.message}"
-                        }
-                    }
-            }
-        }
         val loginBtn: Button = findViewById(R.id.loginBtn)
         loginBtn.setOnClickListener {
-            loginAuth(email.text.toString(), password.text.toString())
+            dbConnection.loginAuth(this, errorTxt, email.text.toString(), password.text.toString())
         }
 
     }
