@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         val userUID = sharedPref.getString("userUID", "")
         if (userUID != ""){
             val intent = Intent(this, HomeActivity::class.java)
+            finish()
             startActivity(intent)
         }
 

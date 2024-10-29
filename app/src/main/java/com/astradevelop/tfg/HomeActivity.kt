@@ -2,8 +2,10 @@ package com.astradevelop.tfg
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -30,12 +32,14 @@ class HomeActivity : AppCompatActivity() {
 
         val db = FirebaseFirestore.getInstance()
         var username = ""
+        var mail = ""
 
         db.collection("players").document(user!!)
             .get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     username = document.getString("username").toString()
+                    mail = document.getString("email").toString()
                     greetingTxt.text = "Hello,\n$username"
                 } else {
                     println("No existe el documento")
@@ -44,5 +48,13 @@ class HomeActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 println("Error al obtener el documento: $exception")
             }
+
+        val profilePic : ImageView = findViewById(R.id.profilePic)
+        profilePic.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
+            intent.putExtra("user", username)
+            intent.putExtra("email", mail)
+            startActivity(intent)
+        }
     }
 }

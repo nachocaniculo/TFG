@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +21,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,6 +43,18 @@ class LoginActivity : AppCompatActivity() {
         val errorTxt: TextView = findViewById(R.id.errorTxt2)
         val email: EditText = findViewById(R.id.emailET)
         val password: EditText = findViewById(R.id.passwordET)
+        email.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        password.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+        val visibility: ImageView = findViewById(R.id.visibilitybtn)
+        var visible = false
+
+        visibility.setOnClickListener {
+            visible = !visible
+            visibility.setImageResource(if (visible) R.drawable.visible else R.drawable.invisible)
+            password.inputType = if (visible) InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            else InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
 
         val dbConnection = FirebaseDBConnection()
 

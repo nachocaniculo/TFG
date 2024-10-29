@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Patterns
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SignupActivity : AppCompatActivity() {
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -42,6 +44,36 @@ class SignupActivity : AppCompatActivity() {
         val email: EditText = findViewById(R.id.emailET)
         val password1: EditText = findViewById(R.id.passwordET)
         val password2: EditText = findViewById(R.id.passwordET2)
+        name.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        username.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        email.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        password1.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        password2.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
+        fun togglePasswordVisibility(passwordField: EditText, visibilityIcon: ImageView, isVisible: Boolean): Boolean {
+            visibilityIcon.setImageResource(if (isVisible) R.drawable.invisible else R.drawable.visible)
+            passwordField.inputType = if (isVisible)
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            else
+                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            passwordField.setSelection(passwordField.text.length)
+            return !isVisible
+        }
+
+        val visibility1: ImageView = findViewById(R.id.visibilitybtn)
+        val visibility2: ImageView = findViewById(R.id.visibilitybtn2)
+
+        var visible1 = false
+        var visible2 = false
+
+        visibility1.setOnClickListener {
+            visible1 = togglePasswordVisibility(password1, visibility1, visible1)
+        }
+
+        visibility2.setOnClickListener {
+            visible2 = togglePasswordVisibility(password2, visibility2, visible2)
+        }
+
 
         val dbConnection = FirebaseDBConnection()
 

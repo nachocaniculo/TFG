@@ -40,6 +40,7 @@ class FirebaseDBConnection {
     fun registerAuth(context:Context, errorTxt: TextView, email: String, password: String, name: String, username: String) {
         val auth = FirebaseAuth.getInstance()
 
+        
         if (email.isEmpty() || password.isEmpty() || name.isEmpty() || username.isEmpty()) {
             errorTxt.visibility = View.VISIBLE
             errorTxt.text = "Error: Fill in all the fields"
