@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
 import android.view.View
 import android.widget.Button
@@ -30,53 +32,50 @@ class SignupActivity : AppCompatActivity() {
             insets
         }
 
-        val db = FirebaseFirestore.getInstance()
-
+        //Button to go to the login page
         val loginBtn : TextView = findViewById(R.id.signTxt)
         loginBtn.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
+        //Tv and ET that will be used
         val errorTxt: TextView = findViewById(R.id.errorTxt)
         val name: EditText = findViewById(R.id.nameET)
         val username: EditText = findViewById(R.id.userET)
         val email: EditText = findViewById(R.id.emailET)
         val password1: EditText = findViewById(R.id.passwordET)
         val password2: EditText = findViewById(R.id.passwordET2)
-        name.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        username.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        email.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        password1.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        password2.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
 
+        //Function to change the password visibility in every password field
         fun togglePasswordVisibility(passwordField: EditText, visibilityIcon: ImageView, isVisible: Boolean): Boolean {
             visibilityIcon.setImageResource(if (isVisible) R.drawable.invisible else R.drawable.visible)
-            passwordField.inputType = if (isVisible)
-                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            passwordField.transformationMethod = if (isVisible)
+                HideReturnsTransformationMethod.getInstance()
             else
-                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                PasswordTransformationMethod.getInstance()
             passwordField.setSelection(passwordField.text.length)
             return !isVisible
         }
 
+        //Both visibility buttons and states
         val visibility1: ImageView = findViewById(R.id.visibilitybtn)
         val visibility2: ImageView = findViewById(R.id.visibilitybtn2)
-
         var visible1 = false
         var visible2 = false
 
+        //Visibility handlers
         visibility1.setOnClickListener {
             visible1 = togglePasswordVisibility(password1, visibility1, visible1)
         }
-
         visibility2.setOnClickListener {
             visible2 = togglePasswordVisibility(password2, visibility2, visible2)
         }
 
-
+        //Instance from FirebaseDBConnection
         val dbConnection = FirebaseDBConnection()
 
+        //Signup process
         val signUpBtn: Button = findViewById(R.id.signupBtn)
         signUpBtn.setOnClickListener {
             if (name.text.toString().isEmpty() || username.text.toString().isEmpty() || email.text.toString().isEmpty() || password1.text.toString().isEmpty() || password2.text.toString().isEmpty() ){

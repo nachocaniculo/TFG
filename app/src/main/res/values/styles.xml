@@ -1,0 +1,13 @@
+<!-- res/values/styles.xml -->
+<resources>
+    <!-- Estilo personalizado para una imagen redondeada -->
+    <style name="RoundedImage">
+        <item name="shapeAppearanceOverlay">@style/RoundedCorners</item>
+    </style>
+
+    <!-- Estilo de esquina redondeada -->
+    <style name="RoundedCorners">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item> <!-- Hace la imagen circular -->
+    </style>
+</resources>

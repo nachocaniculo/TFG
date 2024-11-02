@@ -140,15 +140,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/blue_circle" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profilePic"
+        style="@style/RoundedImage"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintBottom_toBottomOf="@+id/homeText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/homeText"
-        app:srcCompat="@drawable/profileicon" />
+        app:srcCompat="@drawable/man" />
 
     <ImageView
         android:id="@+id/addButtonOverlay"
@@ -158,7 +159,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:tint="#FBFBFB"
+        app:tint="#FBFBFB"
         app:layout_constraintBottom_toBottomOf="@+id/addBtnBg"
         app:layout_constraintEnd_toEndOf="@+id/addBtnBg"
         app:layout_constraintStart_toStartOf="@+id/addBtnBg"

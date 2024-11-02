@@ -76,16 +76,17 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="16dp">
+            android:layout_height="match_parent">
 
             <EditText
                 android:id="@+id/passwordET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/rounded_edittext"
                 android:hint="Password"
                 android:inputType="text"
+                android:padding="16dp"
                 android:password="true"
                 android:textColor="#FFFFFF"
                 android:textColorHint="#808080"

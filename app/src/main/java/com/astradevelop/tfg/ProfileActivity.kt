@@ -1,8 +1,13 @@
 package com.astradevelop.tfg
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.media.Image
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -21,8 +26,10 @@ class ProfileActivity : AppCompatActivity() {
             insets
         }
 
+        //Display user info
         val email = intent.extras!!.getString("email")
         var user = intent.extras!!.getString("user")
+        val profilePicture = intent.extras!!.getString("profilePicture")
 
         val userTxt: TextView = findViewById(R.id.userTxt)
         userTxt.text = user
@@ -30,9 +37,33 @@ class ProfileActivity : AppCompatActivity() {
         val mailTxt: TextView = findViewById(R.id.mailText)
         mailTxt.text = email
 
+        //Back button
         val backBtn: ImageView = findViewById(R.id.backBtn)
         backBtn.setOnClickListener {
             finish()
+        }
+
+        //Logout button handler
+        val logoutBtn: LinearLayout = findViewById(R.id.logoutBtn)
+        logoutBtn.setOnClickListener {
+            val sharedPref = this.getSharedPreferences(
+                "playconnectlogintoken",
+                Context.MODE_PRIVATE
+            )
+            val editor = sharedPref.edit()
+            editor.putString("userUID", "")
+            editor.apply()
+
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        //Set Profile Icon
+        val profilePic: ImageView = findViewById(R.id.profilePic)
+        when (profilePicture) {
+            "2" -> profilePic.setImageResource(R.drawable.woman)
+            "else" -> profilePic.setImageResource(R.drawable.man)
         }
     }
 }

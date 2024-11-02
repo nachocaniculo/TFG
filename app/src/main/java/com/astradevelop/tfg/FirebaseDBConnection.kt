@@ -9,6 +9,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class FirebaseDBConnection {
+
+    //Function to login with email and password
     fun loginAuth(context: Context, errorTxt: TextView, email: String, password: String) {
         val auth = FirebaseAuth.getInstance()
 
@@ -37,6 +39,7 @@ class FirebaseDBConnection {
         }
     }
 
+    //Function to register with email and password
     fun registerAuth(context:Context, errorTxt: TextView, email: String, password: String, name: String, username: String) {
         val auth = FirebaseAuth.getInstance()
 
@@ -65,7 +68,7 @@ class FirebaseDBConnection {
                     val user = auth.currentUser
 
                     user?.let {
-                        val intent = Intent(context, HomeActivity::class.java)
+                        val intent = Intent(context, ProfilePictureActivity::class.java)
 
                         val sharedPref = context.getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
                         val editor = sharedPref.edit()
@@ -75,7 +78,8 @@ class FirebaseDBConnection {
                         val usuario = hashMapOf(
                             "email" to email,
                             "name" to name,
-                            "username" to username
+                            "username" to username,
+                            "picture" to "1"
                         )
 
                         val documentId = it.uid
@@ -106,4 +110,24 @@ class FirebaseDBConnection {
                 errorTxt.text = "Error: $e"
             }
     }
+
+    fun updateDocumentPicture(
+        context: Context,
+        documentId: String,
+        value: String
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("players").document(documentId)
+
+        val updates = hashMapOf<String, Any>(
+            "picture" to value
+        )
+
+        documentRef.update(updates)
+            .addOnSuccessListener {
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+            }
+    }
+
 }

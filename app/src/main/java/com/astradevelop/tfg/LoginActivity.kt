@@ -14,11 +14,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 
 class LoginActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "MissingInflatedId")
@@ -32,32 +30,37 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
+        //Start the DB
         FirebaseApp.initializeApp(this)
 
+        //Button to go to signup activity
         val signBtn : TextView = findViewById(R.id.signTxt)
         signBtn.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
 
+        //TV and ET that will be used
         val errorTxt: TextView = findViewById(R.id.errorTxt2)
         val email: EditText = findViewById(R.id.emailET)
         val password: EditText = findViewById(R.id.passwordET)
-        email.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        password.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
 
+        //Visibility for the password ET
         val visibility: ImageView = findViewById(R.id.visibilitybtn)
         var visible = false
 
+        //Password visibility handler
         visibility.setOnClickListener {
             visible = !visible
             visibility.setImageResource(if (visible) R.drawable.visible else R.drawable.invisible)
-            password.inputType = if (visible) InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            else InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            password.transformationMethod = if (visible) HideReturnsTransformationMethod.getInstance()
+            else PasswordTransformationMethod.getInstance()
         }
 
+        //Instance from FirebaseDBConnection
         val dbConnection = FirebaseDBConnection()
 
+        //Login process
         val loginBtn: Button = findViewById(R.id.loginBtn)
         loginBtn.setOnClickListener {
             dbConnection.loginAuth(this, errorTxt, email.text.toString(), password.text.toString())

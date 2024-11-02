@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        //Get the userID token to check if he is logged in or not
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val userUID = sharedPref.getString("userUID", "")
         if (userUID != ""){
@@ -28,12 +29,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        //Button to go to login activity
         val loginBtn: Button = findViewById(R.id.loginBtn)
         loginBtn.setOnClickListener{
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
+        //Button to go to signup activity
         val signupBtn: Button = findViewById(R.id.signUpBtn)
         signupBtn.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
