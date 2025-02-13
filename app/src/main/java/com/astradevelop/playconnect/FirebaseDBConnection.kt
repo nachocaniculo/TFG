@@ -201,6 +201,33 @@ class FirebaseDBConnection {
         return matchData
     }
 
+    suspend fun findMatchesByName(search: String): ArrayList<ArrayList<String>> {
+        val matchData = ArrayList<ArrayList<String>>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("match")
+            .whereGreaterThanOrEqualTo("name", search)
+            .whereLessThanOrEqualTo("name", search + "\uf8ff")
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            if (document.getString("team2")!! == "") {
+                matchData.add(
+                    ArrayList(
+                        mutableListOf(
+                            document.id,
+                            document.getString("name")!!,
+                            document.getDate("date").toString(),
+                            document.getString("place")!!
+                        )
+                    )
+                )
+            }
+        }
+
+        return matchData
+    }
+
     fun updateTeam2(
         documentId: String,
         value: String

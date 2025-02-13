@@ -3,10 +3,14 @@ package com.astradevelop.playconnect
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -43,6 +47,8 @@ class SearchActivity : AppCompatActivity() {
         var sportSelected = false
         var sport = 0
 
+        val searchText: EditText = findViewById(R.id.searchText)
+
         val matchesRV: RecyclerView = findViewById(R.id.matchesRV)
         val noResultsText: TextView = findViewById(R.id.noResultsText)
 
@@ -64,6 +70,35 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+
+        fun searchByName(){
+            GlobalScope.launch {
+                val databaseConnection = FirebaseDBConnection()
+                val matchList = databaseConnection.findMatchesByName(searchText.text.toString())
+                withContext(Dispatchers.Main) {
+                    if (matchList.isNotEmpty()) {
+                        updateMatches(matchList)
+                    }
+                }
+            }
+        }
+
+        searchText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(editable: Editable?) {
+                if (editable!!.isNotEmpty()) {
+                    searchByName()
+                } else{
+                    matchesRV.visibility = View.GONE
+                    noResultsText.visibility = View.VISIBLE
+                }
+            }
+        })
 
         val sportBg: TextView = findViewById(R.id.sportBg)
         val padelBtn: LinearLayout = findViewById(R.id.padelButton)
