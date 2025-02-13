@@ -65,7 +65,7 @@ class SignupActivity : AppCompatActivity() {
 
         //Function to change the password visibility in every password field
         fun togglePasswordVisibility(passwordField: EditText, visibilityIcon: ImageView, isVisible: Boolean): Boolean {
-            visibilityIcon.setImageResource(if (isVisible) R.drawable.invisible else R.drawable.visible)
+            visibilityIcon.setImageResource(if (isVisible) R.drawable.visible else R.drawable.invisible)
             passwordField.transformationMethod = if (isVisible)
                 HideReturnsTransformationMethod.getInstance()
             else

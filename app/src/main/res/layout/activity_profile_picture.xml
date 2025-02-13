@@ -12,13 +12,13 @@
         android:id="@+id/homeText3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:gravity="center"
         android:text="Choose Profile Picture"
         android:textColor="#FFFFFF"
         android:textSize="34sp"
         android:textStyle="bold"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +38,7 @@
             style="@style/RoundedImage"
             android:layout_width="160dp"
             android:layout_height="160dp"
-            android:layout_marginBottom="32dp"
+            app:srcCompat="@drawable/man"
             tools:srcCompat="@drawable/man" />
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -46,6 +46,8 @@
             style="@style/RoundedImage"
             android:layout_width="160dp"
             android:layout_height="160dp"
+            android:layout_marginTop="32dp"
+            app:srcCompat="@drawable/woman"
             tools:srcCompat="@drawable/woman" />
     </LinearLayout>
 
