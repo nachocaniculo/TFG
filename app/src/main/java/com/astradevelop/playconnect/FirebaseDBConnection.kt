@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Patterns
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -13,12 +14,15 @@ import kotlinx.coroutines.tasks.await
 class FirebaseDBConnection {
 
     //Function to login with email and password
-    fun loginAuth(context: Context, errorTxt: TextView, email: String, password: String) {
+    fun loginAuth(context: Context, email: String, password: String) {
         val auth = FirebaseAuth.getInstance()
 
         if (email.isEmpty() || password.isEmpty()) {
-            errorTxt.visibility = View.VISIBLE
-            errorTxt.text = "Error: Fill in all the fields"
+            Toast.makeText(
+                context,
+                "Error: Fill in all the fields",
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
@@ -34,8 +38,11 @@ class FirebaseDBConnection {
                         editor.apply()
                         context.startActivity(intent)
                     } else {
-                        errorTxt.visibility = View.VISIBLE
-                        errorTxt.text = "Error: ${task.exception?.message}"
+                        Toast.makeText(
+                            context,
+                            "Error: ${task.exception?.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
         }
@@ -43,25 +50,34 @@ class FirebaseDBConnection {
 
 
     //Function to register with email and password
-    fun registerAuth(context:Context, errorTxt: TextView, email: String, password: String, name: String, username: String) {
+    fun registerAuth(context:Context, email: String, password: String, name: String, username: String) {
         val auth = FirebaseAuth.getInstance()
 
         
         if (email.isEmpty() || password.isEmpty() || name.isEmpty() || username.isEmpty()) {
-            errorTxt.visibility = View.VISIBLE
-            errorTxt.text = "Error: Fill in all the fields"
+            Toast.makeText(
+                context,
+                "Error: Fill in all the fields",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            errorTxt.visibility = View.VISIBLE
-            errorTxt.text = "Error: Invalid email format"
+            Toast.makeText(
+                context,
+                "Error: Invalid email format",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
         if (password.length < 6) {
-            errorTxt.visibility = View.VISIBLE
-            errorTxt.text = "Error: Password must be at least 6 characters"
+            Toast.makeText(
+                context,
+                "Error: Password must be at least 6 characters",
+                Toast.LENGTH_SHORT
+            ).show()
             return
         }
 
@@ -93,24 +109,36 @@ class FirebaseDBConnection {
                                 if (dbTask.isSuccessful) {
                                     context.startActivity(intent)
                                 } else {
-                                    errorTxt.visibility = View.VISIBLE
-                                    errorTxt.text = "Error saving user data: ${dbTask.exception?.message}"
+                                    Toast.makeText(
+                                        context,
+                                        "Error saving user data: ${dbTask.exception?.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                             .addOnFailureListener { e ->
-                                errorTxt.visibility = View.VISIBLE
-                                errorTxt.text = "Error saving user data: $e"
+                                Toast.makeText(
+                                    context,
+                                    "Error saving user data: $e",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                     }
 
                 } else {
-                    errorTxt.visibility = View.VISIBLE
-                    errorTxt.text = "Error: ${task.exception?.message}"
+                    Toast.makeText(
+                        context,
+                        "Error: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
             .addOnFailureListener { e ->
-                errorTxt.visibility = View.VISIBLE
-                errorTxt.text = "Error: $e"
+                Toast.makeText(
+                    context,
+                    "Error: $e",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 

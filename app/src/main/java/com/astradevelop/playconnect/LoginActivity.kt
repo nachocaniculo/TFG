@@ -59,7 +59,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         //TV and ET that will be used
-        val errorTxt: TextView = findViewById(R.id.errorTxt2)
         val email: EditText = findViewById(R.id.emailET)
         val password: EditText = findViewById(R.id.passwordET)
 
@@ -81,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
         //Login process
         val loginBtn: Button = findViewById(R.id.loginBtn)
         loginBtn.setOnClickListener {
-            dbConnection.loginAuth(this, errorTxt, email.text.toString(), password.text.toString())
+            dbConnection.loginAuth(this, email.text.toString(), password.text.toString())
         }
 
         val googleSignIn: LinearLayout = findViewById(R.id.googleBtn)

@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -56,7 +57,6 @@ class SignupActivity : AppCompatActivity() {
         }
 
         //Tv and ET that will be used
-        val errorTxt: TextView = findViewById(R.id.errorTxt)
         val name: EditText = findViewById(R.id.nameET)
         val username: EditText = findViewById(R.id.userET)
         val email: EditText = findViewById(R.id.emailET)
@@ -95,14 +95,20 @@ class SignupActivity : AppCompatActivity() {
         val signUpBtn: Button = findViewById(R.id.signupBtn)
         signUpBtn.setOnClickListener {
             if (name.text.toString().isEmpty() || username.text.toString().isEmpty() || email.text.toString().isEmpty() || password1.text.toString().isEmpty() || password2.text.toString().isEmpty() ){
-                errorTxt.visibility = View.VISIBLE
-                errorTxt.text = "Error: Fill in all the fields"
+                Toast.makeText(
+                    this,
+                    "Error: Fill in all the fields",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 if (password1.text.toString() == password2.text.toString()) {
-                    dbConnection.registerAuth(this, errorTxt, email.text.toString(), password1.text.toString(), name.text.toString(), username.text.toString())
+                    dbConnection.registerAuth(this, email.text.toString(), password1.text.toString(), name.text.toString(), username.text.toString())
                 } else {
-                    errorTxt.visibility = View.VISIBLE
-                    errorTxt.text = "Error: Passwords doesn't match"
+                    Toast.makeText(
+                        this,
+                        "Error: Passwords doesn't match",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
