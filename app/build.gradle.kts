@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.astradevelop.tfg"
+    namespace = "com.astradevelop.playconnect"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.astradevelop.tfg"
+        applicationId = "com.astradevelop.playconnect"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

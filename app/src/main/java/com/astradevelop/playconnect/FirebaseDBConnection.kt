@@ -1,4 +1,4 @@
-package com.astradevelop.tfg
+package com.astradevelop.playconnect
 
 import android.content.Context
 import android.content.Intent
@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.TextView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+
 
 class FirebaseDBConnection {
 
@@ -38,6 +40,7 @@ class FirebaseDBConnection {
                 }
         }
     }
+
 
     //Function to register with email and password
     fun registerAuth(context:Context, errorTxt: TextView, email: String, password: String, name: String, username: String) {
@@ -130,4 +133,87 @@ class FirebaseDBConnection {
             }
     }
 
+    suspend fun findMatches(userId: String): ArrayList<ArrayList<String>> {
+        val matchData = ArrayList<ArrayList<String>>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("match")
+            .whereEqualTo("team1", userId)
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            matchData.add(
+                ArrayList(
+                    mutableListOf(
+                        document.id,
+                        document.getString("name")!!,
+                        document.getDate("date").toString(),
+                        document.getString("place")!!
+                    )
+                )
+            )
+        }
+
+        val query2 = FirebaseFirestore.getInstance()
+            .collection("match")
+            .whereEqualTo("team2", userId)
+        val documents2 = query2.get().await()
+
+        for (document in documents2) {
+            matchData.add(
+                ArrayList(
+                    mutableListOf(
+                        document.id,
+                        document.getString("name")!!,
+                        document.getDate("date").toString(),
+                        document.getString("place")!!
+                    )
+                )
+            )
+        }
+
+        return matchData
+    }
+
+    suspend fun findMatchesBySport(sport: Int): ArrayList<ArrayList<String>> {
+        val matchData = ArrayList<ArrayList<String>>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("match")
+            .whereEqualTo("sport", sport)
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            if (document.getString("team2")!! == "") {
+                matchData.add(
+                    ArrayList(
+                        mutableListOf(
+                            document.id,
+                            document.getString("name")!!,
+                            document.getDate("date").toString(),
+                            document.getString("place")!!
+                        )
+                    )
+                )
+            }
+        }
+
+        return matchData
+    }
+
+    fun updateTeam2(
+        documentId: String,
+        value: String
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("match").document(documentId)
+
+        val updates = hashMapOf<String, Any>(
+            "team2" to value
+        )
+
+        documentRef.update(updates)
+            .addOnSuccessListener {
+            }
+    }
 }

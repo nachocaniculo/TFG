@@ -1,26 +1,31 @@
-package com.astradevelop.tfg
+package com.astradevelop.playconnect
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.util.Patterns
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.common.api.ApiException
 
 class SignupActivity : AppCompatActivity() {
+    private lateinit var oneTapClient: SignInClient
+    private lateinit var signInRequest: BeginSignInRequest
     @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +36,17 @@ class SignupActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        oneTapClient = Identity.getSignInClient(this)
+        signInRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId("TU_CLIENT_ID_AQUI")
+                    .setFilterByAuthorizedAccounts(false)
+                    .build()
+            )
+            .build()
 
         //Button to go to the login page
         val loginBtn : TextView = findViewById(R.id.signTxt)
@@ -90,5 +106,32 @@ class SignupActivity : AppCompatActivity() {
                 }
             }
         }
+
+        val googleSignIn: LinearLayout = findViewById(R.id.googleBtn)
+        googleSignIn.setOnClickListener{
+            signIn()
+        }
+    }
+
+    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        try {
+            val credential = oneTapClient.getSignInCredentialFromIntent(result.data)
+            val idToken = credential.googleIdToken
+            val email = credential.id
+            Log.d("GoogleSignIn", "ID Token: $idToken")
+            Log.d("GoogleSignIn", "Email: $email")
+        } catch (e: ApiException) {
+            Log.e("GoogleSignIn", "Error al autenticar: ${e.statusCode}")
+        }
+    }
+
+    private fun signIn() {
+        oneTapClient.beginSignIn(signInRequest)
+            .addOnSuccessListener { result ->
+                signInLauncher.launch(IntentSenderRequest.Builder(result.pendingIntent).build())
+            }
+            .addOnFailureListener { e ->
+                Log.e("GoogleSignIn", "Error en Sign-In: ${e.localizedMessage}")
+            }
     }
 }

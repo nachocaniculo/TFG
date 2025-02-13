@@ -1,4 +1,4 @@
-package com.astradevelop.tfg
+package com.astradevelop.playconnect
 
 import org.junit.Test
 

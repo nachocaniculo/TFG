@@ -1,11 +1,8 @@
-package com.astradevelop.tfg
+package com.astradevelop.playconnect
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.InputType
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -17,8 +14,18 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.FirebaseApp
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
+import android.widget.LinearLayout
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var oneTapClient: SignInClient
+    private lateinit var signInRequest: BeginSignInRequest
     @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +36,17 @@ class LoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        oneTapClient = Identity.getSignInClient(this)
+        signInRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId("TU_CLIENT_ID_AQUI")
+                    .setFilterByAuthorizedAccounts(false)
+                    .build()
+            )
+            .build()
 
         //Start the DB
         FirebaseApp.initializeApp(this)
@@ -66,5 +84,32 @@ class LoginActivity : AppCompatActivity() {
             dbConnection.loginAuth(this, errorTxt, email.text.toString(), password.text.toString())
         }
 
+        val googleSignIn: LinearLayout = findViewById(R.id.googleBtn)
+        googleSignIn.setOnClickListener{
+            signIn()
+        }
+
+    }
+
+    private val signInLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        try {
+            val credential = oneTapClient.getSignInCredentialFromIntent(result.data)
+            val idToken = credential.googleIdToken
+            val email = credential.id
+            Log.d("GoogleSignIn", "ID Token: $idToken")
+            Log.d("GoogleSignIn", "Email: $email")
+        } catch (e: ApiException) {
+            Log.e("GoogleSignIn", "Error al autenticar: ${e.statusCode}")
+        }
+    }
+
+    private fun signIn() {
+        oneTapClient.beginSignIn(signInRequest)
+            .addOnSuccessListener { result ->
+                signInLauncher.launch(IntentSenderRequest.Builder(result.pendingIntent).build())
+            }
+            .addOnFailureListener { e ->
+                Log.e("GoogleSignIn", "Error en Sign-In: ${e.localizedMessage}")
+            }
     }
 }

@@ -1,4 +1,4 @@
-package com.astradevelop.tfg
+package com.astradevelop.playconnect
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

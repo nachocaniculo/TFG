@@ -1,10 +1,9 @@
-package com.astradevelop.tfg
+package com.astradevelop.playconnect
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.media.Image
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -14,7 +13,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
@@ -51,8 +56,6 @@ class HomeActivity : AppCompatActivity() {
             intent.putExtra("profilePicture", profilePicture)
             startActivity(intent)
         }
-
-        //Query to get the user email, username, and name
         db.collection("players").document(user!!)
             .get()
             .addOnSuccessListener { document ->
@@ -76,8 +79,6 @@ class HomeActivity : AppCompatActivity() {
                 println("Error al obtener el documento: $exception")
             }
 
-
-        //Scheduled Matches and Tournaments handlers
         val matchesBtn: LinearLayout = findViewById(R.id.scheduledTV)
         val tournamentsBtn: LinearLayout = findViewById(R.id.tournamentsTV)
 
@@ -98,5 +99,70 @@ class HomeActivity : AppCompatActivity() {
             matchesTxt.setTextColor(Color.parseColor("#4F4F4F"))
         }
 
+        val addBg: TextView = findViewById(R.id.addBg)
+        val searchTV: LinearLayout = findViewById(R.id.searchTV)
+        val searchText: TextView = findViewById(R.id.searchText)
+        val createTV: LinearLayout = findViewById(R.id.createTV)
+        val createText: TextView = findViewById(R.id.createText)
+        val addBtnOverlay: ImageView = findViewById(R.id.addButtonOverlay)
+
+        var menu = false
+
+        val addBtnBg: ImageView = findViewById(R.id.addBtnBg)
+        addBtnBg.setOnClickListener {
+            if (menu){
+                addBg.visibility = View.GONE
+                searchTV.visibility = View.GONE
+                searchText.visibility = View.GONE
+                createTV.visibility = View.GONE
+                createText.visibility = View.GONE
+                addBtnOverlay.setImageResource(android.R.drawable.ic_input_add)
+            } else {
+                addBg.visibility = View.VISIBLE
+                searchTV.visibility = View.VISIBLE
+                searchText.visibility = View.VISIBLE
+                createTV.visibility = View.VISIBLE
+                createText.visibility = View.VISIBLE
+                addBtnOverlay.setImageResource(R.drawable.back)
+            }
+            menu = !menu
+        }
+
+        searchTV.setOnClickListener {
+            val intent = Intent(this, SearchActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        createTV.setOnClickListener {
+            val intent = Intent(this, CreateActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        val matchesRV: RecyclerView = findViewById(R.id.matchesRV)
+        val noResultsText: TextView = findViewById(R.id.noResultsText)
+
+        fun noMatches(){
+            noResultsText.visibility = View.VISIBLE
+            matchesRV.visibility = View.GONE
+        }
+
+        fun matches(matchList: ArrayList<ArrayList<String>>) {
+            matchesRV.layoutManager = LinearLayoutManager(this)
+            matchesRV.adapter = HomeMatchesRV(matchList)
+        }
+
+        GlobalScope.launch {
+            val databaseConnection = FirebaseDBConnection()
+            val matchList = databaseConnection.findMatches(user)
+            withContext(Dispatchers.Main) {
+                if (matchList.isEmpty()) {
+                    noMatches()
+                } else {
+                    matches(matchList)
+                }
+            }
+        }
     }
 }

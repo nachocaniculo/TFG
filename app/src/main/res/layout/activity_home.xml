@@ -106,39 +106,17 @@
         app:layout_constraintTop_toTopOf="@+id/scheduledTV" />
 
     <TextView
-        android:id="@+id/noResultsText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="No Results Found"
-        android:textColor="#C1C1C1"
-        android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scheduledTV" />
-
-    <TextView
         android:id="@+id/TeamsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="Teams"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noResultsText" />
-
-    <ImageView
-        android:id="@+id/addBtnBg"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/blue_circle" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profilePic"
@@ -151,6 +129,129 @@
         app:layout_constraintTop_toTopOf="@+id/homeText"
         app:srcCompat="@drawable/man" />
 
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scheduledTV">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/matchesRV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/noResultsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No Results Found"
+            android:textColor="#C1C1C1"
+            android:textSize="20sp"
+            android:textStyle="normal"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/addBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#801A1A1A"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/searchTV"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/addBtnBg"
+        app:layout_constraintEnd_toEndOf="@+id/addBtnBg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/searchText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/searchTV"
+        app:layout_constraintEnd_toEndOf="@+id/searchTV"
+        app:layout_constraintStart_toStartOf="@+id/searchTV"
+        app:layout_constraintTop_toTopOf="@+id/searchTV" />
+
+    <LinearLayout
+        android:id="@+id/createTV"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/searchTV"
+        app:layout_constraintEnd_toEndOf="@+id/searchTV">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/createText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/createTV"
+        app:layout_constraintEnd_toEndOf="@+id/createTV"
+        app:layout_constraintStart_toStartOf="@+id/createTV"
+        app:layout_constraintTop_toTopOf="@+id/createTV" />
+
+    <ImageView
+        android:id="@+id/addBtnBg"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/blue_circle" />
+
     <ImageView
         android:id="@+id/addButtonOverlay"
         android:layout_width="0dp"
@@ -159,11 +260,11 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:tint="#FBFBFB"
         app:layout_constraintBottom_toBottomOf="@+id/addBtnBg"
         app:layout_constraintEnd_toEndOf="@+id/addBtnBg"
         app:layout_constraintStart_toStartOf="@+id/addBtnBg"
         app:layout_constraintTop_toTopOf="@+id/addBtnBg"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="#FBFBFB" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
