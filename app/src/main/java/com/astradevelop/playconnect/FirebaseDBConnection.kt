@@ -6,6 +6,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -176,7 +177,8 @@ class FirebaseDBConnection {
                         document.id,
                         document.getString("name")!!,
                         document.getDate("date").toString(),
-                        document.getString("place")!!
+                        document.getString("place")!!,
+                        document.getString("team1")!!
                     )
                 )
             )
@@ -194,7 +196,8 @@ class FirebaseDBConnection {
                         document.id,
                         document.getString("name")!!,
                         document.getDate("date").toString(),
-                        document.getString("place")!!
+                        document.getString("place")!!,
+                        document.getString("team1")!!
                     )
                 )
             )
@@ -267,6 +270,21 @@ class FirebaseDBConnection {
             "team2" to value
         )
 
+        documentRef.update(updates)
+            .addOnSuccessListener {
+            }
+    }
+
+    fun updateDate(
+        documentId: String,
+        date: Timestamp
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("match").document(documentId)
+
+        val updates = hashMapOf<String, Any>(
+            "date" to date
+        )
         documentRef.update(updates)
             .addOnSuccessListener {
             }

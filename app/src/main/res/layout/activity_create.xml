@@ -176,6 +176,24 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/maxPlayersButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_button_grey"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateButton">
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tournamentsText"
         android:layout_width="wrap_content"
@@ -188,6 +206,22 @@
         app:layout_constraintEnd_toEndOf="@+id/tournamentsTV"
         app:layout_constraintStart_toStartOf="@+id/tournamentsTV"
         app:layout_constraintTop_toTopOf="@+id/tournamentsTV" />
+
+    <EditText
+        android:id="@+id/maxPlayers"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="4"
+        android:inputType="number"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
+        app:layout_constraintEnd_toEndOf="@+id/maxPlayersButton"
+        app:layout_constraintStart_toEndOf="@+id/calendarBtn"
+        app:layout_constraintTop_toTopOf="@+id/maxPlayersButton" />
 
     <TextView
         android:id="@+id/sportText"
@@ -243,28 +277,32 @@
 
     <EditText
         android:id="@+id/nameText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:hint="Event Name"
         android:textColor="#C1C1C1"
         android:textColorHint="#FFFFFF"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="@+id/nameButton"
+        app:layout_constraintEnd_toEndOf="@+id/nameButton"
         app:layout_constraintStart_toStartOf="@+id/nameButton"
         app:layout_constraintTop_toTopOf="@+id/nameButton" />
 
     <EditText
         android:id="@+id/descriptionText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:hint="Event Description"
         android:textColor="#C1C1C1"
         android:textColorHint="#FFFFFF"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="@+id/descriptionButton"
-        app:layout_constraintStart_toStartOf="@+id/nameButton"
+        app:layout_constraintEnd_toEndOf="@+id/descriptionButton"
+        app:layout_constraintStart_toStartOf="@+id/descriptionButton"
         app:layout_constraintTop_toTopOf="@+id/descriptionButton" />
 
     <TextView
@@ -288,6 +326,17 @@
         app:layout_constraintBottom_toBottomOf="@+id/dateButton"
         app:layout_constraintStart_toStartOf="@+id/dateButton"
         app:layout_constraintTop_toTopOf="@+id/dateButton"
+        app:srcCompat="@drawable/calendar"
+        app:tint="#FBFBFB" />
+
+    <ImageView
+        android:id="@+id/calendarBtn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
+        app:layout_constraintStart_toStartOf="@+id/maxPlayersButton"
+        app:layout_constraintTop_toTopOf="@+id/maxPlayersButton"
         app:srcCompat="@drawable/calendar"
         app:tint="#FBFBFB" />
 

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A1A1A"
+    tools:context=".CreateActivity">
+
+    <TextView
+        android:id="@+id/homeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Update"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/locationButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_button_grey"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeText">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dateButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_button_grey"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/locationButton">
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/locationText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="New Location"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/locationButton"
+        app:layout_constraintStart_toEndOf="@+id/locationIcon"
+        app:layout_constraintTop_toTopOf="@+id/locationButton" />
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="New Date"
+        android:textColor="#C1C1C1"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/dateButton"
+        app:layout_constraintStart_toEndOf="@+id/calendarBtn"
+        app:layout_constraintTop_toTopOf="@+id/dateButton" />
+
+    <ImageView
+        android:id="@+id/calendarBtn"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/dateButton"
+        app:layout_constraintStart_toStartOf="@+id/dateButton"
+        app:layout_constraintTop_toTopOf="@+id/dateButton"
+        app:srcCompat="@drawable/calendar"
+        app:tint="#FBFBFB" />
+
+    <ImageView
+        android:id="@+id/arrow1"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:rotation="180"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/homeText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/homeText"
+        app:srcCompat="@drawable/arrow" />
+
+    <ImageView
+        android:id="@+id/locationIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/locationButton"
+        app:layout_constraintStart_toStartOf="@+id/locationButton"
+        app:layout_constraintTop_toTopOf="@+id/locationButton"
+        app:srcCompat="@drawable/locationicon" />
+
+    <ImageView
+        android:id="@+id/arrow3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/locationButton"
+        app:layout_constraintEnd_toEndOf="@+id/locationButton"
+        app:layout_constraintTop_toTopOf="@+id/locationButton"
+        app:srcCompat="@drawable/arrow" />
+
+    <ImageView
+        android:id="@+id/checkBtnBg"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/blue_circle" />
+
+    <ImageView
+        android:id="@+id/deleteBtnBg"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/blue_circle" />
+
+    <ImageView
+        android:id="@+id/deleteButtonOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/deleteBtnBg"
+        app:layout_constraintEnd_toEndOf="@+id/deleteBtnBg"
+        app:layout_constraintStart_toStartOf="@+id/deleteBtnBg"
+        app:layout_constraintTop_toTopOf="@+id/deleteBtnBg"
+        app:srcCompat="@drawable/deleteicon"
+        app:tint="#FBFBFB" />
+
+    <ImageView
+        android:id="@+id/checkButtonOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkBtnBg"
+        app:layout_constraintEnd_toEndOf="@+id/checkBtnBg"
+        app:layout_constraintStart_toStartOf="@+id/checkBtnBg"
+        app:layout_constraintTop_toTopOf="@+id/checkBtnBg"
+        app:srcCompat="@drawable/saveicon"
+        app:tint="#FBFBFB" />
+
+    <TextView
+        android:id="@+id/sportBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#991A1A1A"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

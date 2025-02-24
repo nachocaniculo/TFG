@@ -47,7 +47,6 @@ class HomeActivity : AppCompatActivity() {
         var name = ""
         var profilePicture = ""
 
-        //Settings menu button handler
         val profilePic : ImageView = findViewById(R.id.profilePic)
         profilePic.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
@@ -150,7 +149,7 @@ class HomeActivity : AppCompatActivity() {
 
         fun matches(matchList: ArrayList<ArrayList<String>>) {
             matchesRV.layoutManager = LinearLayoutManager(this)
-            matchesRV.adapter = HomeMatchesRV(matchList)
+            matchesRV.adapter = HomeMatchesRV(matchList, this, user)
         }
 
         GlobalScope.launch {

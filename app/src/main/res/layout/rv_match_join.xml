@@ -27,10 +27,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="Sport"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/sportIcon"
         app:layout_constraintStart_toStartOf="@+id/sportButton"
         app:layout_constraintTop_toTopOf="@+id/sportButton" />
 
@@ -47,13 +49,14 @@
 
     <TextView
         android:id="@+id/dateText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Date"
         android:textColor="#C1C1C1"
         android:textSize="16sp"
         android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="@+id/sportIcon"
         app:layout_constraintStart_toStartOf="@+id/sportText"
         app:layout_constraintTop_toBottomOf="@+id/sportText" />
 

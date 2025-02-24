@@ -47,6 +47,8 @@ class CreateActivity : AppCompatActivity() {
         val dateText: TextView = findViewById(R.id.dateText)
         val dateBtn: LinearLayout = findViewById(R.id.dateButton)
 
+        val maxPlayer: EditText = findViewById(R.id.maxPlayers)
+
         val calendar = Calendar.getInstance()
         var timestamp = Timestamp(Date())
 
@@ -96,7 +98,7 @@ class CreateActivity : AppCompatActivity() {
                 { _, year, month, dayOfMonth ->
                     calendar.set(year, month, dayOfMonth)
                     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    dateText.setText(dateFormat.format(calendar.time))
+                    dateText.text = dateFormat.format(calendar.time)
 
                     TimePickerDialog(
                         this,
@@ -104,7 +106,7 @@ class CreateActivity : AppCompatActivity() {
                             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                             calendar.set(Calendar.MINUTE, minute)
                             val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                            dateText.setText("${dateFormat.format(calendar.time)} ${timeFormat.format(calendar.time)}")
+                            dateText.text = "${dateFormat.format(calendar.time)} ${timeFormat.format(calendar.time)}"
 
                             timestamp = Timestamp(calendar.time)
                             dateSelected = true
@@ -127,7 +129,7 @@ class CreateActivity : AppCompatActivity() {
             val sport = 0
             val place = "Unknown"
 
-            if (nameText.text.isNotEmpty() and descriptionText.text.isNotEmpty() and dateSelected and sportSelected) {
+            if (nameText.text.isNotEmpty() and descriptionText.text.isNotEmpty()  and maxPlayer.text.isNotEmpty() and dateSelected and sportSelected) {
                 val match = hashMapOf(
                     "name" to nameText.text.toString(),
                     "description" to descriptionText.text.toString(),
@@ -135,7 +137,8 @@ class CreateActivity : AppCompatActivity() {
                     "team2" to "",
                     "sport" to sport,
                     "place" to place,
-                    "date" to timestamp
+                    "date" to timestamp,
+                    "maxPlayers" to maxPlayer.text.toString()
                 )
 
                 val db = FirebaseFirestore.getInstance()
@@ -160,7 +163,7 @@ class CreateActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this,
-                    "You must enter a name, description, and select a date and sport to create a match.",
+                    "You must enter a name, description, maximum players, and select a date and sport to create a match.",
                     Toast.LENGTH_LONG
                 ).show()
             }
