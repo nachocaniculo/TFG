@@ -3,6 +3,7 @@ package com.astradevelop.playconnect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 class SearchMatchesRV(
     private val items: ArrayList<ArrayList<String>>,
     private val user: String,
-    private val searchActivity: SearchActivity
+    private val searchActivity: SearchActivity,
+    private val sport: Int
 ) : RecyclerView.Adapter<SearchMatchesRV.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -18,6 +20,7 @@ class SearchMatchesRV(
         val dateText: TextView = view.findViewById(R.id.dateText)
         val locationText: TextView = view.findViewById(R.id.locationText)
         val joinButton: LinearLayout = view.findViewById(R.id.joinButton)
+        val sportIcon: ImageView = view.findViewById(R.id.sportIcon)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,6 +38,16 @@ class SearchMatchesRV(
             FirebaseDBConnection().updateTeam2(items[position][0], user)
             items.removeAt(position)
             notifyItemRemoved(position)
+        }
+        when (sport){
+            0 -> {holder.sportText.text = "Padel"
+                holder.sportIcon.setImageResource(R.drawable.padelicon)}
+            1 -> {holder.sportText.text = "Tennis"
+                holder.sportIcon.setImageResource(R.drawable.tennisicon)}
+            2 -> {holder.sportText.text = "Basketball"
+                holder.sportIcon.setImageResource(R.drawable.basketicon)}
+            3 -> {holder.sportText.text = "Football"
+                holder.sportIcon.setImageResource(R.drawable.footballicon)}
         }
     }
 

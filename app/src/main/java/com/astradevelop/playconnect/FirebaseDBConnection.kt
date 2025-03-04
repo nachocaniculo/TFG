@@ -178,7 +178,8 @@ class FirebaseDBConnection {
                         document.getString("name")!!,
                         document.getDate("date").toString(),
                         document.getString("place")!!,
-                        document.getString("team1")!!
+                        document.getString("team1")!!,
+                        document.get("sport").toString()
                     )
                 )
             )
@@ -197,7 +198,8 @@ class FirebaseDBConnection {
                         document.getString("name")!!,
                         document.getDate("date").toString(),
                         document.getString("place")!!,
-                        document.getString("team1")!!
+                        document.getString("team1")!!,
+                        document.get("sport").toString()
                     )
                 )
             )

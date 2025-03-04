@@ -31,28 +31,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/teamTV"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/rounded_button_black_nostroke"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="@+id/scheduledTV"
-        app:layout_constraintStart_toEndOf="@+id/tournamentsTV"
-        app:layout_constraintTop_toTopOf="@+id/scheduledTV">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Team"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:visibility="invisible" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/scheduledTV"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
@@ -224,19 +202,6 @@
         app:layout_constraintTop_toTopOf="@+id/searchTV" />
 
     <TextView
-        android:id="@+id/teamText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Team"
-        android:textColor="#4F4F4F"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/tournamentsTV"
-        app:layout_constraintEnd_toEndOf="@+id/teamTV"
-        app:layout_constraintStart_toStartOf="@+id/teamTV"
-        app:layout_constraintTop_toTopOf="@+id/tournamentsTV" />
-
-    <TextView
         android:id="@+id/scheduledText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -341,61 +306,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/padelButton"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sportsRV"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:background="@drawable/rounded_button_grey"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="12dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scheduledTV">
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/padelText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_weight="1"
-        android:text="Padel"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/locationButton"
-        app:layout_constraintStart_toEndOf="@+id/sportIcon"
-        app:layout_constraintTop_toTopOf="@+id/padelButton" />
-
-    <ImageView
-        android:id="@+id/padelIcon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        android:tint="#FFFFFF"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/locationButton"
-        app:layout_constraintStart_toStartOf="@+id/sportButton"
-        app:layout_constraintTop_toTopOf="@+id/padelButton"
-        app:srcCompat="@drawable/padelicon" />
-
-    <ImageView
-        android:id="@+id/arrow4"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="16dp"
-        android:tint="#FFFFFF"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/locationButton"
-        app:layout_constraintEnd_toEndOf="@+id/sportButton"
-        app:layout_constraintTop_toTopOf="@+id/padelButton"
-        app:srcCompat="@drawable/arrow" />
+        app:layout_constraintTop_toTopOf="@+id/sportButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

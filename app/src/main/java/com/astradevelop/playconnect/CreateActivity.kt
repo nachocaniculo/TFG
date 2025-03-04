@@ -19,11 +19,22 @@ import java.util.Date
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 class CreateActivity : AppCompatActivity() {
+
+    lateinit var sportBg: TextView
+    lateinit var sportRV: RecyclerView
+
+    lateinit var sportText: TextView
+    lateinit var sportIcon: ImageView
+
+    private var sportSelected = false
+    private var sport = 0
     @SuppressLint("MissingInflatedId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,43 +64,24 @@ class CreateActivity : AppCompatActivity() {
         var timestamp = Timestamp(Date())
 
         var dateSelected = false
-        var sportSelected = false
 
-        val sportBg: TextView = findViewById(R.id.sportBg)
-        val padelBtn: LinearLayout = findViewById(R.id.padelButton)
-        val padelText: TextView = findViewById(R.id.padelText)
-        val padelIcon: ImageView = findViewById(R.id.padelIcon)
-        val arrow4: ImageView = findViewById(R.id.arrow4)
+        sportBg = findViewById(R.id.sportBg)
+        sportRV = findViewById(R.id.sportsRV)
 
-        val sportText: TextView = findViewById(R.id.sportText)
-        val sportIcon: ImageView = findViewById(R.id.sportIcon)
+        sportText = findViewById(R.id.sportText)
+        sportIcon = findViewById(R.id.sportIcon)
 
         val sportBtn: LinearLayout = findViewById(R.id.sportButton)
         sportBtn.setOnClickListener {
             sportBg.visibility = View.VISIBLE
-            padelBtn.visibility = View.VISIBLE
-            padelText.visibility = View.VISIBLE
-            padelIcon.visibility = View.VISIBLE
-            arrow4.visibility = View.VISIBLE
+            sportRV.visibility = View.VISIBLE
+            sportRV.layoutManager = LinearLayoutManager(this)
+            sportRV.adapter = SportsRV(this)
         }
 
         sportBg.setOnClickListener {
             sportBg.visibility = View.GONE
-            padelBtn.visibility = View.GONE
-            padelText.visibility = View.GONE
-            padelIcon.visibility = View.GONE
-            arrow4.visibility = View.GONE
-        }
-
-        padelBtn.setOnClickListener {
-            sportBg.visibility = View.GONE
-            padelBtn.visibility = View.GONE
-            padelText.visibility = View.GONE
-            padelIcon.visibility = View.GONE
-            arrow4.visibility = View.GONE
-            sportText.text = "Padel"
-            sportIcon.setImageResource(R.drawable.padelicon)
-            sportSelected = true
+            sportRV.visibility = View.GONE
         }
 
         dateBtn.setOnClickListener {
@@ -126,7 +118,6 @@ class CreateActivity : AppCompatActivity() {
             val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
             val user = sharedPref.getString("userUID", "")
 
-            val sport = 0
             val place = "Unknown"
 
             if (nameText.text.isNotEmpty() and descriptionText.text.isNotEmpty()  and maxPlayer.text.isNotEmpty() and dateSelected and sportSelected) {
@@ -173,5 +164,22 @@ class CreateActivity : AppCompatActivity() {
         checkBtnBg.setOnClickListener {
             add()
         }
+    }
+
+    fun setSport(sportTemp: Int){
+        when (sportTemp){
+            0 -> {sportText.text = "Padel"
+                sportIcon.setImageResource(R.drawable.padelicon)}
+            1 -> {sportText.text = "Tennis"
+                sportIcon.setImageResource(R.drawable.tennisicon)}
+            2 -> {sportText.text = "Basketball"
+                sportIcon.setImageResource(R.drawable.basketicon)}
+            3 -> {sportText.text = "Football"
+                sportIcon.setImageResource(R.drawable.footballicon)}
+        }
+        sportBg.visibility = View.GONE
+        sportRV.visibility = View.GONE
+        sportSelected = true
+        sport = sportTemp
     }
 }

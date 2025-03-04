@@ -7,6 +7,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,7 @@ class HomeMatchesRV(
         val editText: TextView = view.findViewById(R.id.editText)
         val leaveButton: LinearLayout = view.findViewById(R.id.leaveButton)
         val leaveText: TextView = view.findViewById(R.id.leaveText)
+        val sportIcon: ImageView = view.findViewById(R.id.sportIcon)
     }
 
 
@@ -39,6 +41,7 @@ class HomeMatchesRV(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val matchId = items[position][0]
         val team1 = items[position][4]
+        val sport = items[position][5]
         holder.sportText.text = items[position][1]
         holder.dateText.text = items[position][2]
         holder.locationText.text = items[position][3]
@@ -62,6 +65,12 @@ class HomeMatchesRV(
         }
         holder.leaveButton.setOnClickListener {
             showDeleteConfirmationDialog(homeActivity, matchId)
+        }
+        when (sport){
+            "0" -> holder.sportIcon.setImageResource(R.drawable.padelicon)
+            "1" -> holder.sportIcon.setImageResource(R.drawable.tennisicon)
+            "2" -> holder.sportIcon.setImageResource(R.drawable.basketicon)
+            "3" -> holder.sportIcon.setImageResource(R.drawable.footballicon)
         }
     }
 

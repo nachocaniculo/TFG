@@ -1,5 +1,6 @@
 package com.astradevelop.playconnect
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,7 +11,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -23,6 +23,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SearchActivity : AppCompatActivity() {
+
+    private lateinit var sportBg: TextView
+    private lateinit var sportRV: RecyclerView
+
+    lateinit var sportText: TextView
+    private lateinit var sportIcon: ImageView
+
+    private var sportSelected = false
+    private var sport = 0
+
+    private lateinit var searchText: EditText
+
+    lateinit var matchesRV: RecyclerView
+    lateinit var noResultsText: TextView
+
+    private var user = ""
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,7 +52,7 @@ class SearchActivity : AppCompatActivity() {
 
 
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
-        val user = sharedPref.getString("userUID", "")
+        user = sharedPref.getString("userUID", "").toString()
 
         val backBtn: ImageView = findViewById(R.id.arrow1)
         backBtn.setOnClickListener {
@@ -44,32 +61,16 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
-        var sportSelected = false
-        var sport = 0
+        sportBg = findViewById(R.id.sportBg)
+        sportRV = findViewById(R.id.sportsRV)
 
-        val searchText: EditText = findViewById(R.id.searchText)
+        sportText = findViewById(R.id.sportText)
+        sportIcon = findViewById(R.id.sportIcon)
 
-        val matchesRV: RecyclerView = findViewById(R.id.matchesRV)
-        val noResultsText: TextView = findViewById(R.id.noResultsText)
+        searchText = findViewById(R.id.searchText)
 
-        fun updateMatches(matchList: ArrayList<ArrayList<String>>) {
-            matchesRV.layoutManager = LinearLayoutManager(this)
-            matchesRV.adapter = SearchMatchesRV(matchList, user!!, this)
-            matchesRV.visibility = View.VISIBLE
-            noResultsText.visibility = View.GONE
-        }
-
-        fun searchBySport(){
-            GlobalScope.launch {
-                val databaseConnection = FirebaseDBConnection()
-                val matchList = databaseConnection.findMatchesBySport(sport)
-                withContext(Dispatchers.Main) {
-                    if (matchList.isNotEmpty()) {
-                        updateMatches(matchList)
-                    }
-                }
-            }
-        }
+        matchesRV = findViewById(R.id.matchesRV)
+        noResultsText = findViewById(R.id.noResultsText)
 
         fun searchByName(){
             GlobalScope.launch {
@@ -100,35 +101,53 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        val sportBg: TextView = findViewById(R.id.sportBg)
-        val padelBtn: LinearLayout = findViewById(R.id.padelButton)
-        val padelText: TextView = findViewById(R.id.padelText)
-        val padelIcon: ImageView = findViewById(R.id.padelIcon)
-        val arrow4: ImageView = findViewById(R.id.arrow4)
-
-        val sportText: TextView = findViewById(R.id.sportText)
-        val sportIcon: ImageView = findViewById(R.id.sportIcon)
-
         val sportBtn: LinearLayout = findViewById(R.id.sportButton)
         sportBtn.setOnClickListener {
             sportBg.visibility = View.VISIBLE
-            padelBtn.visibility = View.VISIBLE
-            padelText.visibility = View.VISIBLE
-            padelIcon.visibility = View.VISIBLE
-            arrow4.visibility = View.VISIBLE
+            sportRV.visibility = View.VISIBLE
+            sportRV.layoutManager = LinearLayoutManager(this)
+            sportRV.adapter = SportsSearchRV(this)
         }
+    }
 
-        padelBtn.setOnClickListener {
-            sportBg.visibility = View.GONE
-            padelBtn.visibility = View.GONE
-            padelText.visibility = View.GONE
-            padelIcon.visibility = View.GONE
-            arrow4.visibility = View.GONE
-            sportText.text = "Padel"
-            sportIcon.setImageResource(R.drawable.padelicon)
-            sportSelected = true
-            sport = 0
-            searchBySport()
+    private fun updateMatches(matchList: ArrayList<ArrayList<String>>) {
+        if (matchList.isEmpty()){
+            matchesRV.visibility = View.GONE
+            noResultsText.visibility = View.VISIBLE
+        } else {
+            matchesRV.layoutManager = LinearLayoutManager(this)
+            matchesRV.adapter = SearchMatchesRV(matchList, user!!, this, sport)
+            matchesRV.visibility = View.VISIBLE
+            noResultsText.visibility = View.GONE
         }
+    }
+
+    private fun searchBySport(){
+        GlobalScope.launch {
+            val databaseConnection = FirebaseDBConnection()
+            val matchList = databaseConnection.findMatchesBySport(sport)
+            withContext(Dispatchers.Main) {
+                updateMatches(matchList)
+            }
+        }
+    }
+
+    fun setSport(sportTemp: Int){
+        when (sportTemp){
+            0 -> {sportText.text = "Padel"
+                sportIcon.setImageResource(R.drawable.padelicon)}
+            1 -> {sportText.text = "Tennis"
+                sportIcon.setImageResource(R.drawable.tennisicon)}
+            2 -> {sportText.text = "Basketball"
+                sportIcon.setImageResource(R.drawable.basketicon)}
+            3 -> {sportText.text = "Football"
+                sportIcon.setImageResource(R.drawable.footballicon)}
+        }
+        sportBg.visibility = View.GONE
+        sportRV.visibility = View.GONE
+        sportSelected = true
+        sport = sportTemp
+        searchBySport()
+
     }
 }
