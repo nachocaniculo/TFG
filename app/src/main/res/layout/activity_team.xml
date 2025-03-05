@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A1A1A"
+    tools:context=".TeamActivity">
+
+    <ImageView
+        android:id="@+id/arrow1"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="32dp"
+        android:rotation="180"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/homeText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/teamText"
+        app:srcCompat="@drawable/arrow" />
+
+    <TextView
+        android:id="@+id/teamText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Team"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/playersText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="Players"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sportButton" />
+
+    <LinearLayout
+        android:id="@+id/sportButton"
+        android:layout_width="0dp"
+        android:layout_height="136dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_button_grey"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/arrow1">
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/sportText"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="16dp"
+        android:text="Name"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/dateText"
+        app:layout_constraintStart_toStartOf="@+id/sportButton"
+        app:layout_constraintTop_toBottomOf="@+id/dateText" />
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Sport"
+        android:textColor="#C1C1C1"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toStartOf="@+id/eventTV"
+        app:layout_constraintStart_toStartOf="@+id/sportIconBg"
+        app:layout_constraintTop_toBottomOf="@+id/sportIconBg" />
+
+    <LinearLayout
+        android:id="@+id/sportIconBg"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_button"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="@+id/sportButton"
+        app:layout_constraintTop_toTopOf="@+id/sportButton" />
+
+    <ImageView
+        android:id="@+id/sportIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/sportIconBg"
+        app:layout_constraintEnd_toEndOf="@+id/sportIconBg"
+        app:layout_constraintStart_toStartOf="@+id/sportIconBg"
+        app:layout_constraintTop_toTopOf="@+id/sportIconBg"
+        app:srcCompat="@drawable/tennisicon" />
+
+    <LinearLayout
+        android:id="@+id/playersBg"
+        android:layout_width="36dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rounded_button"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/sportButton"
+        app:layout_constraintTop_toTopOf="@+id/sportButton" />
+
+    <TextView
+        android:id="@+id/playersTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/playersBg"
+        app:layout_constraintEnd_toEndOf="@+id/playersBg"
+        app:layout_constraintStart_toStartOf="@+id/playersBg"
+        app:layout_constraintTop_toTopOf="@+id/playersBg" />
+
+    <LinearLayout
+        android:id="@+id/eventTV"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/sportButton"
+        app:layout_constraintEnd_toEndOf="@+id/sportButton">
+
+        <TextView
+            android:id="@+id/eventTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leave"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playerRV"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playersText" />
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Leave"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/eventTV"
+        app:layout_constraintEnd_toEndOf="@+id/eventTV"
+        app:layout_constraintStart_toStartOf="@+id/eventTV"
+        app:layout_constraintTop_toTopOf="@+id/eventTV" />
+
+    <ImageView
+        android:id="@+id/addBtnBg"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/blue_circle" />
+
+    <ImageView
+        android:id="@+id/addButtonOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/addBtnBg"
+        app:layout_constraintEnd_toEndOf="@+id/addBtnBg"
+        app:layout_constraintStart_toStartOf="@+id/addBtnBg"
+        app:layout_constraintTop_toTopOf="@+id/addBtnBg"
+        app:srcCompat="@drawable/mailicon"
+        app:tint="#FBFBFB" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

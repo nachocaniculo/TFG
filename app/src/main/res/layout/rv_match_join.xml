@@ -10,16 +10,13 @@
         android:id="@+id/sportButton"
         android:layout_width="0dp"
         android:layout_height="128dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
         android:background="@drawable/rounded_button_grey"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
     <TextView
         android:id="@+id/sportText"

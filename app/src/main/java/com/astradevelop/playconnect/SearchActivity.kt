@@ -3,6 +3,7 @@ package com.astradevelop.playconnect
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,8 +12,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet.Constraint
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -71,6 +75,52 @@ class SearchActivity : AppCompatActivity() {
 
         matchesRV = findViewById(R.id.matchesRV)
         noResultsText = findViewById(R.id.noResultsText)
+
+        val teamBtn: LinearLayout = findViewById(R.id.teamTV)
+        val eventBtn: LinearLayout = findViewById(R.id.eventTV)
+
+        val teamTxt: TextView = findViewById(R.id.teamText)
+        val eventTxt: TextView = findViewById(R.id.scheduledText)
+
+        val searchCL: ConstraintLayout = findViewById(R.id.searchCL)
+        val teamCL: ConstraintLayout = findViewById(R.id.teamCL)
+
+        val addBtnBg: ImageView = findViewById(R.id.addBtnBg)
+
+        teamBtn.setOnClickListener {
+            teamBtn.setBackgroundResource(R.drawable.rounded_button)
+            eventBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            teamTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            eventTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            searchCL.visibility = View.GONE
+            teamCL.visibility = View.VISIBLE
+            addBtnBg.visibility = View.VISIBLE
+        }
+
+        eventBtn.setOnClickListener {
+            teamBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            eventBtn.setBackgroundResource(R.drawable.rounded_button)
+            eventTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            teamTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            searchCL.visibility = View.VISIBLE
+            teamCL.visibility = View.GONE
+            addBtnBg.visibility = View.GONE
+        }
+
+        val teamText: EditText = findViewById(R.id.teamInviteText)
+
+        addBtnBg.setOnClickListener {
+            if (teamText.text.isNotEmpty()){
+                val databaseConnection = FirebaseDBConnection()
+                databaseConnection.addPlayerToTeam(teamText.text.toString(), user, this)
+            } else {
+                Toast.makeText(
+                    this,
+                    "Please enter a valid code.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
         fun searchByName(){
             GlobalScope.launch {

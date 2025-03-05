@@ -78,7 +78,7 @@ class HomeActivity : AppCompatActivity() {
                 println("Error al obtener el documento: $exception")
             }
 
-        val matchesBtn: LinearLayout = findViewById(R.id.scheduledTV)
+        val matchesBtn: LinearLayout = findViewById(R.id.eventTV)
         val tournamentsBtn: LinearLayout = findViewById(R.id.tournamentsTV)
 
         val matchesTxt: TextView = findViewById(R.id.scheduledText)
@@ -152,14 +152,38 @@ class HomeActivity : AppCompatActivity() {
             matchesRV.adapter = HomeMatchesRV(matchList, this, user)
         }
 
+        val teamsRV1: RecyclerView = findViewById(R.id.teamsRV1)
+        val teamsRV2: RecyclerView = findViewById(R.id.teamsRV2)
+
+        fun noTeams(){
+            teamsRV1.visibility = View.GONE
+            teamsRV2.visibility = View.GONE
+        }
+
+        fun teams(teamList: ArrayList<ArrayList<String>>) {
+            teamsRV1.layoutManager = LinearLayoutManager(this)
+            teamsRV2.layoutManager = LinearLayoutManager(this)
+            val middle = teamList.size / 2
+            val firstHalf = teamList.subList(0, middle)
+            val secondHalf = teamList.subList(middle, teamList.size)
+            teamsRV1.adapter = HomeTeamsRV(secondHalf, this, user)
+            teamsRV2.adapter = HomeTeamsRV2(firstHalf, this, user)
+        }
+
         GlobalScope.launch {
             val databaseConnection = FirebaseDBConnection()
             val matchList = databaseConnection.findMatches(user)
+            val teamList = databaseConnection.findTeams(user)
             withContext(Dispatchers.Main) {
                 if (matchList.isEmpty()) {
                     noMatches()
                 } else {
                     matches(matchList)
+                }
+                if (teamList.isEmpty()) {
+                    noTeams()
+                } else {
+                    teams(teamList)
                 }
             }
         }

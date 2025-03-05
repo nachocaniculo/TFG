@@ -291,4 +291,128 @@ class FirebaseDBConnection {
             .addOnSuccessListener {
             }
     }
+
+    suspend fun findTeams(userId: String): ArrayList<ArrayList<String>> {
+        val matchData = ArrayList<ArrayList<String>>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("teams")
+            .whereEqualTo("captain", userId)
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            matchData.add(
+                ArrayList(
+                    mutableListOf(
+                        document.id,
+                        document.getString("name")!!,
+                        document.get("sport").toString(),
+                        document.getString("captain")!!,
+                        (document.get("players") as? List<*>)!!.joinToString(",")
+                    )
+                )
+            )
+        }
+
+        val query2 = FirebaseFirestore.getInstance()
+            .collection("teams")
+            .whereNotEqualTo("captain", userId)
+        val documents2 = query2.get().await()
+
+        for (document in documents2) {
+            val players = document.get("players") as? List<*>
+            for (player in players!!){
+                if (userId == player.toString()){
+                    matchData.add(
+                        ArrayList(
+                            mutableListOf(
+                                document.id,
+                                document.getString("name")!!,
+                                document.get("sport").toString(),
+                                document.getString("captain")!!,
+                                players.joinToString(",")
+                            )
+                        )
+                    )
+                }
+            }
+        }
+
+        return matchData
+    }
+
+    fun addPlayerToTeam(
+        documentId: String,
+        playerId: String,
+        searchActivity: SearchActivity
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("teams").document(documentId)
+        var isOnTeam = false
+        documentRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val players = document.get("players") as? List<*>
+                for (player in players!!){
+                    if (player.toString() == playerId){
+                        isOnTeam = true
+                    }
+                }
+                if (!isOnTeam) {
+                    var playerList = players.joinToString(",")
+                    playerList = "$playerList,$playerId"
+                    updatePlayersInTeamV2(documentId, playerList, searchActivity)
+                } else {
+                    Toast.makeText(
+                        searchActivity,
+                        "You have already joined this team.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                Toast.makeText(
+                    searchActivity,
+                    "This code doesn't belong to any team.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    fun updatePlayersInTeam(
+        documentId: String,
+        players: String
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("teams").document(documentId)
+        val playerList = players.split(",")
+
+        val updates = hashMapOf<String, Any>(
+            "players" to playerList
+        )
+        documentRef.update(updates)
+            .addOnSuccessListener {
+            }
+    }
+
+    fun updatePlayersInTeamV2(
+        documentId: String,
+        players: String,
+        searchActivity: SearchActivity
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("teams").document(documentId)
+        val playerList = players.split(",")
+
+        val updates = hashMapOf<String, Any>(
+            "players" to playerList
+        )
+        documentRef.update(updates)
+            .addOnSuccessListener {
+                Toast.makeText(
+                    searchActivity,
+                    "Joined!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
 }
