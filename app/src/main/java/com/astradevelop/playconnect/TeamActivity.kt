@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,53 +47,15 @@ class TeamActivity : AppCompatActivity() {
             finish()
         }
 
-        val teamInfo = intent.getStringExtra("teamInfo")!!.split(";")
-
-        val teamId = teamInfo[0]
-        val teamName = teamInfo[1]
-        val sport = teamInfo[2]
-        val captain = teamInfo[3]
-        val players = teamInfo[4]
-        val playerList = players.split(",").toMutableList()
-
-        val sportText: TextView = findViewById(R.id.dateText)
-        val nameText: TextView = findViewById(R.id.sportText)
-        val sportIcon: ImageView = findViewById(R.id.sportIcon)
-        val playersText: TextView = findViewById(R.id.playersTxt)
-
-        val leaveBtn: LinearLayout = findViewById(R.id.eventTV)
-        val editText: TextView = findViewById(R.id.editText)
-
-        nameText.text = teamName
-        playersText.text = playerList.size.toString()
-        val inviteBtn: ImageView = findViewById(R.id.addBtnBg)
-
-        if (user == captain){
-            leaveBtn.visibility = View.GONE
-            inviteBtn.visibility = View.VISIBLE
-            editText.visibility = View.GONE
-        }
+        val teamId = intent.getStringExtra("teamInfo")
 
         val databaseConnection = FirebaseDBConnection()
+        val inviteBtn: ImageView = findViewById(R.id.addBtnBg)
 
-        leaveBtn.setOnClickListener {
-            playerList.remove(user)
-            databaseConnection.updatePlayersInTeam(teamId, playerList.joinToString(","))
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-
-        when (sport){
-            "0" -> {sportIcon.setImageResource(R.drawable.padelicon)
-                sportText.text = "Padel"}
-            "1" -> {sportIcon.setImageResource(R.drawable.tennisicon)
-                sportText.text = "Tennis"}
-            "2" -> {sportIcon.setImageResource(R.drawable.basketicon)
-                sportText.text = "Basketball"}
-            "3" -> {sportIcon.setImageResource(R.drawable.footballicon)
-                sportText.text = "Football"}
-        }
+        var teamName = ""
+        var sport: String
+        var captain: String
+        var players: MutableList<String>
 
         val playerRV: RecyclerView = findViewById(R.id.playerRV)
         inviteBtn.setOnClickListener {
@@ -105,28 +68,73 @@ class TeamActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(intent, "Send invite to:"))
         }
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val db = FirebaseFirestore.getInstance()
-            val playerNameList = mutableListOf<String>()
+        lifecycleScope.launch {
+            val team = databaseConnection.findTeamById(teamId!!)!!
 
-            val deferredList = playerList.map { playerId ->
-                async {
-                    val documentRef = db.collection("players").document(playerId)
-                    val document = documentRef.get().await() // Esperar la respuesta
-                    if (document.exists()) {
-                        document.getString("name") ?: "?"
-                    } else {
-                        "?"
+            teamName = team.name
+            sport = team.sport.toString()
+            captain = team.captain
+            players = (team.players as? List<String>)?.toMutableList() ?: mutableListOf()
+
+            val sportText: TextView = findViewById(R.id.dateText)
+            val nameText: TextView = findViewById(R.id.sportText)
+            val sportIcon: ImageView = findViewById(R.id.sportIcon)
+            val playersText: TextView = findViewById(R.id.playersTxt)
+
+            val leaveBtn: LinearLayout = findViewById(R.id.eventTV)
+            val editText: TextView = findViewById(R.id.editText)
+
+            nameText.text = teamName
+            playersText.text = players.size.toString()
+
+            if (user == captain){
+                leaveBtn.visibility = View.GONE
+                inviteBtn.visibility = View.VISIBLE
+                editText.visibility = View.GONE
+            }
+
+            leaveBtn.setOnClickListener {
+                players.remove(user)
+                databaseConnection.updatePlayersInTeam(teamId, players)
+                val intent = Intent(this@TeamActivity, HomeActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+            when (sport){
+                "0" -> {sportIcon.setImageResource(R.drawable.padelicon)
+                    sportText.text = "Padel"}
+                "1" -> {sportIcon.setImageResource(R.drawable.tennisicon)
+                    sportText.text = "Tennis"}
+                "2" -> {sportIcon.setImageResource(R.drawable.basketicon)
+                    sportText.text = "Basketball"}
+                "3" -> {sportIcon.setImageResource(R.drawable.footballicon)
+                    sportText.text = "Football"}
+            }
+
+            GlobalScope.launch(Dispatchers.IO) {
+                val db = FirebaseFirestore.getInstance()
+                val playerNameList = mutableListOf<String>()
+
+                val deferredList = players.map { playerId ->
+                    async {
+                        val documentRef = db.collection("players").document(playerId)
+                        val document = documentRef.get().await() // Esperar la respuesta
+                        if (document.exists()) {
+                            document.getString("name") ?: "?"
+                        } else {
+                            "?"
+                        }
                     }
                 }
-            }
-            val results = deferredList.awaitAll()
+                val results = deferredList.awaitAll()
 
-            playerNameList.addAll(results)
+                playerNameList.addAll(results)
 
-            withContext(Dispatchers.Main) {
-                playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
-                playerRV.adapter = PlayersRV(results.toMutableList(), playerList, teamId, user)
+                withContext(Dispatchers.Main) {
+                    playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
+                    playerRV.adapter = PlayersRV(results.toMutableList(), players, teamId!!, user, captain)
+                }
             }
         }
 

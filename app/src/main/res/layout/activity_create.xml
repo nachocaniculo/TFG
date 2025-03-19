@@ -90,6 +90,60 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/sportButton"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/rounded_button_grey"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/eventTV">
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/sportIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/sportButton"
+        app:layout_constraintStart_toStartOf="@+id/sportButton"
+        app:layout_constraintTop_toTopOf="@+id/sportButton"
+        app:srcCompat="@drawable/trophyicon" />
+
+    <TextView
+        android:id="@+id/sportText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Sport"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/sportIcon"
+        app:layout_constraintEnd_toStartOf="@+id/arrow2"
+        app:layout_constraintStart_toEndOf="@+id/sportIcon"
+        app:layout_constraintTop_toTopOf="@+id/sportIcon" />
+
+    <ImageView
+        android:id="@+id/arrow2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="16dp"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/sportButton"
+        app:layout_constraintEnd_toEndOf="@+id/sportButton"
+        app:layout_constraintTop_toTopOf="@+id/sportButton"
+        app:srcCompat="@drawable/arrow" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/teamCL"
         android:layout_width="0dp"
@@ -99,10 +153,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventTV">
+        app:layout_constraintTop_toBottomOf="@+id/sportButton">
 
         <LinearLayout
-            android:id="@+id/sportButton"
+            android:id="@+id/nameButton"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginStart="32dp"
@@ -114,23 +168,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/nameButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/rounded_button_grey"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sportButton">
 
         </LinearLayout>
 
@@ -150,41 +187,6 @@
             app:layout_constraintTop_toBottomOf="@+id/nameButton">
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/sportIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="16dp"
-            android:tint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/sportButton"
-            app:layout_constraintStart_toStartOf="@+id/sportButton"
-            app:layout_constraintTop_toTopOf="@+id/sportButton"
-            app:srcCompat="@drawable/trophyicon" />
-
-        <TextView
-            android:id="@+id/sportText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Sport"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/sportButton"
-            app:layout_constraintStart_toEndOf="@+id/sportIcon"
-            app:layout_constraintTop_toTopOf="@+id/sportButton" />
-
-        <ImageView
-            android:id="@+id/arrow2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="16dp"
-            android:tint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/sportButton"
-            app:layout_constraintEnd_toEndOf="@+id/sportButton"
-            app:layout_constraintTop_toTopOf="@+id/sportButton"
-            app:srcCompat="@drawable/arrow" />
 
         <EditText
             android:id="@+id/nameText"
@@ -238,23 +240,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/eventTV">
-
-        <LinearLayout
-            android:id="@+id/sportButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/rounded_button_grey"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/sportButton">
 
         <LinearLayout
             android:id="@+id/locationButton"
@@ -273,6 +259,21 @@
             app:layout_constraintTop_toBottomOf="@+id/sportButton">
 
         </LinearLayout>
+
+        <EditText
+            android:id="@+id/location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Location"
+            android:textColor="#C1C1C1"
+            android:textColorHint="#FFFFFF"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/locationButton"
+            app:layout_constraintEnd_toEndOf="@+id/locationButton"
+            app:layout_constraintStart_toEndOf="@+id/locationIcon"
+            app:layout_constraintTop_toTopOf="@+id/locationButton" />
 
         <LinearLayout
             android:id="@+id/nameButton"
@@ -343,30 +344,6 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/sportIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="16dp"
-            android:tint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/sportButton"
-            app:layout_constraintStart_toStartOf="@+id/sportButton"
-            app:layout_constraintTop_toTopOf="@+id/sportButton"
-            app:srcCompat="@drawable/trophyicon" />
-
-        <TextView
-            android:id="@+id/sportText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Sport"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/sportButton"
-            app:layout_constraintStart_toEndOf="@+id/sportIcon"
-            app:layout_constraintTop_toTopOf="@+id/sportButton" />
-
-        <ImageView
             android:id="@+id/locationIcon"
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -377,43 +354,8 @@
             app:layout_constraintTop_toTopOf="@+id/locationButton"
             app:srcCompat="@drawable/locationicon" />
 
-        <ImageView
-            android:id="@+id/arrow2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="16dp"
-            android:tint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/sportButton"
-            app:layout_constraintEnd_toEndOf="@+id/sportButton"
-            app:layout_constraintTop_toTopOf="@+id/sportButton"
-            app:srcCompat="@drawable/arrow" />
-
-        <TextView
-            android:id="@+id/locationText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Location"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/locationButton"
-            app:layout_constraintStart_toEndOf="@+id/locationIcon"
-            app:layout_constraintTop_toTopOf="@+id/locationButton" />
-
-        <ImageView
-            android:id="@+id/arrow3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="16dp"
-            android:tint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/locationButton"
-            app:layout_constraintEnd_toEndOf="@+id/locationButton"
-            app:layout_constraintTop_toTopOf="@+id/locationButton"
-            app:srcCompat="@drawable/arrow" />
-
         <EditText
-            android:id="@+id/nameText"
+            android:id="@+id/nameText2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -478,7 +420,7 @@
             app:tint="#FBFBFB" />
 
         <EditText
-            android:id="@+id/maxPlayers"
+            android:id="@+id/maxPlayers2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -532,17 +474,6 @@
         app:layout_constraintEnd_toEndOf="@+id/eventTV"
         app:layout_constraintStart_toStartOf="@+id/eventTV"
         app:layout_constraintTop_toTopOf="@+id/eventTV" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/profilePic"
-        style="@style/RoundedImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintBottom_toBottomOf="@+id/homeText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/homeText"
-        app:srcCompat="@drawable/man" />
 
     <ImageView
         android:id="@+id/arrow1"

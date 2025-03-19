@@ -3,8 +3,6 @@ package com.astradevelop.playconnect
 import android.content.Context
 import android.content.Intent
 import android.util.Patterns
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -162,80 +160,70 @@ class FirebaseDBConnection {
             }
     }
 
-    suspend fun findMatches(userId: String): ArrayList<ArrayList<String>> {
-        val matchData = ArrayList<ArrayList<String>>()
+    suspend fun findMatches(userId: String): ArrayList<Match> {
+        val matchData = ArrayList<Match>()
 
-        val query1 = FirebaseFirestore.getInstance()
-            .collection("match")
-            .whereEqualTo("team1", userId)
-        val documents1 = query1.get().await()
+        val db = FirebaseFirestore.getInstance()
 
-        for (document in documents1) {
-            matchData.add(
-                ArrayList(
-                    mutableListOf(
-                        document.id,
-                        document.getString("name")!!,
-                        document.getDate("date").toString(),
-                        document.getString("place")!!,
-                        document.getString("team1")!!,
-                        document.get("sport").toString()
-                    )
-                )
-            )
-        }
+        db.collection("match")
+            .get()
+            .addOnSuccessListener { result ->
+                for (document in result) {
+                    val players = document.get("players") as? List<*> ?: emptyList<Any>()
+                    if (userId in players) {
 
-        val query2 = FirebaseFirestore.getInstance()
-            .collection("match")
-            .whereEqualTo("team2", userId)
-        val documents2 = query2.get().await()
-
-        for (document in documents2) {
-            matchData.add(
-                ArrayList(
-                    mutableListOf(
-                        document.id,
-                        document.getString("name")!!,
-                        document.getDate("date").toString(),
-                        document.getString("place")!!,
-                        document.getString("team1")!!,
-                        document.get("sport").toString()
-                    )
-                )
-            )
-        }
-
-        return matchData
-    }
-
-    suspend fun findMatchesBySport(sport: Int): ArrayList<ArrayList<String>> {
-        val matchData = ArrayList<ArrayList<String>>()
-
-        val query1 = FirebaseFirestore.getInstance()
-            .collection("match")
-            .whereEqualTo("sport", sport)
-        val documents1 = query1.get().await()
-
-        for (document in documents1) {
-            if (document.getString("team2")!! == "") {
-                matchData.add(
-                    ArrayList(
-                        mutableListOf(
+                        val matchEntry = Match (
                             document.id,
+                            document.get("date") as Timestamp,
                             document.getString("name")!!,
-                            document.getDate("date").toString(),
-                            document.getString("place")!!
-                        )
-                    )
-                )
+                            document.getString("description")!!,
+                            document.getString("maxPlayers")!!,
+                            document.getString("place")!!,
+                            document.get("players") as? List<*> ?: emptyList<Any>(),
+                            document.getLong("sport")!!)
+
+                        matchData.add(matchEntry)
+                    }
+                }
             }
+
+        return matchData
+    }
+
+    suspend fun findMatchesBySport(sport: Int, userId: String): ArrayList<Match> {
+        val matchData = ArrayList<Match>()
+        val db = FirebaseFirestore.getInstance()
+
+        try {
+            val result = db.collection("match").get().await()
+            for (document in result) {
+                val players = document.get("players") as? List<*> ?: emptyList<Any>()
+                val maxPlayers = document.get("maxPlayers")?.toString()?.toIntOrNull() ?: Int.MAX_VALUE
+
+                if (document.get("sport").toString().toIntOrNull() == sport &&
+                    userId !in players && players.size < maxPlayers) {
+
+                    val matchEntry = Match (
+                        document.id,
+                        document.get("date") as Timestamp,
+                        document.getString("name")!!,
+                        document.getString("description")!!,
+                        document.getString("maxPlayers")!!,
+                        document.getString("place")!!,
+                        document.get("players") as? List<*> ?: emptyList<Any>(),
+                        document.getLong("sport")!!)
+
+                    matchData.add(matchEntry)
+                }
+            }
+        } catch (_: Exception) {
         }
 
         return matchData
     }
 
-    suspend fun findMatchesByName(search: String): ArrayList<ArrayList<String>> {
-        val matchData = ArrayList<ArrayList<String>>()
+    suspend fun findMatchesByName(search: String, userId: String): ArrayList<Match> {
+        val matchData = ArrayList<Match>()
 
         val query1 = FirebaseFirestore.getInstance()
             .collection("match")
@@ -244,38 +232,62 @@ class FirebaseDBConnection {
         val documents1 = query1.get().await()
 
         for (document in documents1) {
-            if (document.getString("team2")!! == "") {
-                matchData.add(
-                    ArrayList(
-                        mutableListOf(
-                            document.id,
-                            document.getString("name")!!,
-                            document.getDate("date").toString(),
-                            document.getString("place")!!
-                        )
-                    )
-                )
+            val players = document.get("players") as? List<*> ?: emptyList<Any>()
+            val maxPlayers = document.get("maxPlayers")?.toString()?.toIntOrNull() ?: Int.MAX_VALUE
+            if (userId !in players && players.size < maxPlayers) {
+
+                val matchEntry = Match (
+                    document.id,
+                    document.get("date") as Timestamp,
+                    document.getString("name")!!,
+                    document.getString("description")!!,
+                    document.getString("maxPlayers")!!,
+                    document.getString("place")!!,
+                    document.get("players") as? List<*> ?: emptyList<Any>(),
+                    document.getLong("sport")!!)
+
+                matchData.add(matchEntry)
             }
         }
 
         return matchData
     }
 
-    fun updateTeam2(
-        documentId: String,
-        value: String
-    ) {
+    fun updateTeam2(documentId: String, userId: String) {
         val db = FirebaseFirestore.getInstance()
         val documentRef = db.collection("match").document(documentId)
 
-        val updates = hashMapOf<String, Any>(
-            "team2" to value
-        )
+        documentRef.get().addOnSuccessListener { result ->
+            val players = result.get("players") as? MutableList<*> ?: mutableListOf<Any>()
 
-        documentRef.update(updates)
-            .addOnSuccessListener {
+            if (players.contains(userId)) {
+                val updatedPlayers = players.filter { it != userId }
+
+                if (updatedPlayers.isEmpty()) {
+                    documentRef.delete()
+                } else {
+                    documentRef.update("players", updatedPlayers)
+                }
             }
+        }
     }
+
+    fun updateTeam(documentId: String, userId: String) {
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("match").document(documentId)
+
+        documentRef.get().addOnSuccessListener { result ->
+            val players = (result.get("players") as? List<*>)?.mapNotNull { it as? String }?.toMutableList() ?: mutableListOf()
+
+            if (!players.contains(userId)) {
+                players.add(userId)
+
+                documentRef.update("players", players)
+            }
+        }
+    }
+
+
 
     fun updateDate(
         documentId: String,
@@ -292,8 +304,8 @@ class FirebaseDBConnection {
             }
     }
 
-    suspend fun findTeams(userId: String): ArrayList<ArrayList<String>> {
-        val matchData = ArrayList<ArrayList<String>>()
+    suspend fun findTeams(userId: String): ArrayList<Team> {
+        val teamData = ArrayList<Team>()
 
         val query1 = FirebaseFirestore.getInstance()
             .collection("teams")
@@ -301,15 +313,14 @@ class FirebaseDBConnection {
         val documents1 = query1.get().await()
 
         for (document in documents1) {
-            matchData.add(
-                ArrayList(
-                    mutableListOf(
-                        document.id,
-                        document.getString("name")!!,
-                        document.get("sport").toString(),
-                        document.getString("captain")!!,
-                        (document.get("players") as? List<*>)!!.joinToString(",")
-                    )
+            teamData.add(
+                Team(
+                    document.id,
+                    document.getString("name")!!,
+                    document.getString("captain")!!,
+                    document.getString("maxPlayers")!!,
+                    document.getLong("sport")!!,
+                    document.get("players") as? List<*> ?: emptyList<Any>()
                 )
             )
         }
@@ -323,22 +334,46 @@ class FirebaseDBConnection {
             val players = document.get("players") as? List<*>
             for (player in players!!){
                 if (userId == player.toString()){
-                    matchData.add(
-                        ArrayList(
-                            mutableListOf(
-                                document.id,
-                                document.getString("name")!!,
-                                document.get("sport").toString(),
-                                document.getString("captain")!!,
-                                players.joinToString(",")
-                            )
+                    teamData.add(
+                        Team(
+                            document.id,
+                            document.getString("name")!!,
+                            document.getString("captain")!!,
+                            document.getString("maxPlayers")!!,
+                            document.getLong("sport")!!,
+                            document.get("players") as? List<*> ?: emptyList<Any>()
                         )
                     )
                 }
             }
         }
 
-        return matchData
+        return teamData
+    }
+
+
+    suspend fun findTeamById(id: String): Team? {
+        val db = FirebaseFirestore.getInstance()
+
+        return try {
+            val document = db.collection("teams").document(id).get().await()
+
+            if (document.exists()) {
+                Team(
+                    id = document.id,
+                    name = document.getString("name") ?: "",
+                    captain = document.getString("captain") ?: "",
+                    maxPlayers = document.getString("maxPlayers") ?: "",
+                    sport = document.getLong("sport") ?: 0L,
+                    players = document.get("players") as? List<String> ?: emptyList()
+                )
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 
     fun addPlayerToTeam(
@@ -380,14 +415,13 @@ class FirebaseDBConnection {
 
     fun updatePlayersInTeam(
         documentId: String,
-        players: String
+        players: MutableList<*>
     ) {
         val db = FirebaseFirestore.getInstance()
         val documentRef = db.collection("teams").document(documentId)
-        val playerList = players.split(",")
 
         val updates = hashMapOf<String, Any>(
-            "players" to playerList
+            "players" to players
         )
         documentRef.update(updates)
             .addOnSuccessListener {

@@ -125,7 +125,7 @@ class SearchActivity : AppCompatActivity() {
         fun searchByName(){
             GlobalScope.launch {
                 val databaseConnection = FirebaseDBConnection()
-                val matchList = databaseConnection.findMatchesByName(searchText.text.toString())
+                val matchList = databaseConnection.findMatchesByName(searchText.text.toString(), user)
                 withContext(Dispatchers.Main) {
                     if (matchList.isNotEmpty()) {
                         updateMatches(matchList)
@@ -160,13 +160,13 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateMatches(matchList: ArrayList<ArrayList<String>>) {
+    private fun updateMatches(matchList: ArrayList<Match>) {
         if (matchList.isEmpty()){
             matchesRV.visibility = View.GONE
             noResultsText.visibility = View.VISIBLE
         } else {
             matchesRV.layoutManager = LinearLayoutManager(this)
-            matchesRV.adapter = SearchMatchesRV(matchList, user!!, this, sport)
+            matchesRV.adapter = SearchMatchesRV(matchList, user, this, sport)
             matchesRV.visibility = View.VISIBLE
             noResultsText.visibility = View.GONE
         }
@@ -175,7 +175,7 @@ class SearchActivity : AppCompatActivity() {
     private fun searchBySport(){
         GlobalScope.launch {
             val databaseConnection = FirebaseDBConnection()
-            val matchList = databaseConnection.findMatchesBySport(sport)
+            val matchList = databaseConnection.findMatchesBySport(sport, user)
             withContext(Dispatchers.Main) {
                 updateMatches(matchList)
             }

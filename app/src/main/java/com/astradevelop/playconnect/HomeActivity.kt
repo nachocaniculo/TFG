@@ -147,7 +147,7 @@ class HomeActivity : AppCompatActivity() {
             matchesRV.visibility = View.GONE
         }
 
-        fun matches(matchList: ArrayList<ArrayList<String>>) {
+        fun matches(matchList: ArrayList<Match>) {
             matchesRV.layoutManager = LinearLayoutManager(this)
             matchesRV.adapter = HomeMatchesRV(matchList, this, user)
         }
@@ -160,7 +160,7 @@ class HomeActivity : AppCompatActivity() {
             teamsRV2.visibility = View.GONE
         }
 
-        fun teams(teamList: ArrayList<ArrayList<String>>) {
+        fun teams(teamList: ArrayList<Team>) {
             teamsRV1.layoutManager = LinearLayoutManager(this)
             teamsRV2.layoutManager = LinearLayoutManager(this)
             val middle = teamList.size / 2

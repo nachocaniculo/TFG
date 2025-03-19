@@ -11,7 +11,8 @@ class PlayersRV(
     private val items: MutableList<String>,
     private val playerList: MutableList<String>,
     private val teamId: String,
-    private val user: String?
+    private val user: String?,
+    private val captain: String
 ) : RecyclerView.Adapter<PlayersRV.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -28,14 +29,16 @@ class PlayersRV(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.nameText.text = items[position]
         val player = playerList[position]
-        if (player == user){
-            holder.deleteBtn.visibility = View.GONE
+        if (user == captain){
+            if (player != user){
+                holder.deleteBtn.visibility = View.VISIBLE
+            }
         }
         holder.deleteBtn.setOnClickListener{
             playerList.remove(player)
             items.removeAt(position)
             val databaseConnection = FirebaseDBConnection()
-            databaseConnection.updatePlayersInTeam(teamId, playerList.joinToString(","))
+            databaseConnection.updatePlayersInTeam(teamId, playerList)
             notifyItemRemoved(position)
         }
     }

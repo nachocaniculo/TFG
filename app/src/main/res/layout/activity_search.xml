@@ -147,23 +147,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/locationButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/rounded_button_grey"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sportButton">
-
-        </LinearLayout>
-
         <ImageView
             android:id="@+id/sportIcon"
             android:layout_width="20dp"
@@ -175,42 +158,18 @@
             app:layout_constraintTop_toTopOf="@+id/sportButton"
             app:srcCompat="@drawable/trophyicon" />
 
-        <ImageView
-            android:id="@+id/locationIcon2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="16dp"
-            android:tint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/locationButton"
-            app:layout_constraintStart_toStartOf="@+id/locationButton"
-            app:layout_constraintTop_toTopOf="@+id/locationButton"
-            app:srcCompat="@drawable/locationicon" />
-
-        <TextView
-            android:id="@+id/locationText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Location"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/locationButton"
-            app:layout_constraintStart_toEndOf="@+id/locationIcon2"
-            app:layout_constraintTop_toTopOf="@+id/locationButton" />
-
         <TextView
             android:id="@+id/TeamsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:text="Results"
             android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationButton" />
+            app:layout_constraintTop_toBottomOf="@+id/sportButton" />
 
         <TextView
             android:id="@+id/sportText"
@@ -224,17 +183,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/sportButton"
             app:layout_constraintStart_toEndOf="@+id/sportIcon"
             app:layout_constraintTop_toTopOf="@+id/sportButton" />
-
-        <ImageView
-            android:id="@+id/arrow3"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginEnd="16dp"
-            android:tint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/locationButton"
-            app:layout_constraintEnd_toEndOf="@+id/locationButton"
-            app:layout_constraintTop_toTopOf="@+id/locationButton"
-            app:srcCompat="@drawable/arrow" />
 
         <ImageView
             android:id="@+id/arrow2"
@@ -252,6 +200,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -359,17 +308,6 @@
         app:layout_constraintEnd_toEndOf="@+id/eventTV"
         app:layout_constraintStart_toStartOf="@+id/eventTV"
         app:layout_constraintTop_toTopOf="@+id/eventTV" />
-
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/profilePic"
-        style="@style/RoundedImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintBottom_toBottomOf="@+id/homeText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/homeText"
-        app:srcCompat="@drawable/man" />
 
     <ImageView
         android:id="@+id/arrow1"

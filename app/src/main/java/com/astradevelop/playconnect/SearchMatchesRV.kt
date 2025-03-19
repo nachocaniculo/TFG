@@ -7,9 +7,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class SearchMatchesRV(
-    private val items: ArrayList<ArrayList<String>>,
+    private val items: ArrayList<Match>,
     private val user: String,
     private val searchActivity: SearchActivity,
     private val sport: Int
@@ -30,24 +33,30 @@ class SearchMatchesRV(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val matchId = items[position]
-        holder.sportText.text = items[position][1]
-        holder.dateText.text = items[position][2]
-        holder.locationText.text = items[position][3]
+        val timestamp: Timestamp = items[position].date
+
+        val date = timestamp.toDate()
+
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        val formattedDate = dateFormat.format(date)
+
+        holder.dateText.text = formattedDate
+
+        holder.locationText.text = items[position].place
         holder.joinButton.setOnClickListener {
-            FirebaseDBConnection().updateTeam2(items[position][0], user)
+            FirebaseDBConnection().updateTeam(items[position].id, user)
             items.removeAt(position)
             notifyItemRemoved(position)
         }
         when (sport){
-            0 -> {holder.sportText.text = "Padel"
-                holder.sportIcon.setImageResource(R.drawable.padelicon)}
-            1 -> {holder.sportText.text = "Tennis"
-                holder.sportIcon.setImageResource(R.drawable.tennisicon)}
-            2 -> {holder.sportText.text = "Basketball"
-                holder.sportIcon.setImageResource(R.drawable.basketicon)}
-            3 -> {holder.sportText.text = "Football"
-                holder.sportIcon.setImageResource(R.drawable.footballicon)}
+            0 -> {holder.sportIcon.setImageResource(R.drawable.padelicon)
+                holder.sportText.text = "Padel"}
+            1 -> {holder.sportIcon.setImageResource(R.drawable.tennisicon)
+                holder.sportText.text = "Tennis"}
+            2 -> {holder.sportIcon.setImageResource(R.drawable.basketicon)
+                holder.sportText.text = "Basketball"}
+            3 -> {holder.sportIcon.setImageResource(R.drawable.footballicon)
+                holder.sportText.text = "Football"}
         }
     }
 

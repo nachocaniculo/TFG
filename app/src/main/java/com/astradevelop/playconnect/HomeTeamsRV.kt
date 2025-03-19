@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.ArrayList
 
 class HomeTeamsRV(
-    private val items: MutableList<ArrayList<String>>,
+    private val items: MutableList<Team>,
     private val homeActivity: HomeActivity,
     private val user: String
 ) : RecyclerView.Adapter<HomeTeamsRV.ViewHolder>() {
@@ -31,17 +31,16 @@ class HomeTeamsRV(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val teamId = items[position][0]
-        val teamName = items[position][1]
-        val sport = items[position][2]
-        val captain = items[position][3]
-        val players = items[position][4]
-        val playerList = players.split(",")
+        val teamId = items[position].id
+        val teamName = items[position].name
+        val sport = items[position].sport.toString()
+        val captain = items[position].captain
+        val players = items[position].players
         holder.nameText.text = teamName
-        holder.playersText.text = playerList.size.toString()
+        holder.playersText.text = players.size.toString()
         holder.sportButton.setOnClickListener {
             val intent = Intent(homeActivity, TeamActivity::class.java)
-            intent.putExtra("teamInfo", items[position].joinToString(";"))
+            intent.putExtra("teamInfo", teamId)
             homeActivity.startActivity(intent)
         }
 

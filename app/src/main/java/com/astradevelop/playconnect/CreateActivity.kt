@@ -59,14 +59,17 @@ class CreateActivity : AppCompatActivity() {
         var type = 0
 
         val nameText: EditText = findViewById(R.id.nameText)
+        val nameText2: EditText = findViewById(R.id.nameText2)
         val descriptionText: EditText = findViewById(R.id.descriptionText)
         val dateText: TextView = findViewById(R.id.dateText)
         val dateBtn: LinearLayout = findViewById(R.id.dateButton)
+        val locationText: EditText = findViewById(R.id.location)
 
         val eventCL: ConstraintLayout = findViewById(R.id.eventCL)
         val teamCL: ConstraintLayout = findViewById(R.id.teamCL)
 
         val maxPlayer: EditText = findViewById(R.id.maxPlayers)
+        val maxPlayer2: EditText = findViewById(R.id.maxPlayers2)
 
         val calendar = Calendar.getInstance()
         var timestamp = Timestamp(Date())
@@ -152,18 +155,18 @@ class CreateActivity : AppCompatActivity() {
             val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
             val user = sharedPref.getString("userUID", "")
 
-            val place = "Unknown"
 
-            if (nameText.text.isNotEmpty() and descriptionText.text.isNotEmpty()  and maxPlayer.text.isNotEmpty() and dateSelected and sportSelected) {
+            println("Max: ${maxPlayer2.text.toString().isNotEmpty()}")
+
+            if (nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and maxPlayer2.text.isNotEmpty() and dateSelected and sportSelected) {
                 val match = hashMapOf(
-                    "name" to nameText.text.toString(),
+                    "name" to nameText2.text.toString(),
                     "description" to descriptionText.text.toString(),
-                    "team1" to user,
-                    "team2" to "",
+                    "players" to mutableListOf(user),
                     "sport" to sport,
-                    "place" to place,
+                    "place" to locationText.text.toString(),
                     "date" to timestamp,
-                    "maxPlayers" to maxPlayer.text.toString()
+                    "maxPlayers" to maxPlayer2.text.toString()
                 )
 
                 val db = FirebaseFirestore.getInstance()
@@ -188,7 +191,7 @@ class CreateActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this,
-                    "You must enter a name, description, maximum players, and select a date and sport to create a match.",
+                    "You must enter a name, description, place, maximum players, and select a date and sport to create a match.",
                     Toast.LENGTH_LONG
                 ).show()
             }

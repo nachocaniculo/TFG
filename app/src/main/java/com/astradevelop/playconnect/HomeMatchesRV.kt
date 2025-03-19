@@ -11,9 +11,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class HomeMatchesRV(
-    private val items: ArrayList<ArrayList<String>>,
+    private val items: ArrayList<Match>,
     private val homeActivity: HomeActivity,
     private val user: String
 ) : RecyclerView.Adapter<HomeMatchesRV.ViewHolder>() {
@@ -39,12 +42,20 @@ class HomeMatchesRV(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val matchId = items[position][0]
-        val team1 = items[position][4]
-        val sport = items[position][5]
-        holder.sportText.text = items[position][1]
-        holder.dateText.text = items[position][2]
-        holder.locationText.text = items[position][3]
+        val matchId = items[position].id
+        val team1 = items[position].players[0]
+        val sport = items[position].sport.toString()
+
+        val timestamp: Timestamp = items[position].date
+
+        val date = timestamp.toDate()
+
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        val formattedDate = dateFormat.format(date)
+
+        holder.dateText.text = formattedDate
+
+        holder.locationText.text = items[position].place
         if (team1 != user){
             holder.editButton.visibility = View.GONE
             holder.editText.visibility = View.GONE
@@ -59,18 +70,22 @@ class HomeMatchesRV(
         holder.editButton.setOnClickListener {
             val intent = Intent(homeActivity, UpdateActivity::class.java)
             intent.putExtra("id", matchId)
-            intent.putExtra("date", items[position][2])
-            intent.putExtra("location", items[position][3])
+            intent.putExtra("date", items[position].date.toString())
+            intent.putExtra("location", items[position].place)
             homeActivity.startActivity(intent)
         }
         holder.leaveButton.setOnClickListener {
             showDeleteConfirmationDialog(homeActivity, matchId)
         }
         when (sport){
-            "0" -> holder.sportIcon.setImageResource(R.drawable.padelicon)
-            "1" -> holder.sportIcon.setImageResource(R.drawable.tennisicon)
-            "2" -> holder.sportIcon.setImageResource(R.drawable.basketicon)
-            "3" -> holder.sportIcon.setImageResource(R.drawable.footballicon)
+            "0" -> {holder.sportIcon.setImageResource(R.drawable.padelicon)
+                    holder.sportText.text = "Padel"}
+            "1" -> {holder.sportIcon.setImageResource(R.drawable.tennisicon)
+                    holder.sportText.text = "Tennis"}
+            "2" -> {holder.sportIcon.setImageResource(R.drawable.basketicon)
+                    holder.sportText.text = "Basketball"}
+            "3" -> {holder.sportIcon.setImageResource(R.drawable.footballicon)
+                    holder.sportText.text = "Football"}
         }
     }
 
@@ -82,7 +97,7 @@ class HomeMatchesRV(
         builder.setMessage("Are you sure you want to leave this match?")
 
         builder.setPositiveButton("Leave") { _, _ ->
-            firebaseDBConnection.updateTeam2(matchId, "")
+            firebaseDBConnection.updateTeam2(matchId, user)
             val intent = Intent(context, HomeActivity::class.java)
             context.startActivity(intent)
             (context as? Activity)?.finish()
