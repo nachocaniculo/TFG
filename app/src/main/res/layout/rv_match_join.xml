@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="144dp"
-    android:background="#1A1A1A">
+    android:background="?attr/colorPrimary">
 
     <LinearLayout
         android:id="@+id/sportButton"
@@ -16,7 +16,7 @@
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/sportText"
@@ -26,7 +26,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="Sport"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/colorContrast"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/sportIcon"
@@ -38,7 +38,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginEnd="24dp"
-        android:tint="#FFFFFF"
+        android:tint="?attr/colorContrast"
         app:layout_constraintBottom_toBottomOf="@+id/sportText"
         app:layout_constraintEnd_toEndOf="@+id/sportButton"
         app:layout_constraintTop_toTopOf="@+id/sportText"
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Date"
-        android:textColor="#C1C1C1"
+        android:textColor="?attr/colorTextSecondary"
         android:textSize="16sp"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="@+id/sportIcon"
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="Location"
-        android:textColor="#C1C1C1"
+        android:textColor="?attr/colorTextSecondary"
         android:textSize="16sp"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="@+id/locationIcon"
@@ -72,10 +72,10 @@
 
     <ImageView
         android:id="@+id/locationIcon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="15dp"
+        android:layout_height="14dp"
         android:layout_marginTop="16dp"
-        android:tint="#FFFFFF"
+        android:tint="?attr/colorContrast"
         app:layout_constraintStart_toStartOf="@+id/dateText"
         app:layout_constraintTop_toBottomOf="@+id/dateText"
         app:srcCompat="@drawable/locationicon" />

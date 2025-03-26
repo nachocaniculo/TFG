@@ -160,7 +160,7 @@ class FirebaseDBConnection {
             }
     }
 
-    suspend fun findMatches(userId: String): ArrayList<Match> {
+    fun findMatches(userId: String): ArrayList<Match> {
         val matchData = ArrayList<Match>()
 
         val db = FirebaseFirestore.getInstance()
@@ -287,8 +287,6 @@ class FirebaseDBConnection {
         }
     }
 
-
-
     fun updateDate(
         documentId: String,
         date: Timestamp
@@ -376,6 +374,31 @@ class FirebaseDBConnection {
         }
     }
 
+    suspend fun findMatchById(id: String): Match? {
+        val db = FirebaseFirestore.getInstance()
+
+        return try {
+            val document = db.collection("match").document(id).get().await()
+
+            if (document.exists()) {
+                Match (
+                    document.id,
+                    document.get("date") as Timestamp,
+                    document.getString("name")!!,
+                    document.getString("description")!!,
+                    document.getString("maxPlayers")!!,
+                    document.getString("place")!!,
+                    document.get("players") as? List<*> ?: emptyList<Any>(),
+                    document.getLong("sport")!!)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     fun addPlayerToTeam(
         documentId: String,
         playerId: String,
@@ -447,6 +470,21 @@ class FirebaseDBConnection {
                     "Joined!",
                     Toast.LENGTH_SHORT
                 ).show()
+            }
+    }
+
+    fun updatePlayersInMatch(
+        documentId: String,
+        players: MutableList<*>
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("match").document(documentId)
+
+        val updates = hashMapOf<String, Any>(
+            "players" to players
+        )
+        documentRef.update(updates)
+            .addOnSuccessListener {
             }
     }
 }

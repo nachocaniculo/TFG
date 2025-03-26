@@ -1,5 +1,6 @@
 package com.astradevelop.playconnect
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ class SearchMatchesRV(
         val locationText: TextView = view.findViewById(R.id.locationText)
         val joinButton: LinearLayout = view.findViewById(R.id.joinButton)
         val sportIcon: ImageView = view.findViewById(R.id.sportIcon)
+        val sportButton: LinearLayout = view.findViewById(R.id.sportButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -57,6 +59,11 @@ class SearchMatchesRV(
                 holder.sportText.text = "Basketball"}
             3 -> {holder.sportIcon.setImageResource(R.drawable.footballicon)
                 holder.sportText.text = "Football"}
+        }
+        holder.sportButton.setOnClickListener {
+            val intent = Intent(searchActivity, MatchActivity::class.java)
+            intent.putExtra("MatchID", items[position].id)
+            searchActivity.startActivity(intent)
         }
     }
 

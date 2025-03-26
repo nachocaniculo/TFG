@@ -78,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
         val dbConnection = FirebaseDBConnection()
 
         //Login process
-        val loginBtn: Button = findViewById(R.id.loginBtn)
+        val loginBtn: LinearLayout = findViewById(R.id.loginBtn)
         loginBtn.setOnClickListener {
             dbConnection.loginAuth(this, email.text.toString(), password.text.toString())
         }

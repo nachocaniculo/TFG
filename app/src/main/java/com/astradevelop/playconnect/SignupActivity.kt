@@ -92,7 +92,7 @@ class SignupActivity : AppCompatActivity() {
         val dbConnection = FirebaseDBConnection()
 
         //Signup process
-        val signUpBtn: Button = findViewById(R.id.signupBtn)
+        val signUpBtn: LinearLayout = findViewById(R.id.signUpBtn)
         signUpBtn.setOnClickListener {
             if (name.text.toString().isEmpty() || username.text.toString().isEmpty() || email.text.toString().isEmpty() || password1.text.toString().isEmpty() || password2.text.toString().isEmpty() ){
                 Toast.makeText(

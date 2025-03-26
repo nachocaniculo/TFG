@@ -1,0 +1,6 @@
+<resources>
+    <attr name="colorContrast" format="color"/>
+    <attr name="colorBackground2" format="color"/>
+    <attr name="colorTextSecondary" format="color"/>
+    <attr name="globalBlue" format="color"/>
+</resources>

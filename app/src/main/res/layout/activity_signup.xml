@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1A1A"
+    android:background="?attr/colorPrimary"
     tools:context=".SignupActivity">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:text="Sign Up"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/colorContrast"
         android:textSize="44sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
@@ -42,8 +42,8 @@
             android:inputType="text"
             android:padding="16dp"
             android:password="false"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#808080"
+            android:textColor="?attr/colorContrast"
+            android:textColorHint="?attr/colorTextSecondary"
             android:textSize="16sp" />
 
         <EditText
@@ -56,8 +56,8 @@
             android:inputType="text"
             android:padding="16dp"
             android:password="false"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#808080"
+            android:textColor="?attr/colorContrast"
+            android:textColorHint="?attr/colorTextSecondary"
             android:textSize="16sp" />
 
         <EditText
@@ -70,8 +70,8 @@
             android:inputType="text"
             android:padding="16dp"
             android:password="false"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#808080"
+            android:textColor="?attr/colorContrast"
+            android:textColorHint="?attr/colorTextSecondary"
             android:textSize="16sp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,8 +88,8 @@
                 android:inputType="text"
                 android:padding="16dp"
                 android:password="true"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#808080"
+                android:textColor="?attr/colorContrast"
+                android:textColorHint="?attr/colorTextSecondary"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +100,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="16dp"
-                android:tint="#FFFFFF"
+                android:tint="?attr/colorContrast"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/passwordET"
@@ -121,8 +121,8 @@
                 android:inputType="text"
                 android:padding="16dp"
                 android:password="true"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#808080"
+                android:textColor="?attr/colorContrast"
+                android:textColorHint="?attr/colorTextSecondary"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -133,24 +133,30 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="16dp"
-                android:tint="#FFFFFF"
+                android:tint="?attr/colorContrast"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/passwordET2"
                 app:srcCompat="@drawable/invisible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <Button
-            android:id="@+id/signupBtn"
+        <LinearLayout
+            android:id="@+id/signUpBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_button"
-            android:padding="12dp"
-            android:text="Sign Up"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign Up"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/googleBtn"
@@ -197,7 +203,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Already registered?"
-            android:textColor="#C1C1C1"
+            android:textColor="?attr/colorTextSecondary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

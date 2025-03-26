@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1A1A"
+    android:background="?attr/colorPrimary"
     tools:context=".TeamActivity">
 
     <ImageView
@@ -14,8 +14,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:rotation="180"
-        android:tint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/homeText"
+        android:tint="?attr/colorContrast"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/teamText"
         app:srcCompat="@drawable/arrow" />
@@ -26,9 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Team"
-        android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:tint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -40,7 +39,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:text="Players"
-        android:textColor="#FFFFFF"
+        android:tint="?attr/colorContrast"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,11 +67,12 @@
         android:layout_width="0dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="90dp"
         android:text="Name"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/colorContrast"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/dateText"
+        app:layout_constraintEnd_toEndOf="@+id/sportButton"
         app:layout_constraintStart_toStartOf="@+id/sportButton"
         app:layout_constraintTop_toBottomOf="@+id/dateText" />
 
@@ -81,12 +81,11 @@
         android:layout_width="0dp"
         android:layout_height="22dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
         android:text="Sport"
-        android:textColor="#C1C1C1"
+        android:textColor="?attr/colorTextSecondary"
         android:textSize="16sp"
         android:textStyle="normal"
-        app:layout_constraintEnd_toStartOf="@+id/eventTV"
+        app:layout_constraintEnd_toEndOf="@+id/sportText"
         app:layout_constraintStart_toStartOf="@+id/sportIconBg"
         app:layout_constraintTop_toBottomOf="@+id/sportIconBg" />
 
@@ -141,6 +140,30 @@
         app:layout_constraintTop_toTopOf="@+id/playersBg" />
 
     <LinearLayout
+        android:id="@+id/deleteTV"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/sportButton"
+        app:layout_constraintEnd_toEndOf="@+id/sportButton">
+
+        <TextView
+            android:id="@+id/deleteTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/eventTV"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
@@ -150,6 +173,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="12dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/sportButton"
         app:layout_constraintEnd_toEndOf="@+id/sportButton">
 
@@ -177,6 +201,20 @@
         app:layout_constraintTop_toBottomOf="@+id/playersText" />
 
     <TextView
+        android:id="@+id/deleteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/deleteTV"
+        app:layout_constraintEnd_toEndOf="@+id/deleteTV"
+        app:layout_constraintStart_toStartOf="@+id/deleteTV"
+        app:layout_constraintTop_toTopOf="@+id/deleteTV" />
+
+    <TextView
         android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -184,6 +222,7 @@
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/eventTV"
         app:layout_constraintEnd_toEndOf="@+id/eventTV"
         app:layout_constraintStart_toStartOf="@+id/eventTV"

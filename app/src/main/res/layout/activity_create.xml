@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1A1A"
+    android:background="?attr/colorPrimary"
     tools:context=".CreateActivity">
 
     <LinearLayout
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Create"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/colorContrast"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -112,7 +112,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        android:tint="#FFFFFF"
+        android:tint="?attr/colorContrast"
         app:layout_constraintBottom_toBottomOf="@+id/sportButton"
         app:layout_constraintStart_toStartOf="@+id/sportButton"
         app:layout_constraintTop_toTopOf="@+id/sportButton"
@@ -125,7 +125,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="Sport"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/colorContrast"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/sportIcon"
@@ -138,7 +138,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginEnd="16dp"
-        android:tint="#FFFFFF"
+        android:tint="?attr/colorContrast"
         app:layout_constraintBottom_toBottomOf="@+id/sportButton"
         app:layout_constraintEnd_toEndOf="@+id/sportButton"
         app:layout_constraintTop_toTopOf="@+id/sportButton"
@@ -172,7 +172,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/maxPlayersButton"
+            android:id="@+id/maxPlayersButton2"
             android:layout_width="0dp"
             android:layout_height="56dp"
             android:layout_marginStart="32dp"
@@ -195,8 +195,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:hint="Event Name"
-            android:textColor="#C1C1C1"
-            android:textColorHint="#FFFFFF"
+            android:textColor="?attr/colorTextSecondary"
+            android:textColorHint="?attr/colorTextSecondary"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/nameButton"
             app:layout_constraintEnd_toEndOf="@+id/nameButton"
@@ -204,15 +204,15 @@
             app:layout_constraintTop_toTopOf="@+id/nameButton" />
 
         <ImageView
-            android:id="@+id/calendarBtn"
+            android:id="@+id/calendarBtn2"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
-            app:layout_constraintStart_toStartOf="@+id/maxPlayersButton"
-            app:layout_constraintTop_toTopOf="@+id/maxPlayersButton"
+            app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton2"
+            app:layout_constraintStart_toStartOf="@+id/maxPlayersButton2"
+            app:layout_constraintTop_toTopOf="@+id/maxPlayersButton2"
             app:srcCompat="@drawable/playersicon"
-            app:tint="#FBFBFB" />
+            app:tint="?attr/colorContrast" />
 
         <EditText
             android:id="@+id/maxPlayers"
@@ -223,12 +223,12 @@
             android:ems="10"
             android:hint="Players"
             android:inputType="number"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
-            app:layout_constraintEnd_toEndOf="@+id/maxPlayersButton"
-            app:layout_constraintStart_toEndOf="@+id/calendarBtn"
-            app:layout_constraintTop_toTopOf="@+id/maxPlayersButton" />
+            android:textColor="?attr/colorTextSecondary"
+            android:textColorHint="?attr/colorTextSecondary"
+            app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton2"
+            app:layout_constraintEnd_toEndOf="@+id/maxPlayersButton2"
+            app:layout_constraintStart_toEndOf="@+id/calendarBtn2"
+            app:layout_constraintTop_toTopOf="@+id/maxPlayersButton2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -267,8 +267,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:hint="Location"
-            android:textColor="#C1C1C1"
-            android:textColorHint="#FFFFFF"
+            android:textColor="?attr/colorTextSecondary"
+            android:textColorHint="?attr/colorTextSecondary"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/locationButton"
             app:layout_constraintEnd_toEndOf="@+id/locationButton"
@@ -348,7 +348,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="16dp"
-            android:tint="#FFFFFF"
+            android:tint="?attr/colorContrast"
             app:layout_constraintBottom_toBottomOf="@+id/locationButton"
             app:layout_constraintStart_toStartOf="@+id/locationButton"
             app:layout_constraintTop_toTopOf="@+id/locationButton"
@@ -361,8 +361,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:hint="Event Name"
-            android:textColor="#C1C1C1"
-            android:textColorHint="#FFFFFF"
+            android:textColor="?attr/colorTextSecondary"
+            android:textColorHint="?attr/colorTextSecondary"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/nameButton"
             app:layout_constraintEnd_toEndOf="@+id/nameButton"
@@ -376,8 +376,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:hint="Event Description"
-            android:textColor="#C1C1C1"
-            android:textColorHint="#FFFFFF"
+            android:textColor="?attr/colorTextSecondary"
+            android:textColorHint="?attr/colorTextSecondary"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/descriptionButton"
             app:layout_constraintEnd_toEndOf="@+id/descriptionButton"
@@ -393,7 +393,7 @@
             app:layout_constraintStart_toStartOf="@+id/dateButton"
             app:layout_constraintTop_toTopOf="@+id/dateButton"
             app:srcCompat="@drawable/calendar"
-            app:tint="#FBFBFB" />
+            app:tint="?attr/colorContrast" />
 
         <TextView
             android:id="@+id/dateText"
@@ -401,7 +401,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Date"
-            android:textColor="#C1C1C1"
+            android:textColor="?attr/colorTextSecondary"
             android:textSize="16sp"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="@+id/dateButton"
@@ -417,7 +417,7 @@
             app:layout_constraintStart_toStartOf="@+id/maxPlayersButton"
             app:layout_constraintTop_toTopOf="@+id/maxPlayersButton"
             app:srcCompat="@drawable/playersicon"
-            app:tint="#FBFBFB" />
+            app:tint="?attr/colorContrast" />
 
         <EditText
             android:id="@+id/maxPlayers2"
@@ -428,8 +428,8 @@
             android:ems="10"
             android:hint="Maximum Players"
             android:inputType="number"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF"
+            android:textColor="?attr/colorTextSecondary"
+            android:textColorHint="?attr/colorTextSecondary"
             app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
             app:layout_constraintEnd_toEndOf="@+id/maxPlayersButton"
             app:layout_constraintStart_toEndOf="@+id/calendarBtn"
@@ -481,7 +481,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:rotation="180"
-        android:tint="#FFFFFF"
+        android:textColor="?attr/colorContrast"
         app:layout_constraintBottom_toBottomOf="@+id/homeText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/homeText"

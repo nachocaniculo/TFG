@@ -1,8 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.TFG" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/mainBackgroundWhite</item>
+        <item name="colorContrast">@color/mainTextWhite</item>
+        <item name="colorBackground2">@color/background2White</item>
+        <item name="colorTextSecondary">@color/secondTextWhite</item>
+        <item name="globalBlue">@color/globalBlue</item>
     </style>
 
     <style name="Theme.TFG" parent="Base.Theme.TFG" />

@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -23,6 +25,14 @@ class MainActivity : AppCompatActivity() {
         //Get the userID token to check if he is logged in or not
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val userUID = sharedPref.getString("userUID", "")
+        val nightMode = sharedPref.getBoolean("nightMode", true)
+
+        if (nightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
         if (userUID != ""){
             val intent = Intent(this, HomeActivity::class.java)
             finish()
@@ -30,14 +40,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         //Button to go to login activity
-        val loginBtn: Button = findViewById(R.id.loginBtn)
+        val loginBtn: LinearLayout = findViewById(R.id.loginBtn)
         loginBtn.setOnClickListener{
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
 
         //Button to go to signup activity
-        val signupBtn: Button = findViewById(R.id.signUpBtn)
+        val signupBtn: LinearLayout = findViewById(R.id.signUpBtn)
         signupBtn.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)

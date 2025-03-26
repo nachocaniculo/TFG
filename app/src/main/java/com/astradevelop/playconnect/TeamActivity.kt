@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -68,6 +69,33 @@ class TeamActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(intent, "Send invite to:"))
         }
 
+        val db = FirebaseFirestore.getInstance()
+
+        val deleteBtn: LinearLayout = findViewById(R.id.deleteTV)
+        val deleteText: TextView = findViewById(R.id.deleteText)
+
+        deleteBtn.setOnClickListener{
+            db.collection("teams").document(teamId!!)
+                .delete()
+                .addOnSuccessListener {
+                    Toast.makeText(
+                        this,
+                        "Team successfully deleted",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        this,
+                        "Error deleting match: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+        }
+
         lifecycleScope.launch {
             val team = databaseConnection.findTeamById(teamId!!)!!
 
@@ -90,6 +118,8 @@ class TeamActivity : AppCompatActivity() {
             if (user == captain){
                 leaveBtn.visibility = View.GONE
                 inviteBtn.visibility = View.VISIBLE
+                deleteBtn.visibility = View.VISIBLE
+                deleteText.visibility = View.VISIBLE
                 editText.visibility = View.GONE
             }
 
@@ -113,7 +143,6 @@ class TeamActivity : AppCompatActivity() {
             }
 
             GlobalScope.launch(Dispatchers.IO) {
-                val db = FirebaseFirestore.getInstance()
                 val playerNameList = mutableListOf<String>()
 
                 val deferredList = players.map { playerId ->
@@ -133,7 +162,7 @@ class TeamActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
-                    playerRV.adapter = PlayersRV(results.toMutableList(), players, teamId!!, user, captain)
+                    playerRV.adapter = TeamPlayersRV(results.toMutableList(), players, teamId!!, user, captain)
                 }
             }
         }

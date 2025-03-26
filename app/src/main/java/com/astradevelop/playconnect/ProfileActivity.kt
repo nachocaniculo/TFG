@@ -6,9 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -22,6 +24,16 @@ class ProfileActivity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
+        val userUID = sharedPref.getString("userUID", "")
+        val nightMode = sharedPref.getBoolean("nightMode", true)
+
+        if (nightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         }
 
         //Display user info
@@ -39,6 +51,27 @@ class ProfileActivity : AppCompatActivity() {
         val backBtn: ImageView = findViewById(R.id.backBtn)
         backBtn.setOnClickListener {
             finish()
+        }
+
+        val editor = sharedPref.edit()
+
+        val switchNightMode: Switch = findViewById(R.id.switch2)
+
+        if (nightMode) {
+            switchNightMode.isChecked = true
+        } else {
+            switchNightMode.isChecked = false
+        }
+
+        switchNightMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                editor.putBoolean("nightMode", true)
+                editor.apply()
+            } else {
+                editor.putBoolean("nightMode", false)
+                editor.apply()
+            }
+            recreate()
         }
 
         //Logout button handler

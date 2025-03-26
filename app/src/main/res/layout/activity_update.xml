@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1A1A"
+    android:background="?attr/colorPrimary"
     tools:context=".CreateActivity">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="Update"
-        android:textColor="#FFFFFF"
+        android:tint="?attr/colorContrast"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="New Location"
-        android:textColor="#FFFFFF"
+        android:tint="?attr/colorContrast"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/locationButton"
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="New Date"
-        android:textColor="#C1C1C1"
+        android:tint="?attr/colorTextSecondary"
         android:textSize="16sp"
         android:textStyle="normal"
         app:layout_constraintBottom_toBottomOf="@+id/dateButton"
@@ -92,7 +92,7 @@
         app:layout_constraintStart_toStartOf="@+id/dateButton"
         app:layout_constraintTop_toTopOf="@+id/dateButton"
         app:srcCompat="@drawable/calendar"
-        app:tint="#FBFBFB" />
+        android:tint="?attr/colorContrast" />
 
     <ImageView
         android:id="@+id/arrow1"
@@ -100,7 +100,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
         android:rotation="180"
-        android:tint="#FFFFFF"
+        android:tint="?attr/colorContrast"
         app:layout_constraintBottom_toBottomOf="@+id/homeText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/homeText"
@@ -111,7 +111,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        android:tint="#FFFFFF"
+        android:tint="?attr/colorContrast"
         app:layout_constraintBottom_toBottomOf="@+id/locationButton"
         app:layout_constraintStart_toStartOf="@+id/locationButton"
         app:layout_constraintTop_toTopOf="@+id/locationButton"
@@ -122,7 +122,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginEnd="16dp"
-        android:tint="#FFFFFF"
+        android:tint="?attr/colorContrast"
         app:layout_constraintBottom_toBottomOf="@+id/locationButton"
         app:layout_constraintEnd_toEndOf="@+id/locationButton"
         app:layout_constraintTop_toTopOf="@+id/locationButton"

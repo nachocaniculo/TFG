@@ -130,13 +130,11 @@ class HomeActivity : AppCompatActivity() {
         searchTV.setOnClickListener {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
         createTV.setOnClickListener {
             val intent = Intent(this, CreateActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
         val matchesRV: RecyclerView = findViewById(R.id.matchesRV)
