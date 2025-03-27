@@ -52,6 +52,7 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, ProfileActivity::class.java)
             intent.putExtra("user", name)
             intent.putExtra("email", mail)
+            intent.putExtra("username", username)
             intent.putExtra("profilePicture", profilePicture)
             startActivity(intent)
         }

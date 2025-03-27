@@ -487,4 +487,21 @@ class FirebaseDBConnection {
             .addOnSuccessListener {
             }
     }
+
+    fun updatePlayerInfo(
+        player: Player
+    ) {
+        val documentId = player.id
+        val db = FirebaseFirestore.getInstance()
+        val documentRef = db.collection("players").document(documentId)
+
+        val updates = hashMapOf<String, Any>(
+            "email" to player.email,
+            "name" to player.name,
+            "username" to player.username
+        )
+        documentRef.update(updates)
+            .addOnSuccessListener {
+            }
+    }
 }

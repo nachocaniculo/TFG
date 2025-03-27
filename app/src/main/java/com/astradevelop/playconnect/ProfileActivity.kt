@@ -39,6 +39,7 @@ class ProfileActivity : AppCompatActivity() {
         //Display user info
         val email = intent.extras!!.getString("email")
         var user = intent.extras!!.getString("user")
+        var username = intent.extras!!.getString("username")
         val profilePicture = intent.extras!!.getString("profilePicture")
 
         val userTxt: TextView = findViewById(R.id.userTxt)
@@ -95,6 +96,22 @@ class ProfileActivity : AppCompatActivity() {
         when (profilePicture) {
             "2" -> profilePic.setImageResource(R.drawable.woman)
             "else" -> profilePic.setImageResource(R.drawable.man)
+        }
+
+        profilePic.setOnClickListener {
+            val intent = Intent(this, ProfilePictureActivity::class.java)
+            startActivity(intent)
+        }
+
+        val editProfileBtn: LinearLayout = findViewById(R.id.signUpBtn)
+        editProfileBtn.setOnClickListener {
+            val intent = Intent(this, EditProfileActivity::class.java)
+            intent.putExtra("user", user)
+            intent.putExtra("email", email)
+            intent.putExtra("username", username)
+            intent.putExtra("profilePicture", profilePicture)
+            startActivity(intent)
+            finish()
         }
     }
 }
