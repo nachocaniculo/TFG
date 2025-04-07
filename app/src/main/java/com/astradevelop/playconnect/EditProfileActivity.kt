@@ -1,6 +1,5 @@
 package com.astradevelop.playconnect
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +17,7 @@ class EditProfileActivity : AppCompatActivity() {
     private var user = ""
     private var username = ""
     private var profilePicture = ""
+    private var ratings: List<Int> = emptyList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,6 +34,10 @@ class EditProfileActivity : AppCompatActivity() {
         user = intent.extras!!.getString("user").toString()
         username = intent.extras!!.getString("username").toString()
         profilePicture = intent.extras!!.getString("profilePicture").toString()
+        ratings = intent.getStringExtra("ratings")
+            ?.split(",")
+            ?.mapNotNull { it.toIntOrNull() }
+            ?: emptyList()
 
         val backBtn: ImageView = findViewById(R.id.backBtn)
         backBtn.setOnClickListener { onBackPressed() }
@@ -60,7 +64,8 @@ class EditProfileActivity : AppCompatActivity() {
                     user,
                     username,
                     email,
-                    profilePicture
+                    profilePicture,
+                    ratings
                 )
             )
             onBackPressed()
@@ -74,6 +79,7 @@ class EditProfileActivity : AppCompatActivity() {
         intent.putExtra("email", email)
         intent.putExtra("username", username)
         intent.putExtra("profilePicture", profilePicture)
+        intent.putExtra("ratings", ratings.joinToString {","})
         startActivity(intent)
         finish()
     }

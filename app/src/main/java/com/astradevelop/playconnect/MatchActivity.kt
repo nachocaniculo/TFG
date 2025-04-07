@@ -84,27 +84,36 @@ class MatchActivity : AppCompatActivity() {
 
             GlobalScope.launch(Dispatchers.IO) {
                 val playerNameList = mutableListOf<String>()
+                val playerRatingsList = mutableListOf<String>()
 
                 val deferredList = players.map { playerId ->
                     async {
                         val documentRef = db.collection("players").document(playerId)
-                        val document = documentRef.get().await() // Esperar la respuesta
+                        val document = documentRef.get().await()
                         if (document.exists()) {
-                            document.getString("name") ?: "?"
+                            val playerName = document.getString("name") ?: "?"
+                            val playerRatings = document.get("ratings") as? List<Long> ?: emptyList()
+                            val ratingsString = playerRatings.joinToString(",")
+
+                            playerName to ratingsString
                         } else {
-                            "?"
+                            "?" to ""
                         }
                     }
                 }
                 val results = deferredList.awaitAll()
 
-                playerNameList.addAll(results)
+                results.forEach { (name, ratings) ->
+                    playerNameList.add(name)
+                    playerRatingsList.add(ratings)
+                }
 
                 withContext(Dispatchers.Main) {
                     playersRV.layoutManager = LinearLayoutManager(this@MatchActivity)
-                    playersRV.adapter = MatchPlayersRV(results.toMutableList(), players, matchID!!)
+                    playersRV.adapter = MatchPlayersRV(playerNameList, playerRatingsList, players, matchID!!)
                 }
             }
+
         }
 
         GlobalScope.launch {

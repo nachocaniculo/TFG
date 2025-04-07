@@ -498,8 +498,10 @@ class FirebaseDBConnection {
         val updates = hashMapOf<String, Any>(
             "email" to player.email,
             "name" to player.name,
-            "username" to player.username
+            "username" to player.username,
+            "ratings" to player.ratings
         )
+
         documentRef.update(updates)
             .addOnSuccessListener {
             }

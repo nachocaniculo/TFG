@@ -46,6 +46,7 @@ class HomeActivity : AppCompatActivity() {
         var mail = ""
         var name = ""
         var profilePicture = ""
+        var ratings: List<Int> = emptyList()
 
         val profilePic : ImageView = findViewById(R.id.profilePic)
         profilePic.setOnClickListener {
@@ -54,6 +55,7 @@ class HomeActivity : AppCompatActivity() {
             intent.putExtra("email", mail)
             intent.putExtra("username", username)
             intent.putExtra("profilePicture", profilePicture)
+            intent.putExtra("ratings", ratings.joinToString(","))
             startActivity(intent)
         }
         db.collection("players").document(user!!)
@@ -64,6 +66,7 @@ class HomeActivity : AppCompatActivity() {
                     mail = document.getString("email").toString()
                     name = document.getString("name").toString()
                     profilePicture = document.getString("picture").toString()
+                    ratings = (document.get("ratings") as? List<Long>)?.map { it.toInt() } ?: emptyList()
                     greetingTxt.text = "Hello,\n$username"
 
                     //Set profile Picture

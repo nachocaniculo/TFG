@@ -15,7 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class ProfileActivity : AppCompatActivity() {
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,6 +41,67 @@ class ProfileActivity : AppCompatActivity() {
         var user = intent.extras!!.getString("user")
         var username = intent.extras!!.getString("username")
         val profilePicture = intent.extras!!.getString("profilePicture")
+        val ratings = intent.getStringExtra("ratings")
+            ?.split(",")
+            ?.mapNotNull { it.toIntOrNull() }
+            ?: emptyList()
+
+        var ratingTotal = 0
+
+        for (ratingTemp in ratings) {
+            ratingTotal += ratingTemp
+        }
+
+        val ratingMean = String.format("%.1f", ratingTotal.toDouble() / ratings.size).toDouble()
+
+        val star1: ImageView = findViewById(R.id.star1)
+        val star2: ImageView = findViewById(R.id.star2)
+        val star3: ImageView = findViewById(R.id.star3)
+        val star4: ImageView = findViewById(R.id.star4)
+        val star5: ImageView = findViewById(R.id.star5)
+
+        fun printStars(){
+            if (ratingMean > 0){
+                if (ratingMean > 1) {
+                    star1.setImageResource(R.drawable.star_full)
+                } else {
+                    star1.setImageResource(R.drawable.star_half)
+                }
+            }
+            if (ratingMean > 1){
+                if (ratingMean > 2) {
+                    star2.setImageResource(R.drawable.star_full)
+                } else {
+                    star2.setImageResource(R.drawable.star_half)
+                }
+            }
+            if (ratingMean > 2){
+                if (ratingMean > 3) {
+                    star3.setImageResource(R.drawable.star_full)
+                } else {
+                    star3.setImageResource(R.drawable.star_half)
+                }
+            }
+            if (ratingMean > 3){
+                if (ratingMean > 4) {
+                    star4.setImageResource(R.drawable.star_full)
+                } else {
+                    star4.setImageResource(R.drawable.star_half)
+                }
+            }
+            if (ratingMean > 4){
+                if (ratingMean >= 5) {
+                    star5.setImageResource(R.drawable.star_full)
+                } else {
+                    star5.setImageResource(R.drawable.star_half)
+                }
+            }
+        }
+
+        printStars()
+
+        val ratingTV: TextView = findViewById(R.id.ratingText)
+        ratingTV.text = ratingMean.toString()
 
         val userTxt: TextView = findViewById(R.id.userTxt)
         userTxt.text = user
@@ -110,6 +171,7 @@ class ProfileActivity : AppCompatActivity() {
             intent.putExtra("email", email)
             intent.putExtra("username", username)
             intent.putExtra("profilePicture", profilePicture)
+            intent.putExtra("ratings", ratings.joinToString (","))
             startActivity(intent)
             finish()
         }
