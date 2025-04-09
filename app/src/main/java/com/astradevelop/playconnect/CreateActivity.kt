@@ -19,11 +19,18 @@ import java.util.Date
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.Color
+import android.media.Image
+import android.widget.ScrollView
+import android.widget.Switch
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet.Constraint
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -38,7 +45,14 @@ class CreateActivity : AppCompatActivity() {
 
     private var sportSelected = false
     private var sport = 0
-    @SuppressLint("MissingInflatedId", "SetTextI18n")
+
+    private var user = ""
+    lateinit var teamsRV: RecyclerView
+    private var teamID = ""
+    private var teamName = ""
+    lateinit var teamText: TextView
+
+    @SuppressLint("MissingInflatedId", "SetTextI18n", "UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -48,6 +62,9 @@ class CreateActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
+        user = sharedPref.getString("userUID", "").toString()
 
         val backBtn: ImageView = findViewById(R.id.arrow1)
         backBtn.setOnClickListener {
@@ -65,7 +82,7 @@ class CreateActivity : AppCompatActivity() {
         val dateBtn: LinearLayout = findViewById(R.id.dateButton)
         val locationText: EditText = findViewById(R.id.location)
 
-        val eventCL: ConstraintLayout = findViewById(R.id.eventCL)
+        val eventSV: ScrollView = findViewById(R.id.eventSV)
         val teamCL: ConstraintLayout = findViewById(R.id.teamCL)
 
         val maxPlayer: EditText = findViewById(R.id.maxPlayers)
@@ -85,13 +102,53 @@ class CreateActivity : AppCompatActivity() {
         val teamBtn: LinearLayout = findViewById(R.id.teamTV)
         val eventBtn: LinearLayout = findViewById(R.id.eventTV)
 
-        val teamTxt: TextView = findViewById(R.id.teamText)
+        val teamTxt: TextView = findViewById(R.id.teamTextMain)
         val eventTxt: TextView = findViewById(R.id.scheduledText)
+        teamText = findViewById(R.id.teamText)
+
+        val teamOrPlayersText: TextView = findViewById(R.id.teamOrPlayersText)
+
+        val chooseTeamButton: LinearLayout = findViewById(R.id.chooseTeamButton)
+        val arrowV2: ImageView = findViewById(R.id.arrowv2)
+        teamsRV = findViewById(R.id.teamsRV)
+
+        var matchType = 1
+
+        chooseTeamButton.setOnClickListener {
+            if (sportSelected) {
+                if (teamsRV.visibility == View.VISIBLE) {
+                    teamsRV.visibility = View.GONE
+                } else {
+                    teamsRV.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        val teamSwitch: Switch = findViewById(R.id.switch2)
+        teamSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                teamOrPlayersText.text = "Teams can join"
+                maxPlayer2.hint = "Max teams"
+                matchType = 2
+                chooseTeamButton.visibility = View.VISIBLE
+                teamText.visibility = View.VISIBLE
+                arrowV2.visibility = View.VISIBLE
+                loadTeams()
+            } else {
+                teamOrPlayersText.text = "Players can join"
+                maxPlayer2.hint = "Max players"
+                matchType = 1
+                chooseTeamButton.visibility = View.GONE
+                teamText.visibility = View.GONE
+                arrowV2.visibility = View.GONE
+                teamsRV.visibility = View.GONE
+            }
+        }
 
         teamBtn.setOnClickListener {
             teamBtn.setBackgroundResource(R.drawable.rounded_button)
             eventBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
-            eventCL.visibility = View.GONE
+            eventSV.visibility = View.GONE
             teamCL.visibility = View.VISIBLE
             teamTxt.setTextColor(Color.parseColor("#FFFFFF"))
             eventTxt.setTextColor(Color.parseColor("#4F4F4F"))
@@ -101,7 +158,7 @@ class CreateActivity : AppCompatActivity() {
         eventBtn.setOnClickListener {
             teamBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
             eventBtn.setBackgroundResource(R.drawable.rounded_button)
-            eventCL.visibility = View.VISIBLE
+            eventSV.visibility = View.VISIBLE
             teamCL.visibility = View.GONE
             eventTxt.setTextColor(Color.parseColor("#FFFFFF"))
             teamTxt.setTextColor(Color.parseColor("#4F4F4F"))
@@ -152,21 +209,22 @@ class CreateActivity : AppCompatActivity() {
         }
 
         fun add() {
-            val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
-            val user = sharedPref.getString("userUID", "")
-
-
-            println("Max: ${maxPlayer2.text.toString().isNotEmpty()}")
-
-            if (nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and maxPlayer2.text.isNotEmpty() and dateSelected and sportSelected) {
+            if ((nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and maxPlayer2.text.isNotEmpty() and dateSelected and sportSelected and (matchType == 1)) or (nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and maxPlayer2.text.isNotEmpty() and dateSelected and sportSelected and (teamID != ""))) {
+                var playersTemp: MutableList<String>
+                if (matchType == 1) {
+                    playersTemp = mutableListOf(user)
+                } else {
+                    playersTemp = mutableListOf(teamID)
+                }
                 val match = hashMapOf(
                     "name" to nameText2.text.toString(),
                     "description" to descriptionText.text.toString(),
-                    "players" to mutableListOf(user),
+                    "players" to playersTemp,
                     "sport" to sport,
                     "place" to locationText.text.toString(),
                     "date" to timestamp,
-                    "maxPlayers" to maxPlayer2.text.toString()
+                    "maxPlayers" to maxPlayer2.text.toString(),
+                    "type" to matchType
                 )
 
                 val db = FirebaseFirestore.getInstance()
@@ -263,5 +321,28 @@ class CreateActivity : AppCompatActivity() {
         sportRV.visibility = View.GONE
         sportSelected = true
         sport = sportTemp
+        loadTeams()
+    }
+
+    fun updateTeam (teamNameTemp: String, teamIDTemp: String){
+        teamName = teamNameTemp
+        teamID = teamIDTemp
+        teamText.text = teamNameTemp
+        teamsRV.visibility = View.GONE
+    }
+
+    private fun loadTeams(){
+        GlobalScope.launch {
+            val databaseConnection = FirebaseDBConnection()
+            val teamList = databaseConnection.findTeamsByPlayerAndSport(user, sport.toLong())
+            withContext(Dispatchers.Main) {
+                if (teamList.isEmpty()) {
+                    teamsRV.visibility = View.GONE
+                } else {
+                    teamsRV.layoutManager = LinearLayoutManager(this@CreateActivity)
+                    teamsRV.adapter = TeamsCreateRV(teamList, this@CreateActivity)
+                }
+            }
+        }
     }
 }

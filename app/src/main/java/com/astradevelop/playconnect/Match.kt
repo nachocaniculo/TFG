@@ -10,6 +10,7 @@ class Match(
     val maxPlayers: String,
     val place: String,
     val players: List<Any?>,
-    val sport: Long
+    val sport: Long,
+    val type: Long
 ) {
 }

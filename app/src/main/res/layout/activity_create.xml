@@ -231,210 +231,313 @@
             app:layout_constraintTop_toTopOf="@+id/maxPlayersButton2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/eventCL"
-        android:layout_width="0dp"
+    <ScrollView
+        android:id="@+id/eventSV"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sportButton">
 
-        <LinearLayout
-            android:id="@+id/locationButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/rounded_button_grey"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sportButton">
-
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/location"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/eventCL"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:hint="Location"
-            android:textColor="?attr/colorTextSecondary"
-            android:textColorHint="?attr/colorTextSecondary"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/locationButton"
-            app:layout_constraintEnd_toEndOf="@+id/locationButton"
-            app:layout_constraintStart_toEndOf="@+id/locationIcon"
-            app:layout_constraintTop_toTopOf="@+id/locationButton" />
+            android:visibility="visible">
 
-        <LinearLayout
-            android:id="@+id/nameButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/rounded_button_grey"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/locationButton">
+            <LinearLayout
+                android:id="@+id/locationButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_button_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/descriptionButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/rounded_button_grey"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameButton">
+            <EditText
+                android:id="@+id/location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Location"
+                android:textColor="?attr/colorTextSecondary"
+                android:textColorHint="?attr/colorTextSecondary"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/locationButton"
+                app:layout_constraintEnd_toEndOf="@+id/locationButton"
+                app:layout_constraintStart_toEndOf="@+id/locationIcon"
+                app:layout_constraintTop_toTopOf="@+id/locationButton" />
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/nameButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_button_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/locationButton">
 
-        <LinearLayout
-            android:id="@+id/dateButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/rounded_button_grey"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/descriptionButton">
+            </LinearLayout>
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/descriptionButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_button_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nameButton">
 
-        <LinearLayout
-            android:id="@+id/maxPlayersButton"
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:background="@drawable/rounded_button_grey"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dateButton">
+            </LinearLayout>
 
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/dateButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_button_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/descriptionButton">
 
-        <ImageView
-            android:id="@+id/locationIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="16dp"
-            android:tint="?attr/colorContrast"
-            app:layout_constraintBottom_toBottomOf="@+id/locationButton"
-            app:layout_constraintStart_toStartOf="@+id/locationButton"
-            app:layout_constraintTop_toTopOf="@+id/locationButton"
-            app:srcCompat="@drawable/locationicon" />
+            </LinearLayout>
 
-        <EditText
-            android:id="@+id/nameText2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:hint="Event Name"
-            android:textColor="?attr/colorTextSecondary"
-            android:textColorHint="?attr/colorTextSecondary"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/nameButton"
-            app:layout_constraintEnd_toEndOf="@+id/nameButton"
-            app:layout_constraintStart_toStartOf="@+id/nameButton"
-            app:layout_constraintTop_toTopOf="@+id/nameButton" />
+            <LinearLayout
+                android:id="@+id/maxPlayersButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_button_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/matchTypeButton">
 
-        <EditText
-            android:id="@+id/descriptionText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:hint="Event Description"
-            android:textColor="?attr/colorTextSecondary"
-            android:textColorHint="?attr/colorTextSecondary"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/descriptionButton"
-            app:layout_constraintEnd_toEndOf="@+id/descriptionButton"
-            app:layout_constraintStart_toStartOf="@+id/descriptionButton"
-            app:layout_constraintTop_toTopOf="@+id/descriptionButton" />
+            </LinearLayout>
 
-        <ImageView
-            android:id="@+id/calendarBtn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/dateButton"
-            app:layout_constraintStart_toStartOf="@+id/dateButton"
-            app:layout_constraintTop_toTopOf="@+id/dateButton"
-            app:srcCompat="@drawable/calendar"
-            app:tint="?attr/colorContrast" />
+            <LinearLayout
+                android:id="@+id/matchTypeButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_button_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dateButton">
 
-        <TextView
-            android:id="@+id/dateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Date"
-            android:textColor="?attr/colorTextSecondary"
-            android:textSize="16sp"
-            android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@+id/dateButton"
-            app:layout_constraintStart_toEndOf="@+id/calendarBtn"
-            app:layout_constraintTop_toTopOf="@+id/dateButton" />
+            </LinearLayout>
 
-        <ImageView
-            android:id="@+id/calendarBtn"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
-            app:layout_constraintStart_toStartOf="@+id/maxPlayersButton"
-            app:layout_constraintTop_toTopOf="@+id/maxPlayersButton"
-            app:srcCompat="@drawable/playersicon"
-            app:tint="?attr/colorContrast" />
+            <ImageView
+                android:id="@+id/locationIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                android:tint="?attr/colorContrast"
+                app:layout_constraintBottom_toBottomOf="@+id/locationButton"
+                app:layout_constraintStart_toStartOf="@+id/locationButton"
+                app:layout_constraintTop_toTopOf="@+id/locationButton"
+                app:srcCompat="@drawable/locationicon" />
 
-        <EditText
-            android:id="@+id/maxPlayers2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:ems="10"
-            android:hint="Maximum Players"
-            android:inputType="number"
-            android:textColor="?attr/colorTextSecondary"
-            android:textColorHint="?attr/colorTextSecondary"
-            app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
-            app:layout_constraintEnd_toEndOf="@+id/maxPlayersButton"
-            app:layout_constraintStart_toEndOf="@+id/calendarBtn"
-            app:layout_constraintTop_toTopOf="@+id/maxPlayersButton" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:id="@+id/chooseTeamButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:background="@drawable/rounded_button_grey"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/maxPlayersButton">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/teamText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="Team"
+                android:textColor="?attr/colorContrast"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/chooseTeamButton"
+                app:layout_constraintEnd_toStartOf="@+id/arrowv2"
+                app:layout_constraintStart_toStartOf="@+id/chooseTeamButton"
+                app:layout_constraintTop_toTopOf="@+id/chooseTeamButton" />
+
+            <Switch
+                android:id="@+id/switch2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:thumbTint="@color/switch_thumb"
+                android:trackTint="@color/switch_track"
+                app:layout_constraintBottom_toBottomOf="@+id/matchTypeButton"
+                app:layout_constraintStart_toStartOf="@+id/matchTypeButton"
+                app:layout_constraintTop_toTopOf="@+id/matchTypeButton"
+                tools:checked="false"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <EditText
+                android:id="@+id/nameText2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Event Name"
+                android:textColor="?attr/colorTextSecondary"
+                android:textColorHint="?attr/colorTextSecondary"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/nameButton"
+                app:layout_constraintEnd_toEndOf="@+id/nameButton"
+                app:layout_constraintStart_toStartOf="@+id/nameButton"
+                app:layout_constraintTop_toTopOf="@+id/nameButton" />
+
+            <EditText
+                android:id="@+id/descriptionText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:hint="Event Description"
+                android:textColor="?attr/colorTextSecondary"
+                android:textColorHint="?attr/colorTextSecondary"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/descriptionButton"
+                app:layout_constraintEnd_toEndOf="@+id/descriptionButton"
+                app:layout_constraintStart_toStartOf="@+id/descriptionButton"
+                app:layout_constraintTop_toTopOf="@+id/descriptionButton" />
+
+            <ImageView
+                android:id="@+id/calendarBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/dateButton"
+                app:layout_constraintStart_toStartOf="@+id/dateButton"
+                app:layout_constraintTop_toTopOf="@+id/dateButton"
+                app:srcCompat="@drawable/calendar"
+                app:tint="?attr/colorContrast" />
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Date"
+                android:textColor="?attr/colorTextSecondary"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/dateButton"
+                app:layout_constraintStart_toEndOf="@+id/calendarBtn"
+                app:layout_constraintTop_toTopOf="@+id/dateButton" />
+
+            <TextView
+                android:id="@+id/teamOrPlayersText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Players Can Join"
+                android:textColor="?attr/colorTextSecondary"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/matchTypeButton"
+                app:layout_constraintStart_toEndOf="@+id/switch2"
+                app:layout_constraintTop_toTopOf="@+id/matchTypeButton" />
+
+            <ImageView
+                android:id="@+id/calendarBtn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
+                app:layout_constraintStart_toStartOf="@+id/maxPlayersButton"
+                app:layout_constraintTop_toTopOf="@+id/maxPlayersButton"
+                app:srcCompat="@drawable/playersicon"
+                app:tint="?attr/colorContrast" />
+
+            <EditText
+                android:id="@+id/maxPlayers2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:ems="10"
+                android:hint="Maximum Players"
+                android:inputType="number"
+                android:textColor="?attr/colorTextSecondary"
+                android:textColorHint="?attr/colorTextSecondary"
+                app:layout_constraintBottom_toBottomOf="@+id/maxPlayersButton"
+                app:layout_constraintEnd_toEndOf="@+id/maxPlayersButton"
+                app:layout_constraintStart_toEndOf="@+id/calendarBtn"
+                app:layout_constraintTop_toTopOf="@+id/maxPlayersButton" />
+
+            <ImageView
+                android:id="@+id/arrowv2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/chooseTeamButton"
+                app:layout_constraintEnd_toEndOf="@+id/chooseTeamButton"
+                app:layout_constraintTop_toTopOf="@+id/chooseTeamButton"
+                app:srcCompat="@drawable/arrow2" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/teamsRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/chooseTeamButton"
+                app:layout_constraintStart_toStartOf="@+id/chooseTeamButton"
+                app:layout_constraintTop_toBottomOf="@+id/chooseTeamButton" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/tournamentsText"
@@ -450,7 +553,7 @@
         app:layout_constraintTop_toTopOf="@+id/tournamentsTV" />
 
     <TextView
-        android:id="@+id/teamText"
+        android:id="@+id/teamTextMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Team"
@@ -482,6 +585,7 @@
         android:layout_marginStart="32dp"
         android:rotation="180"
         android:textColor="?attr/colorContrast"
+        android:tint="?attr/colorContrast"
         app:layout_constraintBottom_toBottomOf="@+id/homeText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/homeText"

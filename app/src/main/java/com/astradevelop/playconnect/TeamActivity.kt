@@ -3,6 +3,7 @@ package com.astradevelop.playconnect
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -37,7 +38,6 @@ class TeamActivity : AppCompatActivity() {
             insets
         }
 
-        //Get the userID token that will be needed to do the DB queries
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val user = sharedPref.getString("userUID", "")
 
@@ -96,83 +96,144 @@ class TeamActivity : AppCompatActivity() {
                 }
         }
 
-        lifecycleScope.launch {
-            val team = databaseConnection.findTeamById(teamId!!)!!
+        val noMatches: TextView = findViewById(R.id.noMatches)
 
-            teamName = team.name
-            sport = team.sport.toString()
-            captain = team.captain
-            players = (team.players as? List<String>)?.toMutableList() ?: mutableListOf()
+        fun loadPlayers() {
+            lifecycleScope.launch {
+                noMatches.visibility = View.GONE
+                val team = databaseConnection.findTeamById(teamId!!)!!
 
-            val sportText: TextView = findViewById(R.id.dateText)
-            val nameText: TextView = findViewById(R.id.sportText)
-            val sportIcon: ImageView = findViewById(R.id.sportIcon)
-            val playersText: TextView = findViewById(R.id.playersTxt)
+                teamName = team.name
+                sport = team.sport.toString()
+                captain = team.captain
+                players = (team.players as? List<String>)?.toMutableList() ?: mutableListOf()
 
-            val leaveBtn: LinearLayout = findViewById(R.id.eventTV)
-            val editText: TextView = findViewById(R.id.editText)
+                val sportText: TextView = findViewById(R.id.dateText)
+                val nameText: TextView = findViewById(R.id.sportText)
+                val sportIcon: ImageView = findViewById(R.id.sportIcon)
+                val playersText: TextView = findViewById(R.id.playersTxt)
 
-            nameText.text = teamName
-            playersText.text = players.size.toString()
+                val leaveBtn: LinearLayout = findViewById(R.id.eventTV)
+                val editText: TextView = findViewById(R.id.editText)
 
-            if (user == captain){
-                leaveBtn.visibility = View.GONE
-                inviteBtn.visibility = View.VISIBLE
-                deleteBtn.visibility = View.VISIBLE
-                deleteText.visibility = View.VISIBLE
-                editText.visibility = View.GONE
-            }
+                nameText.text = teamName
+                playersText.text = players.size.toString()
 
-            leaveBtn.setOnClickListener {
-                players.remove(user)
-                databaseConnection.updatePlayersInTeam(teamId, players)
-                val intent = Intent(this@TeamActivity, HomeActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+                if (user == captain) {
+                    leaveBtn.visibility = View.GONE
+                    inviteBtn.visibility = View.VISIBLE
+                    deleteBtn.visibility = View.VISIBLE
+                    deleteText.visibility = View.VISIBLE
+                    editText.visibility = View.GONE
+                }
 
-            when (sport){
-                "0" -> {sportIcon.setImageResource(R.drawable.padelicon)
-                    sportText.text = "Padel"}
-                "1" -> {sportIcon.setImageResource(R.drawable.tennisicon)
-                    sportText.text = "Tennis"}
-                "2" -> {sportIcon.setImageResource(R.drawable.basketicon)
-                    sportText.text = "Basketball"}
-                "3" -> {sportIcon.setImageResource(R.drawable.footballicon)
-                    sportText.text = "Football"}
-            }
+                leaveBtn.setOnClickListener {
+                    players.remove(user)
+                    databaseConnection.updatePlayersInTeam(teamId, players)
+                    val intent = Intent(this@TeamActivity, HomeActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
 
-            GlobalScope.launch(Dispatchers.IO) {
-                val playerNameList = mutableListOf<String>()
-                val playerRatingsList = mutableListOf<String>()
+                when (sport) {
+                    "0" -> {
+                        sportIcon.setImageResource(R.drawable.padelicon)
+                        sportText.text = "Padel"
+                    }
 
-                val deferredList = players.map { playerId ->
-                    async {
-                        val documentRef = db.collection("players").document(playerId)
-                        val document = documentRef.get().await()
-                        if (document.exists()) {
-                            val playerName = document.getString("name") ?: "?"
-                            val playerRatings = document.get("ratings") as? List<Long> ?: emptyList()
-                            val ratingsString = playerRatings.joinToString(",")
+                    "1" -> {
+                        sportIcon.setImageResource(R.drawable.tennisicon)
+                        sportText.text = "Tennis"
+                    }
 
-                            playerName to ratingsString
-                        } else {
-                            "?" to ""
-                        }
+                    "2" -> {
+                        sportIcon.setImageResource(R.drawable.basketicon)
+                        sportText.text = "Basketball"
+                    }
+
+                    "3" -> {
+                        sportIcon.setImageResource(R.drawable.footballicon)
+                        sportText.text = "Football"
                     }
                 }
-                val results = deferredList.awaitAll()
 
-                results.forEach { (name, ratings) ->
-                    playerNameList.add(name)
-                    playerRatingsList.add(ratings)
-                }
+                GlobalScope.launch(Dispatchers.IO) {
+                    val playerNameList = mutableListOf<String>()
+                    val playerRatingsList = mutableListOf<String>()
 
-                withContext(Dispatchers.Main) {
-                    playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
-                    playerRV.adapter = TeamPlayersRV(playerNameList.toMutableList(), playerRatingsList, players, teamId!!, user, captain)
+                    val deferredList = players.map { playerId ->
+                        async {
+                            val documentRef = db.collection("players").document(playerId)
+                            val document = documentRef.get().await()
+                            if (document.exists()) {
+                                val playerName = document.getString("name") ?: "?"
+                                val playerRatings =
+                                    document.get("ratings") as? List<Long> ?: emptyList()
+                                val ratingsString = playerRatings.joinToString(",")
+
+                                playerName to ratingsString
+                            } else {
+                                "?" to ""
+                            }
+                        }
+                    }
+                    val results = deferredList.awaitAll()
+
+                    results.forEach { (name, ratings) ->
+                        playerNameList.add(name)
+                        playerRatingsList.add(ratings)
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
+                        playerRV.adapter = TeamPlayersRV(
+                            playerNameList.toMutableList(),
+                            playerRatingsList,
+                            players,
+                            teamId!!,
+                            user,
+                            captain
+                        )
+                    }
                 }
             }
+        }
+        loadPlayers()
+
+        fun loadMatches() {
+            lifecycleScope.launch {
+                val matchData = databaseConnection.findMatchesByTeam(teamId!!)
+                if (matchData.isNotEmpty()) {
+                    playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
+                    playerRV.adapter = TeamMatchesRV(matchData)
+                    noMatches.visibility = View.GONE
+                } else {
+                    playerRV.visibility = View.GONE
+                    noMatches.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        val playersButton: LinearLayout = findViewById(R.id.playersLL)
+        val playersText: TextView = findViewById(R.id.playersText)
+
+        val matchesButton: LinearLayout = findViewById(R.id.matchesLL)
+        val matchesText: TextView = findViewById(R.id.macthesText)
+
+        playersButton.setOnClickListener {
+            playersButton.setBackgroundResource(R.drawable.rounded_button)
+            matchesButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            playersText.setTextColor(Color.parseColor("#FFFFFF"))
+            matchesText.setTextColor(Color.parseColor("#4F4F4F"))
+            loadPlayers()
+        }
+
+        matchesButton.setOnClickListener {
+            matchesButton.setBackgroundResource(R.drawable.rounded_button)
+            playersButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            matchesText.setTextColor(Color.parseColor("#FFFFFF"))
+            playersText.setTextColor(Color.parseColor("#4F4F4F"))
+            loadMatches()
         }
 
     }

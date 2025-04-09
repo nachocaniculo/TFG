@@ -180,7 +180,8 @@ class FirebaseDBConnection {
                             document.getString("maxPlayers")!!,
                             document.getString("place")!!,
                             document.get("players") as? List<*> ?: emptyList<Any>(),
-                            document.getLong("sport")!!)
+                            document.getLong("sport")!!,
+                            document.getLong("type")!!)
 
                         matchData.add(matchEntry)
                     }
@@ -211,7 +212,8 @@ class FirebaseDBConnection {
                         document.getString("maxPlayers")!!,
                         document.getString("place")!!,
                         document.get("players") as? List<*> ?: emptyList<Any>(),
-                        document.getLong("sport")!!)
+                        document.getLong("sport")!!,
+                        document.getLong("type")!!)
 
                     matchData.add(matchEntry)
                 }
@@ -244,7 +246,8 @@ class FirebaseDBConnection {
                     document.getString("maxPlayers")!!,
                     document.getString("place")!!,
                     document.get("players") as? List<*> ?: emptyList<Any>(),
-                    document.getLong("sport")!!)
+                    document.getLong("sport")!!,
+                    document.getLong("type")!!)
 
                 matchData.add(matchEntry)
             }
@@ -389,7 +392,8 @@ class FirebaseDBConnection {
                     document.getString("maxPlayers")!!,
                     document.getString("place")!!,
                     document.get("players") as? List<*> ?: emptyList<Any>(),
-                    document.getLong("sport")!!)
+                    document.getLong("sport")!!,
+                    document.getLong("type")!!)
             } else {
                 null
             }
@@ -505,5 +509,92 @@ class FirebaseDBConnection {
         documentRef.update(updates)
             .addOnSuccessListener {
             }
+    }
+
+    suspend fun findTeamsByPlayerAndSport(userId: String, sport: Long): ArrayList<Team> {
+        val teamData = ArrayList<Team>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("teams")
+            .whereEqualTo("captain", userId)
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            val sportTemp = document.getLong("sport")!!
+            if (sport == sportTemp) {
+                teamData.add(
+                    Team(
+                        document.id,
+                        document.getString("name")!!,
+                        document.getString("captain")!!,
+                        document.getString("maxPlayers")!!,
+                        document.getLong("sport")!!,
+                        document.get("players") as? List<*> ?: emptyList<Any>()
+                    )
+                )
+            }
+        }
+
+        val query2 = FirebaseFirestore.getInstance()
+            .collection("teams")
+            .whereNotEqualTo("captain", userId)
+        val documents2 = query2.get().await()
+
+        for (document in documents2) {
+            val sportTemp = document.getLong("sport")!!
+            if (sport == sportTemp) {
+                val players = document.get("players") as? List<*>
+                for (player in players!!) {
+                    if (userId == player.toString()) {
+                        teamData.add(
+                            Team(
+                                document.id,
+                                document.getString("name")!!,
+                                document.getString("captain")!!,
+                                document.getString("maxPlayers")!!,
+                                document.getLong("sport")!!,
+                                document.get("players") as? List<*> ?: emptyList<Any>()
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+        return teamData
+    }
+
+    suspend fun findMatchesByTeam(teamID: String): ArrayList<Match> {
+        val matchData = ArrayList<Match>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("match")
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            val type = document.getLong("type")!!
+            if (type.toInt() == 2) {
+                val teams = document.get("players") as? List<*>
+                for (team in teams!!) {
+                    if (teamID == team.toString()) {
+                        matchData.add(
+                            Match(
+                                document.id,
+                                document.get("date") as Timestamp,
+                                document.getString("name")!!,
+                                document.getString("description")!!,
+                                document.getString("maxPlayers")!!,
+                                document.getString("place")!!,
+                                document.get("players") as? List<*> ?: emptyList<Any>(),
+                                document.getLong("sport")!!,
+                                document.getLong("type")!!
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+        return matchData
     }
 }

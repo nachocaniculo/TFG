@@ -43,6 +43,7 @@ class HomeMatchesRV(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val matchId = items[position].id
+        val matchName = items[position].name
         val team1 = items[position].players[0]
         val sport = items[position].sport.toString()
 
@@ -54,6 +55,8 @@ class HomeMatchesRV(
         val formattedDate = dateFormat.format(date)
 
         holder.dateText.text = formattedDate
+
+        holder.sportText.text = matchName
 
         holder.locationText.text = items[position].place
         if (team1 != user){
@@ -78,14 +81,10 @@ class HomeMatchesRV(
             showDeleteConfirmationDialog(homeActivity, matchId)
         }
         when (sport){
-            "0" -> {holder.sportIcon.setImageResource(R.drawable.padelicon)
-                    holder.sportText.text = "Padel"}
-            "1" -> {holder.sportIcon.setImageResource(R.drawable.tennisicon)
-                    holder.sportText.text = "Tennis"}
-            "2" -> {holder.sportIcon.setImageResource(R.drawable.basketicon)
-                    holder.sportText.text = "Basketball"}
-            "3" -> {holder.sportIcon.setImageResource(R.drawable.footballicon)
-                    holder.sportText.text = "Football"}
+            "0" -> holder.sportIcon.setImageResource(R.drawable.padelicon)
+            "1" -> holder.sportIcon.setImageResource(R.drawable.tennisicon)
+            "2" -> holder.sportIcon.setImageResource(R.drawable.basketicon)
+            "3" -> holder.sportIcon.setImageResource(R.drawable.footballicon)
         }
     }
 
