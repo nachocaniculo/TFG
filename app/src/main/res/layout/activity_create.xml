@@ -490,7 +490,7 @@
                 app:layout_constraintTop_toTopOf="@+id/matchTypeButton" />
 
             <ImageView
-                android:id="@+id/calendarBtn"
+                android:id="@+id/maxPlayersIcon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="16dp"

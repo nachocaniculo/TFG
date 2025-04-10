@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.api.Distribution.BucketOptions.Linear
 
 class MatchPlayersRV(
     private val items: MutableList<String>,
@@ -25,6 +27,8 @@ class MatchPlayersRV(
         val star4: ImageView = view.findViewById(R.id.star4)
         val star5: ImageView = view.findViewById(R.id.star5)
         val ratingTV: TextView = view.findViewById(R.id.ratingText)
+        val starLL: LinearLayout = view.findViewById(R.id.starLL)
+        val profilePic: ImageView = view.findViewById(R.id.profilePic)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,53 +44,59 @@ class MatchPlayersRV(
         val ratings = playerRatingsList[position]
         val ratingList = ratings.split(",").mapNotNull { it.toIntOrNull() }
 
-        var ratingTotal = 0
+        if (ratingList[0] != 6) {
+            var ratingTotal = 0
 
-        for (ratingTemp in ratingList) {
-            ratingTotal += ratingTemp
-        }
+            for (ratingTemp in ratingList) {
+                ratingTotal += ratingTemp
+            }
 
-        val ratingMean = String.format("%.1f", ratingTotal.toDouble() / ratingList.size).toDouble()
-        holder.ratingTV.text = ratingMean.toString()
+            val ratingMean =
+                String.format("%.1f", ratingTotal.toDouble() / ratingList.size).toDouble()
+            holder.ratingTV.text = ratingMean.toString()
 
-        if (ratingMean > 0){
+            if (ratingMean > 0) {
+                if (ratingMean > 1) {
+                    holder.star1.setImageResource(R.drawable.star_full)
+                } else {
+                    holder.star1.setImageResource(R.drawable.star_half)
+                }
+            }
             if (ratingMean > 1) {
-                holder.star1.setImageResource(R.drawable.star_full)
-            } else {
-                holder.star1.setImageResource(R.drawable.star_half)
+                if (ratingMean > 2) {
+                    holder.star2.setImageResource(R.drawable.star_full)
+                } else {
+                    holder.star2.setImageResource(R.drawable.star_half)
+                }
             }
-        }
-        if (ratingMean > 1){
             if (ratingMean > 2) {
-                holder.star2.setImageResource(R.drawable.star_full)
-            } else {
-                holder.star2.setImageResource(R.drawable.star_half)
+                if (ratingMean > 3) {
+                    holder.star3.setImageResource(R.drawable.star_full)
+                } else {
+                    holder.star3.setImageResource(R.drawable.star_half)
+                }
             }
-        }
-        if (ratingMean > 2){
             if (ratingMean > 3) {
-                holder.star3.setImageResource(R.drawable.star_full)
-            } else {
-                holder.star3.setImageResource(R.drawable.star_half)
+                if (ratingMean > 4) {
+                    holder.star4.setImageResource(R.drawable.star_full)
+                } else {
+                    holder.star4.setImageResource(R.drawable.star_half)
+                }
             }
-        }
-        if (ratingMean > 3){
             if (ratingMean > 4) {
-                holder.star4.setImageResource(R.drawable.star_full)
-            } else {
-                holder.star4.setImageResource(R.drawable.star_half)
+                if (ratingMean >= 5) {
+                    holder.star5.setImageResource(R.drawable.star_full)
+                } else {
+                    holder.star5.setImageResource(R.drawable.star_half)
+                }
             }
-        }
-        if (ratingMean > 4){
-            if (ratingMean >= 5) {
-                holder.star5.setImageResource(R.drawable.star_full)
-            } else {
-                holder.star5.setImageResource(R.drawable.star_half)
+            if (player == playerList[0]){
+                holder.crownIcon.visibility = View.VISIBLE
             }
-        }
-
-        if (player == playerList[0]){
-            holder.crownIcon.visibility = View.VISIBLE
+        } else {
+            holder.ratingTV.visibility = View.GONE
+            holder.starLL.visibility = View.GONE
+            holder.profilePic.visibility = View.GONE
         }
         holder.deleteBtn.setOnClickListener{
             playerList.remove(player)

@@ -64,7 +64,7 @@
         android:orientation="horizontal"
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchTV">
+        app:layout_constraintTop_toBottomOf="@+id/arrow1">
 
         <TextView
             android:layout_width="wrap_content"
@@ -147,6 +147,23 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/matchTypeButton"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/rounded_button_grey"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sportButton">
+
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/sportIcon"
             android:layout_width="20dp"
@@ -158,18 +175,44 @@
             app:layout_constraintTop_toTopOf="@+id/sportButton"
             app:srcCompat="@drawable/trophyicon" />
 
+        <Switch
+            android:id="@+id/switch2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:thumbTint="@color/switch_thumb"
+            android:trackTint="@color/switch_track"
+            app:layout_constraintBottom_toBottomOf="@+id/matchTypeButton"
+            app:layout_constraintStart_toStartOf="@+id/matchTypeButton"
+            app:layout_constraintTop_toTopOf="@+id/matchTypeButton"
+            tools:checked="false"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <TextView
+            android:id="@+id/teamOrPlayersText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Search player matches"
+            android:textColor="?attr/colorTextSecondary"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@+id/matchTypeButton"
+            app:layout_constraintStart_toEndOf="@+id/switch2"
+            app:layout_constraintTop_toTopOf="@+id/matchTypeButton" />
+
         <TextView
             android:id="@+id/TeamsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:text="Results"
             android:textColor="?attr/colorContrast"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sportButton" />
+            app:layout_constraintTop_toBottomOf="@+id/matchTypeButton" />
 
         <TextView
             android:id="@+id/sportText"
@@ -250,23 +293,6 @@
         app:layout_constraintStart_toStartOf="@+id/teamTV"
         app:layout_constraintTop_toTopOf="@+id/tournamentsTV" />
 
-    <LinearLayout
-        android:id="@+id/searchTV"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/rounded_button_grey"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arrow1">
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/tournamentsText"
         android:layout_width="wrap_content"
@@ -279,22 +305,6 @@
         app:layout_constraintEnd_toEndOf="@+id/tournamentsTV"
         app:layout_constraintStart_toStartOf="@+id/tournamentsTV"
         app:layout_constraintTop_toTopOf="@+id/tournamentsTV" />
-
-    <EditText
-        android:id="@+id/searchText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Search"
-        android:textColor="?attr/colorContrast"
-        android:textColorHint="?attr/colorTextSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/searchTV"
-        app:layout_constraintEnd_toEndOf="@+id/searchTV"
-        app:layout_constraintStart_toStartOf="@+id/searchTV"
-        app:layout_constraintTop_toTopOf="@+id/searchTV" />
 
     <TextView
         android:id="@+id/scheduledText"

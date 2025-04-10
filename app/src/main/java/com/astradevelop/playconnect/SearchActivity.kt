@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -37,13 +38,13 @@ class SearchActivity : AppCompatActivity() {
     private var sportSelected = false
     private var sport = 0
 
-    private lateinit var searchText: EditText
-
     lateinit var matchesRV: RecyclerView
     lateinit var noResultsText: TextView
 
     private var user = ""
-    @SuppressLint("MissingInflatedId")
+
+    private var matchType = 1
+    @SuppressLint("MissingInflatedId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -70,8 +71,6 @@ class SearchActivity : AppCompatActivity() {
 
         sportText = findViewById(R.id.sportText)
         sportIcon = findViewById(R.id.sportIcon)
-
-        searchText = findViewById(R.id.searchText)
 
         matchesRV = findViewById(R.id.matchesRV)
         noResultsText = findViewById(R.id.noResultsText)
@@ -107,6 +106,20 @@ class SearchActivity : AppCompatActivity() {
             addBtnBg.visibility = View.GONE
         }
 
+        val teamSwitch: Switch = findViewById(R.id.switch2)
+        val teamOrPlayersText: TextView = findViewById(R.id.teamOrPlayersText)
+        teamSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                teamOrPlayersText.text = "Search team matches"
+                matchType = 2
+                searchBySport()
+            } else {
+                teamOrPlayersText.text = "Search player matches"
+                matchType = 1
+                searchBySport()
+            }
+        }
+
         val teamText: EditText = findViewById(R.id.teamInviteText)
 
         addBtnBg.setOnClickListener {
@@ -121,35 +134,6 @@ class SearchActivity : AppCompatActivity() {
                 ).show()
             }
         }
-
-        fun searchByName(){
-            GlobalScope.launch {
-                val databaseConnection = FirebaseDBConnection()
-                val matchList = databaseConnection.findMatchesByName(searchText.text.toString(), user)
-                withContext(Dispatchers.Main) {
-                    if (matchList.isNotEmpty()) {
-                        updateMatches(matchList)
-                    }
-                }
-            }
-        }
-
-        searchText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(editable: Editable?) {
-                if (editable!!.isNotEmpty()) {
-                    searchByName()
-                } else{
-                    matchesRV.visibility = View.GONE
-                    noResultsText.visibility = View.VISIBLE
-                }
-            }
-        })
 
         val sportBtn: LinearLayout = findViewById(R.id.sportButton)
         sportBtn.setOnClickListener {
@@ -175,7 +159,7 @@ class SearchActivity : AppCompatActivity() {
     private fun searchBySport(){
         GlobalScope.launch {
             val databaseConnection = FirebaseDBConnection()
-            val matchList = databaseConnection.findMatchesBySport(sport, user)
+            val matchList = databaseConnection.findMatchesBySport(sport, user, matchType.toLong())
             withContext(Dispatchers.Main) {
                 updateMatches(matchList)
             }

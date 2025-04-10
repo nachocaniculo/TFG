@@ -46,9 +46,15 @@ class SearchMatchesRV(
 
         holder.locationText.text = items[position].place
         holder.joinButton.setOnClickListener {
-            FirebaseDBConnection().updateTeam(items[position].id, user)
-            items.removeAt(position)
-            notifyItemRemoved(position)
+            if (items[position].type == 1.toLong()) {
+                FirebaseDBConnection().updateTeam(items[position].id, user)
+                items.removeAt(position)
+                notifyItemRemoved(position)
+            } else {
+                val intent = Intent(searchActivity, MatchActivity::class.java)
+                intent.putExtra("MatchID", items[position].id)
+                searchActivity.startActivity(intent)
+            }
         }
         when (sport){
             0 -> {holder.sportIcon.setImageResource(R.drawable.padelicon)

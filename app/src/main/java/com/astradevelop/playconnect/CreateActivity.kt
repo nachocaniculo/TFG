@@ -52,6 +52,8 @@ class CreateActivity : AppCompatActivity() {
     private var teamName = ""
     lateinit var teamText: TextView
 
+    private var foundTeams = false
+
     @SuppressLint("MissingInflatedId", "SetTextI18n", "UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,16 +121,22 @@ class CreateActivity : AppCompatActivity() {
                 if (teamsRV.visibility == View.VISIBLE) {
                     teamsRV.visibility = View.GONE
                 } else {
+                    if (foundTeams)
                     teamsRV.visibility = View.VISIBLE
                 }
             }
         }
 
+        val maxPlayersButton: LinearLayout = findViewById(R.id.maxPlayersButton)
+        val maxPlayersIcon: ImageView = findViewById(R.id.maxPlayersIcon)
+
         val teamSwitch: Switch = findViewById(R.id.switch2)
         teamSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 teamOrPlayersText.text = "Teams can join"
-                maxPlayer2.hint = "Max teams"
+                maxPlayer2.visibility = View.GONE
+                maxPlayersButton.visibility = View.GONE
+                maxPlayersIcon.visibility = View.GONE
                 matchType = 2
                 chooseTeamButton.visibility = View.VISIBLE
                 teamText.visibility = View.VISIBLE
@@ -136,7 +144,9 @@ class CreateActivity : AppCompatActivity() {
                 loadTeams()
             } else {
                 teamOrPlayersText.text = "Players can join"
-                maxPlayer2.hint = "Max players"
+                maxPlayer2.visibility = View.VISIBLE
+                maxPlayersButton.visibility = View.VISIBLE
+                maxPlayersIcon.visibility = View.VISIBLE
                 matchType = 1
                 chooseTeamButton.visibility = View.GONE
                 teamText.visibility = View.GONE
@@ -209,12 +219,15 @@ class CreateActivity : AppCompatActivity() {
         }
 
         fun add() {
-            if ((nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and maxPlayer2.text.isNotEmpty() and dateSelected and sportSelected and (matchType == 1)) or (nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and maxPlayer2.text.isNotEmpty() and dateSelected and sportSelected and (teamID != ""))) {
-                var playersTemp: MutableList<String>
+            if ((nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and maxPlayer2.text.isNotEmpty() and dateSelected and sportSelected and (matchType == 1)) or (nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and dateSelected and sportSelected and (teamID != ""))) {
+                val playersTemp: MutableList<String>
+                var maxPlayers = "0"
                 if (matchType == 1) {
                     playersTemp = mutableListOf(user)
+                    maxPlayers = maxPlayer2.text.toString()
                 } else {
                     playersTemp = mutableListOf(teamID)
+                    maxPlayers = "2"
                 }
                 val match = hashMapOf(
                     "name" to nameText2.text.toString(),
@@ -223,7 +236,7 @@ class CreateActivity : AppCompatActivity() {
                     "sport" to sport,
                     "place" to locationText.text.toString(),
                     "date" to timestamp,
-                    "maxPlayers" to maxPlayer2.text.toString(),
+                    "maxPlayers" to maxPlayers,
                     "type" to matchType
                 )
 
@@ -338,9 +351,11 @@ class CreateActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 if (teamList.isEmpty()) {
                     teamsRV.visibility = View.GONE
+                    foundTeams = false
                 } else {
                     teamsRV.layoutManager = LinearLayoutManager(this@CreateActivity)
                     teamsRV.adapter = TeamsCreateRV(teamList, this@CreateActivity)
+                    foundTeams = true
                 }
             }
         }

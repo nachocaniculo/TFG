@@ -191,7 +191,7 @@ class FirebaseDBConnection {
         return matchData
     }
 
-    suspend fun findMatchesBySport(sport: Int, userId: String): ArrayList<Match> {
+    suspend fun findMatchesBySport(sport: Int, userId: String, type: Long): ArrayList<Match> {
         val matchData = ArrayList<Match>()
         val db = FirebaseFirestore.getInstance()
 
@@ -202,7 +202,7 @@ class FirebaseDBConnection {
                 val maxPlayers = document.get("maxPlayers")?.toString()?.toIntOrNull() ?: Int.MAX_VALUE
 
                 if (document.get("sport").toString().toIntOrNull() == sport &&
-                    userId !in players && players.size < maxPlayers) {
+                    userId !in players && players.size < maxPlayers && document.getLong("type")!! == type) {
 
                     val matchEntry = Match (
                         document.id,
@@ -224,7 +224,7 @@ class FirebaseDBConnection {
         return matchData
     }
 
-    suspend fun findMatchesByName(search: String, userId: String): ArrayList<Match> {
+    suspend fun findMatchesByName(search: String, userId: String, type:Long): ArrayList<Match> {
         val matchData = ArrayList<Match>()
 
         val query1 = FirebaseFirestore.getInstance()
@@ -236,7 +236,7 @@ class FirebaseDBConnection {
         for (document in documents1) {
             val players = document.get("players") as? List<*> ?: emptyList<Any>()
             val maxPlayers = document.get("maxPlayers")?.toString()?.toIntOrNull() ?: Int.MAX_VALUE
-            if (userId !in players && players.size < maxPlayers) {
+            if (userId !in players && players.size < maxPlayers && document.getLong("sport")!! == type) {
 
                 val matchEntry = Match (
                     document.id,
@@ -281,12 +281,8 @@ class FirebaseDBConnection {
 
         documentRef.get().addOnSuccessListener { result ->
             val players = (result.get("players") as? List<*>)?.mapNotNull { it as? String }?.toMutableList() ?: mutableListOf()
-
-            if (!players.contains(userId)) {
-                players.add(userId)
-
-                documentRef.update("players", players)
-            }
+            players.add(userId)
+            documentRef.update("players", players)
         }
     }
 

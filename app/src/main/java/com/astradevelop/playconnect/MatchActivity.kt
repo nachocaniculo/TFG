@@ -1,7 +1,9 @@
 package com.astradevelop.playconnect
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -25,6 +27,10 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class MatchActivity : AppCompatActivity() {
+
+    private lateinit var matchData: Match
+    private var matchID = ""
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -35,7 +41,7 @@ class MatchActivity : AppCompatActivity() {
             insets
         }
 
-        val matchID = intent.extras!!.getString("MatchID")
+        matchID = intent.extras!!.getString("MatchID")!!
 
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val userUID = sharedPref.getString("userUID", "")
@@ -49,6 +55,8 @@ class MatchActivity : AppCompatActivity() {
         val dateText: TextView = findViewById(R.id.dateText)
         val locationText: TextView = findViewById(R.id.locationText)
         val sportIcon: ImageView = findViewById(R.id.sportIcon)
+
+        val matchTypeText: TextView = findViewById(R.id.playersText)
 
         val joinButton: LinearLayout = findViewById(R.id.joinButton)
 
@@ -82,65 +90,148 @@ class MatchActivity : AppCompatActivity() {
 
             val playersRV: RecyclerView = findViewById(R.id.playerRV)
 
-            GlobalScope.launch(Dispatchers.IO) {
-                val playerNameList = mutableListOf<String>()
-                val playerRatingsList = mutableListOf<String>()
+            if (match.type == 1.toLong()) {
+                GlobalScope.launch(Dispatchers.IO) {
+                    val playerNameList = mutableListOf<String>()
+                    val playerRatingsList = mutableListOf<String>()
 
-                val deferredList = players.map { playerId ->
-                    async {
-                        val documentRef = db.collection("players").document(playerId)
-                        val document = documentRef.get().await()
-                        if (document.exists()) {
-                            val playerName = document.getString("name") ?: "?"
-                            val playerRatings = document.get("ratings") as? List<Long> ?: emptyList()
-                            val ratingsString = playerRatings.joinToString(",")
+                    val deferredList = players.map { playerId ->
+                        async {
+                            val documentRef = db.collection("players").document(playerId)
+                            val document = documentRef.get().await()
+                            if (document.exists()) {
+                                val playerName = document.getString("name") ?: "?"
+                                val playerRatings =
+                                    document.get("ratings") as? List<Long> ?: emptyList()
+                                val ratingsString = playerRatings.joinToString(",")
 
-                            playerName to ratingsString
-                        } else {
-                            "?" to ""
+                                playerName to ratingsString
+                            } else {
+                                "?" to ""
+                            }
                         }
                     }
-                }
-                val results = deferredList.awaitAll()
+                    val results = deferredList.awaitAll()
 
-                results.forEach { (name, ratings) ->
-                    playerNameList.add(name)
-                    playerRatingsList.add(ratings)
-                }
+                    results.forEach { (name, ratings) ->
+                        playerNameList.add(name)
+                        playerRatingsList.add(ratings)
+                    }
 
-                withContext(Dispatchers.Main) {
-                    playersRV.layoutManager = LinearLayoutManager(this@MatchActivity)
-                    playersRV.adapter = MatchPlayersRV(playerNameList, playerRatingsList, players, matchID!!)
+                    withContext(Dispatchers.Main) {
+                        playersRV.layoutManager = LinearLayoutManager(this@MatchActivity)
+                        playersRV.adapter =
+                            MatchPlayersRV(playerNameList, playerRatingsList, players, matchID!!)
+                    }
+                }
+            } else {
+                matchTypeText.text = "Teams"
+                GlobalScope.launch(Dispatchers.IO) {
+                    val playerNameList = mutableListOf<String>()
+                    val playerRatingsList = mutableListOf<String>()
+
+                    val deferredList = players.map { playerId ->
+                        async {
+                            val documentRef = db.collection("teams").document(playerId)
+                            val document = documentRef.get().await()
+                            if (document.exists()) {
+                                val playerName = document.getString("name") ?: "?"
+                                val ratingsString = "6"
+
+                                playerName to ratingsString
+                            } else {
+                                "?" to ""
+                            }
+                        }
+                    }
+                    val results = deferredList.awaitAll()
+
+                    results.forEach { (name, ratings) ->
+                        playerNameList.add(name)
+                        playerRatingsList.add(ratings)
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        playersRV.layoutManager = LinearLayoutManager(this@MatchActivity)
+                        playersRV.adapter =
+                            MatchPlayersRV(playerNameList, playerRatingsList, players, matchID!!)
+                    }
                 }
             }
 
         }
 
         GlobalScope.launch {
-            val matchData = FirebaseDBConnection().findMatchById(matchID!!)
+            val matchDataTemp = FirebaseDBConnection().findMatchById(matchID!!)
             withContext(Dispatchers.Main) {
-                if (matchData != null) {
-                    updateMatch(matchData)
+                if (matchDataTemp != null) {
+                    updateMatch(matchDataTemp)
+                    matchData = matchDataTemp
                 }
             }
         }
 
+        val teamsText: TextView = findViewById(R.id.teamsText)
+        val teamsRV: RecyclerView = findViewById(R.id.teamsRV)
+
+        val addBg: TextView = findViewById(R.id.addBg)
+        addBg.setOnClickListener {
+            addBg.visibility = View.GONE
+            teamsText.visibility = View.GONE
+            teamsRV.visibility = View.GONE
+        }
+
         joinButton.setOnClickListener {
-            if (maxPlayers > players.size) {
-                FirebaseDBConnection().updateTeam(matchID!!, userUID!!)
-                Toast.makeText(
-                    this,
-                    "Joined!",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
+            if (matchData.type == 1.toLong()) {
+                if (maxPlayers > players.size) {
+                    FirebaseDBConnection().updateTeam(matchID, userUID!!)
+                    Toast.makeText(
+                        this,
+                        "Joined!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Match is already full",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             } else {
-                Toast.makeText(
-                    this,
-                    "Match is already full",
-                    Toast.LENGTH_SHORT
-                ).show()
+                addBg.visibility = View.VISIBLE
+                teamsText.visibility = View.VISIBLE
+                teamsRV.visibility = View.VISIBLE
+                GlobalScope.launch {
+                    val databaseConnection = FirebaseDBConnection()
+                    val teamList = databaseConnection.findTeamsByPlayerAndSport(userUID!!, matchData.sport)
+                    withContext(Dispatchers.Main) {
+                        if (teamList.isEmpty()) {
+                            addBg.visibility = View.GONE
+                            teamsText.visibility = View.GONE
+                            teamsRV.visibility = View.GONE
+                            Toast.makeText(
+                                this@MatchActivity,
+                                "No teams found for this sport",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            teamsRV.layoutManager = LinearLayoutManager(this@MatchActivity)
+                            teamsRV.adapter = TeamsSearchRV(teamList, this@MatchActivity)
+                        }
+                    }
+                }
             }
         }
+    }
+
+    fun chooseTeam(id:String){
+        FirebaseDBConnection().updateTeam(matchID, id)
+        Toast.makeText(
+            this,
+            "Joined!",
+            Toast.LENGTH_SHORT
+        ).show()
+        finish()
     }
 }
