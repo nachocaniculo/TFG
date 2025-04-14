@@ -6,6 +6,7 @@ import android.util.Patterns
 import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -286,15 +287,17 @@ class FirebaseDBConnection {
         }
     }
 
-    fun updateDate(
+    fun updateDateAndLocation(
         documentId: String,
-        date: Timestamp
+        date: Timestamp,
+        location: String
     ) {
         val db = FirebaseFirestore.getInstance()
         val documentRef = db.collection("match").document(documentId)
 
         val updates = hashMapOf<String, Any>(
-            "date" to date
+            "date" to date,
+            "place" to location
         )
         documentRef.update(updates)
             .addOnSuccessListener {
@@ -592,5 +595,26 @@ class FirebaseDBConnection {
         }
 
         return matchData
+    }
+
+    fun ratePlayer(playerID: String, rate: Int){
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("players").document(playerID)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val currentArray = document.get("ratings") as? MutableList<Int> ?: mutableListOf()
+
+                    currentArray.add(rate)
+
+                    docRef.update("ratings", currentArray)
+                }
+            }
+    }
+
+    fun deleteMatch(matchID: String){
+        val db = FirebaseFirestore.getInstance()
+        db.collection("match").document(matchID).delete()
     }
 }

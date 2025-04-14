@@ -16,6 +16,8 @@ import com.google.firebase.Timestamp
 import java.util.Date
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.text.Editable
+import android.widget.EditText
 import android.widget.TextView
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -42,14 +44,25 @@ class UpdateActivity : AppCompatActivity() {
 
         val db = FirebaseFirestore.getInstance()
 
-
         val matchId = intent.getStringExtra("id")!!
-        val date = intent.getStringExtra("date")
+        val date = intent.getLongExtra("date", -1L)
         val location = intent.getStringExtra("location")
 
-        val dateText: TextView = findViewById(R.id.dateText)
+        val locationText: EditText = findViewById(R.id.location)
+        location?.let {
+            locationText.text = Editable.Factory.getInstance().newEditable(it)
+        }
+
         val dateBtn: LinearLayout = findViewById(R.id.dateButton)
-        dateText.text = date
+
+        val dateText: TextView = findViewById(R.id.dateText)
+        if (date != -1L) {
+            val date = Date(date * 1000)
+            val format = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+            dateText.text = format.format(date)
+        } else {
+            dateText.text = "Wrong date"
+        }
 
         val calendar = Calendar.getInstance()
         var timestamp = Timestamp(Date())
@@ -133,18 +146,10 @@ class UpdateActivity : AppCompatActivity() {
 
         val saveButton: ImageView = findViewById(R.id.checkButtonOverlay)
         saveButton.setOnClickListener {
-            if (dateSelected){
-                firebaseDBConnection.updateDate(matchId, timestamp)
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                Toast.makeText(
-                    this,
-                    "You must select a new date or location before saving.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            firebaseDBConnection.updateDateAndLocation(matchId, timestamp, locationText.text.toString())
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

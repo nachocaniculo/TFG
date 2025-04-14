@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class HomeMatchesRV(
@@ -51,6 +52,28 @@ class HomeMatchesRV(
 
         val date = timestamp.toDate()
 
+        val currentDate = Date()
+
+        if (date <= currentDate) {
+            holder.editText.visibility = View.VISIBLE
+            holder.editText.text = "End"
+            holder.editButton.visibility = View.VISIBLE
+            holder.leaveButton.visibility = View.GONE
+            holder.leaveText.visibility = View.GONE
+        } else {
+            if (team1 != user){
+                holder.editButton.visibility = View.GONE
+                holder.editText.visibility = View.GONE
+                holder.leaveButton.visibility = View.VISIBLE
+                holder.leaveText.visibility = View.VISIBLE
+            } else {
+                holder.editButton.visibility = View.VISIBLE
+                holder.editText.visibility = View.VISIBLE
+                holder.leaveButton.visibility = View.GONE
+                holder.leaveText.visibility = View.GONE
+            }
+        }
+
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
         val formattedDate = dateFormat.format(date)
 
@@ -59,23 +82,19 @@ class HomeMatchesRV(
         holder.sportText.text = matchName
 
         holder.locationText.text = items[position].place
-        if (team1 != user){
-            holder.editButton.visibility = View.GONE
-            holder.editText.visibility = View.GONE
-            holder.leaveButton.visibility = View.VISIBLE
-            holder.leaveText.visibility = View.VISIBLE
-        } else {
-            holder.editButton.visibility = View.VISIBLE
-            holder.editText.visibility = View.VISIBLE
-            holder.leaveButton.visibility = View.GONE
-            holder.leaveText.visibility = View.GONE
-        }
         holder.editButton.setOnClickListener {
-            val intent = Intent(homeActivity, UpdateActivity::class.java)
-            intent.putExtra("id", matchId)
-            intent.putExtra("date", items[position].date.toString())
-            intent.putExtra("location", items[position].place)
-            homeActivity.startActivity(intent)
+            if (date <= currentDate) {
+                val intent = Intent(homeActivity, EndMatchActivity::class.java)
+                intent.putExtra("players", items[position].players.joinToString(","))
+                intent.putExtra("match", matchId)
+                homeActivity.startActivity(intent)
+            } else {
+                val intent = Intent(homeActivity, UpdateActivity::class.java)
+                intent.putExtra("id", matchId)
+                intent.putExtra("date", items[position].date.seconds)
+                intent.putExtra("location", items[position].place)
+                homeActivity.startActivity(intent)
+            }
         }
         holder.leaveButton.setOnClickListener {
             showDeleteConfirmationDialog(homeActivity, matchId)
