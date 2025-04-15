@@ -53,10 +53,10 @@ class EndMatchActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(
                     this,
-                    "You are the only player for this match. Deleting it...",
+                    "You are the only player for this match. Ending it...",
                     Toast.LENGTH_SHORT
                 ).show()
-                firebaseDBConnection.deleteMatch(matchID)
+                firebaseDBConnection.endMatch(matchID, user!!)
                 val intent = Intent(this, HomeActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -69,7 +69,7 @@ class EndMatchActivity : AppCompatActivity() {
                     firebaseDBConnection.ratePlayer(player, listOfRatings[players.indexOf(player)])
                 }
             }
-            firebaseDBConnection.deleteMatch(matchID)
+            firebaseDBConnection.endMatch(matchID, user!!)
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()

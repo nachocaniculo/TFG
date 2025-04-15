@@ -59,7 +59,28 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Scheduled Matches"
+                    android:text="Matches"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pastTV"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/rounded_button_black_nostroke"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                app:layout_constraintStart_toEndOf="@+id/tournamentsTV"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Past"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:visibility="invisible" />
@@ -69,7 +90,7 @@
                 android:id="@+id/scheduledText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Scheduled Matches"
+                android:text="Matches"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -77,6 +98,19 @@
                 app:layout_constraintEnd_toEndOf="@+id/eventTV"
                 app:layout_constraintStart_toStartOf="@+id/eventTV"
                 app:layout_constraintTop_toTopOf="@+id/eventTV" />
+
+            <TextView
+                android:id="@+id/pastText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Past"
+                android:textColor="#4F4F4F"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/pastTV"
+                app:layout_constraintEnd_toEndOf="@+id/pastTV"
+                app:layout_constraintStart_toStartOf="@+id/pastTV"
+                app:layout_constraintTop_toTopOf="@+id/pastTV" />
 
             <TextView
                 android:id="@+id/tournamentsText"

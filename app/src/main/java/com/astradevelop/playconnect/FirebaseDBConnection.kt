@@ -8,7 +8,10 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import java.util.Date
 
 
 class FirebaseDBConnection {
@@ -161,34 +164,67 @@ class FirebaseDBConnection {
             }
     }
 
-    fun findMatches(userId: String): ArrayList<Match> {
+    suspend fun findMatches(userId: String): ArrayList<Match> = withContext(Dispatchers.IO) {
+        val db = FirebaseFirestore.getInstance()
+        val result = db.collection("match").get().await()
         val matchData = ArrayList<Match>()
 
+        for (document in result) {
+            val players = document.get("players") as? List<*> ?: emptyList<Any>()
+            if (userId in players) {
+                val timestamp = document.get("date") as Timestamp
+                val date = timestamp.toDate()
+                val currentDate = Date()
+                if (date > currentDate) {
+                    val matchEntry = Match(
+                        document.id,
+                        timestamp,
+                        document.getString("name") ?: "",
+                        document.getString("description") ?: "",
+                        document.getString("maxPlayers") ?: "",
+                        document.getString("place") ?: "",
+                        players,
+                        document.getLong("sport") ?: 0,
+                        document.getLong("type") ?: 0,
+                        document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
+                    )
+                    matchData.add(matchEntry)
+                }
+            }
+        }
+
+        matchData
+    }
+
+    suspend fun findPastMatches(userId: String): ArrayList<Match> {
+        val matchData = ArrayList<Match>()
         val db = FirebaseFirestore.getInstance()
 
-        db.collection("match")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val players = document.get("players") as? List<*> ?: emptyList<Any>()
-                    if (userId in players) {
+        val result = db.collection("match").get().await()
 
-                        val matchEntry = Match (
+        for (document in result) {
+            val players = document.get("players") as? List<*> ?: emptyList<Any>()
+                if (userId in players) {
+                    val timestamp = document.get("date") as Timestamp
+                    val date = timestamp.toDate()
+                    val currentDate = Date()
+                    if (date <= currentDate) {
+                        val matchEntry = Match(
                             document.id,
-                            document.get("date") as Timestamp,
-                            document.getString("name")!!,
-                            document.getString("description")!!,
-                            document.getString("maxPlayers")!!,
-                            document.getString("place")!!,
-                            document.get("players") as? List<*> ?: emptyList<Any>(),
-                            document.getLong("sport")!!,
-                            document.getLong("type")!!)
-
+                            timestamp,
+                            document.getString("name") ?: "",
+                            document.getString("description") ?: "",
+                            document.getString("maxPlayers") ?: "",
+                            document.getString("place") ?: "",
+                            players,
+                            document.getLong("sport") ?: 0,
+                            document.getLong("type") ?: 0,
+                            document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
+                        )
                         matchData.add(matchEntry)
                     }
                 }
-            }
-
+        }
         return matchData
     }
 
@@ -214,7 +250,9 @@ class FirebaseDBConnection {
                         document.getString("place")!!,
                         document.get("players") as? List<*> ?: emptyList<Any>(),
                         document.getLong("sport")!!,
-                        document.getLong("type")!!)
+                        document.getLong("type")!!,
+                        document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
+                    )
 
                     matchData.add(matchEntry)
                 }
@@ -248,7 +286,9 @@ class FirebaseDBConnection {
                     document.getString("place")!!,
                     document.get("players") as? List<*> ?: emptyList<Any>(),
                     document.getLong("sport")!!,
-                    document.getLong("type")!!)
+                    document.getLong("type")!!,
+                    document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
+                )
 
                 matchData.add(matchEntry)
             }
@@ -392,7 +432,9 @@ class FirebaseDBConnection {
                     document.getString("place")!!,
                     document.get("players") as? List<*> ?: emptyList<Any>(),
                     document.getLong("sport")!!,
-                    document.getLong("type")!!)
+                    document.getLong("type")!!,
+                    document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
+                )
             } else {
                 null
             }
@@ -586,7 +628,8 @@ class FirebaseDBConnection {
                                 document.getString("place")!!,
                                 document.get("players") as? List<*> ?: emptyList<Any>(),
                                 document.getLong("sport")!!,
-                                document.getLong("type")!!
+                                document.getLong("type")!!,
+                                document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
                             )
                         )
                     }
@@ -613,8 +656,19 @@ class FirebaseDBConnection {
             }
     }
 
-    fun deleteMatch(matchID: String){
+    fun endMatch(matchID: String, playerID: String){
         val db = FirebaseFirestore.getInstance()
-        db.collection("match").document(matchID).delete()
+        val docRef = db.collection("match").document(matchID)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val currentArray = document.get("ratedPlayer") as? MutableList<String> ?: mutableListOf()
+
+                    currentArray.add(playerID)
+
+                    docRef.update("ratedPlayer", currentArray)
+                }
+            }
     }
 }

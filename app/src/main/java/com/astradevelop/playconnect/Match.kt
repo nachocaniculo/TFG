@@ -11,6 +11,7 @@ class Match(
     val place: String,
     val players: List<Any?>,
     val sport: Long,
-    val type: Long
+    val type: Long,
+    val ratedPlayers: List<String>
 ) {
 }

@@ -55,11 +55,18 @@ class HomeMatchesRV(
         val currentDate = Date()
 
         if (date <= currentDate) {
-            holder.editText.visibility = View.VISIBLE
-            holder.editText.text = "End"
-            holder.editButton.visibility = View.VISIBLE
-            holder.leaveButton.visibility = View.GONE
-            holder.leaveText.visibility = View.GONE
+            if (user !in items[position].ratedPlayers) {
+                holder.editText.visibility = View.VISIBLE
+                holder.editText.text = "End"
+                holder.editButton.visibility = View.VISIBLE
+                holder.leaveButton.visibility = View.GONE
+                holder.leaveText.visibility = View.GONE
+            } else {
+                holder.editText.visibility = View.GONE
+                holder.editButton.visibility = View.GONE
+                holder.leaveButton.visibility = View.GONE
+                holder.leaveText.visibility = View.GONE
+            }
         } else {
             if (team1 != user){
                 holder.editButton.visibility = View.GONE

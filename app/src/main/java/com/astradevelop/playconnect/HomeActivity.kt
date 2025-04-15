@@ -13,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,7 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomeActivity : AppCompatActivity() {
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -84,23 +85,11 @@ class HomeActivity : AppCompatActivity() {
 
         val matchesBtn: LinearLayout = findViewById(R.id.eventTV)
         val tournamentsBtn: LinearLayout = findViewById(R.id.tournamentsTV)
+        val pastBtn: LinearLayout = findViewById(R.id.pastTV)
 
         val matchesTxt: TextView = findViewById(R.id.scheduledText)
         val tournamentsTxt: TextView = findViewById(R.id.tournamentsText)
-
-        matchesBtn.setOnClickListener {
-            matchesBtn.setBackgroundResource(R.drawable.rounded_button)
-            tournamentsBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
-            matchesTxt.setTextColor(Color.parseColor("#FFFFFF"))
-            tournamentsTxt.setTextColor(Color.parseColor("#4F4F4F"))
-        }
-
-        tournamentsBtn.setOnClickListener {
-            tournamentsBtn.setBackgroundResource(R.drawable.rounded_button)
-            matchesBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
-            tournamentsTxt.setTextColor(Color.parseColor("#FFFFFF"))
-            matchesTxt.setTextColor(Color.parseColor("#4F4F4F"))
-        }
+        val pastTxt: TextView = findViewById(R.id.pastText)
 
         val addBg: TextView = findViewById(R.id.addBg)
         val searchTV: LinearLayout = findViewById(R.id.searchTV)
@@ -150,6 +139,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         fun matches(matchList: ArrayList<Match>) {
+            noResultsText.visibility = View.GONE
+            matchesRV.visibility = View.VISIBLE
             matchesRV.layoutManager = LinearLayoutManager(this)
             matchesRV.adapter = HomeMatchesRV(matchList, this, user)
         }
@@ -163,6 +154,8 @@ class HomeActivity : AppCompatActivity() {
         }
 
         fun teams(teamList: ArrayList<Team>) {
+            teamsRV1.visibility = View.VISIBLE
+            teamsRV2.visibility = View.VISIBLE
             teamsRV1.layoutManager = LinearLayoutManager(this)
             teamsRV2.layoutManager = LinearLayoutManager(this)
             val middle = teamList.size / 2
@@ -172,22 +165,73 @@ class HomeActivity : AppCompatActivity() {
             teamsRV2.adapter = HomeTeamsRV2(firstHalf, this, user)
         }
 
-        GlobalScope.launch {
+        fun loadMatches() {
             val databaseConnection = FirebaseDBConnection()
-            val matchList = databaseConnection.findMatches(user)
-            val teamList = databaseConnection.findTeams(user)
-            withContext(Dispatchers.Main) {
+            lifecycleScope.launch {
+                val matchList = databaseConnection.findMatches(user)
                 if (matchList.isEmpty()) {
                     noMatches()
                 } else {
                     matches(matchList)
                 }
-                if (teamList.isEmpty()) {
-                    noTeams()
+            }
+        }
+        loadMatches()
+
+        fun loadPastMatches() {
+            val databaseConnection = FirebaseDBConnection()
+            lifecycleScope.launch {
+                val matchList = databaseConnection.findPastMatches(user)
+                if (matchList.isEmpty()) {
+                    noMatches()
                 } else {
-                    teams(teamList)
+                    matches(matchList)
                 }
             }
+        }
+
+        fun loadTeams() {
+            GlobalScope.launch {
+                val databaseConnection = FirebaseDBConnection()
+                val teamList = databaseConnection.findTeams(user)
+                withContext(Dispatchers.Main) {
+                    if (teamList.isEmpty()) {
+                        noTeams()
+                    } else {
+                        teams(teamList)
+                    }
+                }
+            }
+        }
+        loadTeams()
+
+        matchesBtn.setOnClickListener {
+            matchesBtn.setBackgroundResource(R.drawable.rounded_button)
+            tournamentsBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            pastBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            matchesTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            tournamentsTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            pastTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            loadMatches()
+        }
+
+        tournamentsBtn.setOnClickListener {
+            tournamentsBtn.setBackgroundResource(R.drawable.rounded_button)
+            matchesBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            pastBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            tournamentsTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            matchesTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            pastTxt.setTextColor(Color.parseColor("#4F4F4F"))
+        }
+
+        pastBtn.setOnClickListener {
+            pastBtn.setBackgroundResource(R.drawable.rounded_button)
+            matchesBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            tournamentsBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            pastTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            matchesTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            tournamentsTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            loadPastMatches()
         }
     }
 }
