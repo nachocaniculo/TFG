@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -33,8 +35,9 @@ class HomeActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val loadingDialog = LoadingDialog()
+        var dialog = loadingDialog.showLoadingDialog(this)
 
-        //Get the userID token that will be needed to do the DB queries
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val user = sharedPref.getString("userUID", "")
 
@@ -168,6 +171,9 @@ class HomeActivity : AppCompatActivity() {
         fun loadMatches() {
             val databaseConnection = FirebaseDBConnection()
             lifecycleScope.launch {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    dialog.dismiss()
+                }, 1000)
                 val matchList = databaseConnection.findMatches(user)
                 if (matchList.isEmpty()) {
                     noMatches()

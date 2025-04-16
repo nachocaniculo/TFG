@@ -101,6 +101,7 @@ class TeamActivity : AppCompatActivity() {
         fun loadPlayers() {
             lifecycleScope.launch {
                 noMatches.visibility = View.GONE
+                playerRV.visibility = View.VISIBLE
                 val team = databaseConnection.findTeamById(teamId!!)!!
 
                 teamName = team.name
@@ -207,6 +208,22 @@ class TeamActivity : AppCompatActivity() {
                     playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
                     playerRV.adapter = TeamMatchesRV(matchData)
                     noMatches.visibility = View.GONE
+                    playerRV.visibility = View.VISIBLE
+                } else {
+                    playerRV.visibility = View.GONE
+                    noMatches.visibility = View.VISIBLE
+                }
+            }
+        }
+
+        fun loadPastMatches() {
+            lifecycleScope.launch {
+                val matchData = databaseConnection.findPastMatchesByTeam(teamId!!)
+                if (matchData.isNotEmpty()) {
+                    playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
+                    playerRV.adapter = TeamMatchesRV(matchData)
+                    noMatches.visibility = View.GONE
+                    playerRV.visibility = View.VISIBLE
                 } else {
                     playerRV.visibility = View.GONE
                     noMatches.visibility = View.VISIBLE
@@ -220,20 +237,37 @@ class TeamActivity : AppCompatActivity() {
         val matchesButton: LinearLayout = findViewById(R.id.matchesLL)
         val matchesText: TextView = findViewById(R.id.macthesText)
 
+        val pastMatchesButton: LinearLayout = findViewById(R.id.pastMatchesLL)
+        val pastMatchesText: TextView = findViewById(R.id.pastMacthesText)
+
         playersButton.setOnClickListener {
             playersButton.setBackgroundResource(R.drawable.rounded_button)
             matchesButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            pastMatchesButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
             playersText.setTextColor(Color.parseColor("#FFFFFF"))
             matchesText.setTextColor(Color.parseColor("#4F4F4F"))
+            pastMatchesText.setTextColor(Color.parseColor("#4F4F4F"))
             loadPlayers()
         }
 
         matchesButton.setOnClickListener {
             matchesButton.setBackgroundResource(R.drawable.rounded_button)
             playersButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            pastMatchesButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
             matchesText.setTextColor(Color.parseColor("#FFFFFF"))
             playersText.setTextColor(Color.parseColor("#4F4F4F"))
+            pastMatchesText.setTextColor(Color.parseColor("#4F4F4F"))
             loadMatches()
+        }
+
+        pastMatchesButton.setOnClickListener {
+            pastMatchesButton.setBackgroundResource(R.drawable.rounded_button)
+            playersButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            matchesButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            pastMatchesText.setTextColor(Color.parseColor("#FFFFFF"))
+            playersText.setTextColor(Color.parseColor("#4F4F4F"))
+            matchesText.setTextColor(Color.parseColor("#4F4F4F"))
+            loadPastMatches()
         }
 
     }

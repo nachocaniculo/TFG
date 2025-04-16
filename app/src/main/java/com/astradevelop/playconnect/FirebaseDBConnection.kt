@@ -204,26 +204,26 @@ class FirebaseDBConnection {
 
         for (document in result) {
             val players = document.get("players") as? List<*> ?: emptyList<Any>()
-                if (userId in players) {
-                    val timestamp = document.get("date") as Timestamp
-                    val date = timestamp.toDate()
-                    val currentDate = Date()
-                    if (date <= currentDate) {
-                        val matchEntry = Match(
-                            document.id,
-                            timestamp,
-                            document.getString("name") ?: "",
-                            document.getString("description") ?: "",
-                            document.getString("maxPlayers") ?: "",
-                            document.getString("place") ?: "",
-                            players,
-                            document.getLong("sport") ?: 0,
-                            document.getLong("type") ?: 0,
-                            document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
-                        )
-                        matchData.add(matchEntry)
-                    }
+            if (userId in players) {
+                val timestamp = document.get("date") as Timestamp
+                val date = timestamp.toDate()
+                val currentDate = Date()
+                if (date <= currentDate) {
+                    val matchEntry = Match(
+                        document.id,
+                        timestamp,
+                        document.getString("name") ?: "",
+                        document.getString("description") ?: "",
+                        document.getString("maxPlayers") ?: "",
+                        document.getString("place") ?: "",
+                        players,
+                        document.getLong("sport") ?: 0,
+                        document.getLong("type") ?: 0,
+                        document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
+                    )
+                    matchData.add(matchEntry)
                 }
+            }
         }
         return matchData
     }
@@ -618,20 +618,67 @@ class FirebaseDBConnection {
                 val teams = document.get("players") as? List<*>
                 for (team in teams!!) {
                     if (teamID == team.toString()) {
-                        matchData.add(
-                            Match(
-                                document.id,
-                                document.get("date") as Timestamp,
-                                document.getString("name")!!,
-                                document.getString("description")!!,
-                                document.getString("maxPlayers")!!,
-                                document.getString("place")!!,
-                                document.get("players") as? List<*> ?: emptyList<Any>(),
-                                document.getLong("sport")!!,
-                                document.getLong("type")!!,
-                                document.get("ratedPlayer") as? List<String> ?: emptyList<String>()
+                        val timestamp = document.get("date") as Timestamp
+                        val date = timestamp.toDate()
+                        val currentDate = Date()
+                        if (date > currentDate) {
+                            matchData.add(
+                                Match(
+                                    document.id,
+                                    document.get("date") as Timestamp,
+                                    document.getString("name")!!,
+                                    document.getString("description")!!,
+                                    document.getString("maxPlayers")!!,
+                                    document.getString("place")!!,
+                                    document.get("players") as? List<*> ?: emptyList<Any>(),
+                                    document.getLong("sport")!!,
+                                    document.getLong("type")!!,
+                                    document.get("ratedPlayer") as? List<String>
+                                        ?: emptyList<String>()
+                                )
                             )
-                        )
+                        }
+                    }
+                }
+            }
+        }
+
+        return matchData
+    }
+
+    suspend fun findPastMatchesByTeam(teamID: String): ArrayList<Match> {
+        val matchData = ArrayList<Match>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("match")
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            val type = document.getLong("type")!!
+            if (type.toInt() == 2) {
+                val teams = document.get("players") as? List<*>
+                for (team in teams!!) {
+                    if (teamID == team.toString()) {
+                        val timestamp = document.get("date") as Timestamp
+                        val date = timestamp.toDate()
+                        val currentDate = Date()
+                        if (date <= currentDate) {
+                            matchData.add(
+                                Match(
+                                    document.id,
+                                    document.get("date") as Timestamp,
+                                    document.getString("name")!!,
+                                    document.getString("description")!!,
+                                    document.getString("maxPlayers")!!,
+                                    document.getString("place")!!,
+                                    document.get("players") as? List<*> ?: emptyList<Any>(),
+                                    document.getLong("sport")!!,
+                                    document.getLong("type")!!,
+                                    document.get("ratedPlayer") as? List<String>
+                                        ?: emptyList<String>()
+                                )
+                            )
+                        }
                     }
                 }
             }
