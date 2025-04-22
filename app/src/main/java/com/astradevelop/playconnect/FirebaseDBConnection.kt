@@ -720,16 +720,19 @@ class FirebaseDBConnection {
             }
     }
 
-    suspend fun userIsInMatch(userId: String, match: String): Boolean {
-        val db = FirebaseFirestore.getInstance()
-        val result = db.collection("match").document(match).get().await()
-        val players = result.get("players") as? List<*> ?: emptyList<Any>()
-        return userId in players
-    }
-
     fun userIsInMatchAsync(userId: String, match: String): Task<Boolean> {
         val db = FirebaseFirestore.getInstance()
         val docRef = db.collection("match").document(match)
+        return docRef.get().continueWith { task ->
+            val result = task.result
+            val players = result.get("players") as? List<*> ?: emptyList<Any>()
+            players.contains(userId)
+        }
+    }
+
+    fun userIsInTeamAsync(userId: String, team: String): Task<Boolean> {
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("teams").document(team)
         return docRef.get().continueWith { task ->
             val result = task.result
             val players = result.get("players") as? List<*> ?: emptyList<Any>()

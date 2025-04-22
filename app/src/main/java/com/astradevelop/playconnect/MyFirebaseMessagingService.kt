@@ -4,10 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -76,14 +74,22 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             requestNotificationPermission()
         }
 
-        val builder = NotificationCompat.Builder(this, "FCM_CHANNEL")
-            .setContentTitle(title)
-            .setContentText(message)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setAutoCancel(true)
+        val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
+        val user = sharedPref.getString("userUID", "") ?: ""
 
-        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(0, builder.build())
+        FirebaseDBConnection().userIsInTeamAsync(user, teamID)
+            .addOnSuccessListener { isInTeam ->
+                if (isInTeam) {
+                    val builder = NotificationCompat.Builder(this, "FCM_CHANNEL")
+                        .setContentTitle(title)
+                        .setContentText(message)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setAutoCancel(true)
+
+                    val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    manager.notify(0, builder.build())
+                }
+            }
     }
 
     private fun handleMatchNotification(matchID: String, title: String?, message: String?) {
@@ -95,7 +101,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         ) {
             requestNotificationPermission()
         }
-        Log.d("HOLA", "LLEGO")
 
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val user = sharedPref.getString("userUID", "") ?: ""
