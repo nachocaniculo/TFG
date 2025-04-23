@@ -332,6 +332,12 @@ class FirebaseDBConnection {
                 "Match Reminder",
                 "Your game starts in 2 hours. Get ready and don’t forget your gear!"
             )
+            NotificationHandler().scheduleNotificationV3(
+                matchActivity,
+                result.get("date") as Timestamp,
+                "Rate Players",
+                "The match has ended! Don’t forget to rate your teammates and opponents"
+            )
         }
     }
 
