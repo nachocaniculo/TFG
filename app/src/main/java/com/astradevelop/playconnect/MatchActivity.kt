@@ -184,7 +184,7 @@ class MatchActivity : AppCompatActivity() {
         joinButton.setOnClickListener {
             if (matchData.type == 1.toLong()) {
                 if (maxPlayers > players.size) {
-                    FirebaseDBConnection().updateTeam(matchID, userUID!!)
+                    FirebaseDBConnection().updateTeam(matchID, userUID!!, this)
                     Toast.makeText(
                         this,
                         "Joined!",
@@ -226,7 +226,7 @@ class MatchActivity : AppCompatActivity() {
     }
 
     fun chooseTeam(id:String){
-        FirebaseDBConnection().updateTeam(matchID, id)
+        FirebaseDBConnection().updateTeam(matchID, id, this)
         Toast.makeText(
             this,
             "Joined!",

@@ -245,6 +245,17 @@ class CreateActivity : AppCompatActivity() {
                     .set(match)
                     .addOnCompleteListener { dbTask ->
                         if (dbTask.isSuccessful) {
+                            calendar.add(Calendar.HOUR_OF_DAY, -2)
+                            NotificationHandler().scheduleNotification(
+                                this,
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH),
+                                calendar.get(Calendar.HOUR_OF_DAY),
+                                calendar.get(Calendar.MINUTE),
+                                "Match Reminder",
+                                "Your game starts in 2 hours. Get ready and don’t forget your gear!"
+                            )
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
                         } else {

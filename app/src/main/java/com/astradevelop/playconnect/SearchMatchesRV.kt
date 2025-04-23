@@ -47,7 +47,7 @@ class SearchMatchesRV(
         holder.locationText.text = items[position].place
         holder.joinButton.setOnClickListener {
             if (items[position].type == 1.toLong()) {
-                FirebaseDBConnection().updateTeam(items[position].id, user)
+                FirebaseDBConnection().updateTeam(items[position].id, user, searchActivity)
                 items.removeAt(position)
                 notifyItemRemoved(position)
             } else {

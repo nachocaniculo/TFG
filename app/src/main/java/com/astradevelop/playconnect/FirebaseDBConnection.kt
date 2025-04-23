@@ -1,5 +1,6 @@
 package com.astradevelop.playconnect
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Patterns
@@ -7,11 +8,11 @@ import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 import java.util.Date
 
 
@@ -317,7 +318,7 @@ class FirebaseDBConnection {
         }
     }
 
-    fun updateTeam(documentId: String, userId: String) {
+    fun updateTeam(documentId: String, userId: String, matchActivity: Activity) {
         val db = FirebaseFirestore.getInstance()
         val documentRef = db.collection("match").document(documentId)
 
@@ -325,6 +326,12 @@ class FirebaseDBConnection {
             val players = (result.get("players") as? List<*>)?.mapNotNull { it as? String }?.toMutableList() ?: mutableListOf()
             players.add(userId)
             documentRef.update("players", players)
+            NotificationHandler().scheduleNotificationV2(
+                matchActivity,
+                result.get("date") as Timestamp,
+                "Match Reminder",
+                "Your game starts in 2 hours. Get ready and don’t forget your gear!"
+            )
         }
     }
 
