@@ -61,6 +61,12 @@ class HomeActivity : AppCompatActivity() {
             }
         }
 
+        val repo = NotificationRepository(this)
+        val allNotifications = repo.getAllNotifications()
+        for (notification in allNotifications) {
+            Log.d("Notification", notification.toString())
+        }
+
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val user = sharedPref.getString("userUID", "")
 
@@ -169,6 +175,13 @@ class HomeActivity : AppCompatActivity() {
             matchesRV.visibility = View.VISIBLE
             matchesRV.layoutManager = LinearLayoutManager(this)
             matchesRV.adapter = HomeMatchesRV(matchList, this, user)
+            for (match in matchList){
+                val notif1 = repo.getNotificationByMatchAndType(match.id, "1")
+                val notif2 = repo.getNotificationByMatchAndType(match.id, "2")
+                if (notif1 != null) {
+                } else {
+                }
+            }
         }
 
         val teamsRV1: RecyclerView = findViewById(R.id.teamsRV1)

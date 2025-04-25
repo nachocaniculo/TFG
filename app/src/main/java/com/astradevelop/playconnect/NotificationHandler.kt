@@ -6,10 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.google.firebase.Timestamp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class NotificationHandler {
-    fun scheduleNotification(context: Context, year: Int, month: Int, day: Int, hour: Int, minute: Int, title: String, body: String) {
+    fun scheduleNotification(context: Context, year: Int, month: Int, day: Int, hour: Int, minute: Int, title: String, body: String, match: String, type: String) {
         val calendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, year)
             set(Calendar.MONTH, month)
@@ -26,9 +29,14 @@ class NotificationHandler {
             putExtra("body", body)
         }
 
+        val code = System.currentTimeMillis().toInt()
+
+        val repo = NotificationRepository(context)
+        repo.insertNotification(code, title, body, match, type)
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            System.currentTimeMillis().toInt(),
+            code,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -52,7 +60,7 @@ class NotificationHandler {
         }
 
     }
-    fun scheduleNotificationV2(context: Context, timestamp: Timestamp ,title: String, body: String) {
+    fun scheduleNotificationV2(context: Context, timestamp: Timestamp ,title: String, body: String, match: String) {
         val triggerTime = timestamp.toDate().time
         val twoHoursInMillis = 2 * 60 * 60 * 1000
         val adjustedTime = triggerTime.minus(twoHoursInMillis)
@@ -62,9 +70,14 @@ class NotificationHandler {
             putExtra("body", body)
         }
 
+        val code = System.currentTimeMillis().toInt()
+
+        val repo = NotificationRepository(context)
+        repo.insertNotification(code, title, body, match, "1")
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            System.currentTimeMillis().toInt(),
+            code,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -89,7 +102,7 @@ class NotificationHandler {
 
     }
 
-    fun scheduleNotificationV3(context: Context, timestamp: Timestamp ,title: String, body: String) {
+    fun scheduleNotificationV3(context: Context, timestamp: Timestamp ,title: String, body: String, match: String) {
         val triggerTime = timestamp.toDate().time
         val hourInMillis = 60 * 60 * 1000
         val adjustedTime = triggerTime.plus(hourInMillis)
@@ -99,9 +112,14 @@ class NotificationHandler {
             putExtra("body", body)
         }
 
+        val code = System.currentTimeMillis().toInt()
+
+        val repo = NotificationRepository(context)
+        repo.insertNotification(code, title, body, match, "2")
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            System.currentTimeMillis().toInt(),
+            code,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

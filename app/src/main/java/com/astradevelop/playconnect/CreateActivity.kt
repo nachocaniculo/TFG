@@ -54,7 +54,9 @@ class CreateActivity : AppCompatActivity() {
 
     private var foundTeams = false
 
-    @SuppressLint("MissingInflatedId", "SetTextI18n", "UseSwitchCompatOrMaterialCode")
+    @SuppressLint("MissingInflatedId", "SetTextI18n", "UseSwitchCompatOrMaterialCode",
+        "SuspiciousIndentation"
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -241,8 +243,9 @@ class CreateActivity : AppCompatActivity() {
                 )
 
                 val db = FirebaseFirestore.getInstance()
-                db.collection("match").document()
-                    .set(match)
+                val newDocRef = db.collection("match").document()
+                val generatedId = newDocRef.id
+                newDocRef.set(match)
                     .addOnCompleteListener { dbTask ->
                         if (dbTask.isSuccessful) {
                             calendar.add(Calendar.HOUR_OF_DAY, -2)
@@ -254,7 +257,9 @@ class CreateActivity : AppCompatActivity() {
                                 calendar.get(Calendar.HOUR_OF_DAY),
                                 calendar.get(Calendar.MINUTE),
                                 "Match Reminder",
-                                "Your game starts in 2 hours. Get ready and don’t forget your gear!"
+                                "Your game starts in 2 hours. Get ready and don’t forget your gear!",
+                                generatedId,
+                                "1"
                             )
                             calendar.add(Calendar.HOUR_OF_DAY, +3)
                             NotificationHandler().scheduleNotification(
@@ -265,7 +270,9 @@ class CreateActivity : AppCompatActivity() {
                                 calendar.get(Calendar.HOUR_OF_DAY),
                                 calendar.get(Calendar.MINUTE),
                                 "Rate Players",
-                                "The match has ended! Don’t forget to rate your teammates and opponents"
+                                "The match has ended! Don’t forget to rate your teammates and opponents",
+                                generatedId,
+                                "2"
                             )
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
