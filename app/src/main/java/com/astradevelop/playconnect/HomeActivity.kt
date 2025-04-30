@@ -31,7 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Calendar
+import com.google.firebase.Timestamp
 
 class HomeActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n", "MissingInflatedId")
@@ -62,10 +62,6 @@ class HomeActivity : AppCompatActivity() {
         }
 
         val repo = NotificationRepository(this)
-        val allNotifications = repo.getAllNotifications()
-        for (notification in allNotifications) {
-            Log.d("Notification", notification.toString())
-        }
 
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val user = sharedPref.getString("userUID", "")
@@ -107,12 +103,7 @@ class HomeActivity : AppCompatActivity() {
                         "2" -> profilePic.setImageResource(R.drawable.woman)
                         "else" -> profilePic.setImageResource(R.drawable.man)
                     }
-                } else {
-                    println("No existe el documento")
                 }
-            }
-            .addOnFailureListener { exception ->
-                println("Error al obtener el documento: $exception")
             }
 
         val matchesBtn: LinearLayout = findViewById(R.id.eventTV)
@@ -169,6 +160,7 @@ class HomeActivity : AppCompatActivity() {
             noResultsText.visibility = View.VISIBLE
             matchesRV.visibility = View.GONE
         }
+        val notifHandler = NotificationHandler()
 
         fun matches(matchList: ArrayList<Match>) {
             noResultsText.visibility = View.GONE
@@ -179,9 +171,67 @@ class HomeActivity : AppCompatActivity() {
                 val notif1 = repo.getNotificationByMatchAndType(match.id, "1")
                 val notif2 = repo.getNotificationByMatchAndType(match.id, "2")
                 if (notif1 != null) {
+                    if (match.date.toString() != notif1["date"]) {
+                        val requestCode = notif1["requestCode"].toString().toInt()
+                        val title = notif1["title"]
+                        val body = notif1["body"]
+                        val triggerTime = Timestamp.now().toDate().time
+                        val twoHoursInMillis = 2 * 60 * 60 * 1000
+                        val adjustedTime = triggerTime.minus(twoHoursInMillis)
+                        repo.updateNotificationTime(
+                            requestCode,
+                            title.toString(),
+                            body.toString(),
+                            match.id,
+                            "1",
+                            match.date.toString()
+                        )
+                        notifHandler.reScheduleNotification(
+                            this,
+                            adjustedTime,
+                            title.toString(),
+                            body.toString(),
+                            requestCode
+                        )
+                    }
                 } else {
+                    notifHandler.scheduleNotificationV2(this, Timestamp.now(),"Match Reminder", "Your game starts in 2 hours. Get ready and don’t forget your gear!", match.id)
+                }
+                if (notif2 != null) {
+                    if (match.date.toString() != notif2["date"]) {
+                        val requestCode = notif2["requestCode"].toString().toInt()
+                        val title = notif2["title"]
+                        val body = notif2["body"]
+                        val triggerTime = Timestamp.now().toDate().time
+                        val hourInMillis = 60 * 60 * 1000
+                        val adjustedTime = triggerTime.plus(hourInMillis)
+                        repo.updateNotificationTime(
+                            requestCode,
+                            title.toString(),
+                            body.toString(),
+                            match.id,
+                            "2",
+                            match.date.toString()
+                        )
+                        notifHandler.reScheduleNotification(
+                            this,
+                            adjustedTime,
+                            title.toString(),
+                            body.toString(),
+                            requestCode
+                        )
+                    }
+                } else {
+                    notifHandler.scheduleNotificationV3(this, Timestamp.now(),"Rate Players", "The match has ended! Don’t forget to rate your teammates and opponents", match.id)
                 }
             }
+        }
+
+        fun pastMatches(matchList: ArrayList<Match>) {
+            noResultsText.visibility = View.GONE
+            matchesRV.visibility = View.VISIBLE
+            matchesRV.layoutManager = LinearLayoutManager(this)
+            matchesRV.adapter = HomeMatchesRV(matchList, this, user)
         }
 
         val teamsRV1: RecyclerView = findViewById(R.id.teamsRV1)
@@ -227,7 +277,7 @@ class HomeActivity : AppCompatActivity() {
                 if (matchList.isEmpty()) {
                     noMatches()
                 } else {
-                    matches(matchList)
+                    pastMatches(matchList)
                 }
             }
         }

@@ -32,7 +32,7 @@ class NotificationHandler {
         val code = System.currentTimeMillis().toInt()
 
         val repo = NotificationRepository(context)
-        repo.insertNotification(code, title, body, match, type)
+        repo.insertNotification(code, title, body, match, type, triggerTime.toString())
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -73,7 +73,7 @@ class NotificationHandler {
         val code = System.currentTimeMillis().toInt()
 
         val repo = NotificationRepository(context)
-        repo.insertNotification(code, title, body, match, "1")
+        repo.insertNotification(code, title, body, match, "1", adjustedTime.toString())
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -115,7 +115,7 @@ class NotificationHandler {
         val code = System.currentTimeMillis().toInt()
 
         val repo = NotificationRepository(context)
-        repo.insertNotification(code, title, body, match, "2")
+        repo.insertNotification(code, title, body, match, "2", adjustedTime.toString())
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -138,6 +138,39 @@ class NotificationHandler {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 adjustedTime,
+                pendingIntent
+            )
+        }
+
+    }
+
+    fun reScheduleNotification(context: Context, timestamp: Long, title: String, body: String, code: Int) {
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("title", title)
+            putExtra("body", body)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            code,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (context.getSystemService(AlarmManager::class.java).canScheduleExactAlarms()) {
+                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    timestamp,
+                    pendingIntent
+                )
+            }
+        } else {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                timestamp,
                 pendingIntent
             )
         }

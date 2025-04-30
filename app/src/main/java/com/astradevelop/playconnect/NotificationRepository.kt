@@ -14,7 +14,8 @@ class NotificationRepository(context: Context) {
         title: String,
         body: String,
         match: String?,
-        type: String?
+        type: String?,
+        date: String?
     ) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -23,6 +24,7 @@ class NotificationRepository(context: Context) {
             put(NotificationDBHelper.COLUMN_BODY, body)
             put(NotificationDBHelper.COLUMN_MATCH, match)
             put(NotificationDBHelper.COLUMN_TYPE, type)
+            put(NotificationDBHelper.COLUMN_DATE, date)
         }
         db.insertWithOnConflict(NotificationDBHelper.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE)
         db.close()
@@ -44,7 +46,8 @@ class NotificationRepository(context: Context) {
                     "title" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_TITLE)),
                     "body" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_BODY)),
                     "match" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_MATCH)),
-                    "type" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_TYPE))
+                    "type" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_TYPE)),
+                    "date" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_DATE))
                 )
                 notifications.add(notification)
             } while (cursor.moveToNext())
@@ -72,7 +75,8 @@ class NotificationRepository(context: Context) {
                 "title" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_TITLE)),
                 "body" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_BODY)),
                 "match" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_MATCH)),
-                "type" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_TYPE))
+                "type" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_TYPE)),
+                "date" to cursor.getString(cursor.getColumnIndexOrThrow(NotificationDBHelper.COLUMN_DATE))
             )
         }
 
@@ -96,7 +100,8 @@ class NotificationRepository(context: Context) {
         newTitle: String,
         newBody: String,
         newMatch: String?,
-        newType: String?
+        newType: String?,
+        newDate: String?
     ) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
@@ -104,6 +109,7 @@ class NotificationRepository(context: Context) {
             put(NotificationDBHelper.COLUMN_BODY, newBody)
             put(NotificationDBHelper.COLUMN_MATCH, newMatch)
             put(NotificationDBHelper.COLUMN_TYPE, newType)
+            put(NotificationDBHelper.COLUMN_DATE, newDate)
         }
 
         db.update(

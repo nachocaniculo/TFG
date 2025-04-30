@@ -17,6 +17,7 @@ class NotificationDBHelper(context: Context) :
         const val COLUMN_BODY = "body"
         const val COLUMN_MATCH = "match"
         const val COLUMN_TYPE = "type"
+        const val COLUMN_DATE = "date"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -26,7 +27,8 @@ class NotificationDBHelper(context: Context) :
                 $COLUMN_TITLE TEXT,
                 $COLUMN_BODY TEXT,
                 $COLUMN_MATCH TEXT,
-                $COLUMN_TYPE TEXT
+                $COLUMN_TYPE TEXT,
+                $COLUMN_DATE TEXT
             )
         """.trimIndent()
         db.execSQL(createTable)
