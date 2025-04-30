@@ -754,4 +754,71 @@ class FirebaseDBConnection {
             players.contains(userId)
         }
     }
+
+    suspend fun findTournamentsByPlayerID(playerID: String): ArrayList<Tournament> {
+        val tournamentData = ArrayList<Tournament>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("tournaments")
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            val type = document.getLong("type")!!
+            if (type.toInt() == 1) {
+                val teams = document.get("teams") as? List<*>
+                for (team in teams!!) {
+                    if (playerID == team.toString()) {
+                        tournamentData.add(
+                            Tournament(
+                                document.id,
+                                document.getString("name")!!,
+                                document.getString("location")!!,
+                                document.getLong("sport")!!,
+                                document.get("teams") as? List<*> ?: emptyList<Any>(),
+                                document.getLong("type")!!,
+                                document.getLong("teamMaxNum")!!,
+                                document.get("startdate") as Timestamp,
+                            )
+                        )
+                    }
+                }
+
+            }
+        }
+
+        return tournamentData
+    }
+
+    suspend fun findTournamentsByTeamID(teamID: String): ArrayList<Tournament> {
+        val tournamentData = ArrayList<Tournament>()
+
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("tournaments")
+        val documents1 = query1.get().await()
+
+        for (document in documents1) {
+            val type = document.getLong("type")!!
+            if (type.toInt() == 2) {
+                val teams = document.get("teams") as? List<*>
+                for (team in teams!!) {
+                    if (teamID == team.toString()) {
+                        tournamentData.add(
+                            Tournament(
+                                document.id,
+                                document.getString("name")!!,
+                                document.getString("location")!!,
+                                document.getLong("sport")!!,
+                                document.get("teams") as? List<*> ?: emptyList<Any>(),
+                                document.getLong("type")!!,
+                                document.getLong("teamMaxNum")!!,
+                                document.get("startdate") as Timestamp,
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+        return tournamentData
+    }
 }

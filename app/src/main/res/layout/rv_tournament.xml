@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="144dp"
+    android:background="?attr/colorPrimary">
+
+    <LinearLayout
+        android:id="@+id/sportButton"
+        android:layout_width="0dp"
+        android:layout_height="128dp"
+        android:background="@drawable/rounded_button_grey"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/sportText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Sport"
+        android:textColor="?attr/colorContrast"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/sportIcon"
+        app:layout_constraintStart_toStartOf="@+id/sportButton"
+        app:layout_constraintTop_toTopOf="@+id/sportButton" />
+
+    <ImageView
+        android:id="@+id/sportIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="24dp"
+        android:textColor="?attr/colorContrast"
+        app:layout_constraintBottom_toBottomOf="@+id/sportText"
+        app:layout_constraintEnd_toEndOf="@+id/sportButton"
+        app:layout_constraintTop_toTopOf="@+id/sportText"
+        app:srcCompat="@drawable/padelicon" />
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Date"
+        android:textColor="?attr/colorTextSecondary"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="@+id/sportIcon"
+        app:layout_constraintStart_toStartOf="@+id/sportText"
+        app:layout_constraintTop_toBottomOf="@+id/sportText" />
+
+    <TextView
+        android:id="@+id/locationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Location"
+        android:textColor="?attr/colorTextSecondary"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/locationIcon"
+        app:layout_constraintStart_toEndOf="@+id/locationIcon"
+        app:layout_constraintTop_toTopOf="@+id/locationIcon" />
+
+    <ImageView
+        android:id="@+id/locationIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
+        android:textColor="?attr/colorContrast"
+        app:layout_constraintStart_toStartOf="@+id/dateText"
+        app:layout_constraintTop_toBottomOf="@+id/dateText"
+        app:srcCompat="@drawable/locationicon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

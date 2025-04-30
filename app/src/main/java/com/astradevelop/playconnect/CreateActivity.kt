@@ -105,9 +105,11 @@ class CreateActivity : AppCompatActivity() {
 
         val teamBtn: LinearLayout = findViewById(R.id.teamTV)
         val eventBtn: LinearLayout = findViewById(R.id.eventTV)
+        val tournentBtn: LinearLayout = findViewById(R.id.tournamentsTV)
 
         val teamTxt: TextView = findViewById(R.id.teamTextMain)
         val eventTxt: TextView = findViewById(R.id.scheduledText)
+        val tournamentTxt: TextView = findViewById(R.id.tournamentsText)
         teamText = findViewById(R.id.teamText)
 
         val teamOrPlayersText: TextView = findViewById(R.id.teamOrPlayersText)
@@ -160,21 +162,41 @@ class CreateActivity : AppCompatActivity() {
         teamBtn.setOnClickListener {
             teamBtn.setBackgroundResource(R.drawable.rounded_button)
             eventBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            tournentBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
             eventSV.visibility = View.GONE
             teamCL.visibility = View.VISIBLE
             teamTxt.setTextColor(Color.parseColor("#FFFFFF"))
             eventTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            tournamentTxt.setTextColor(Color.parseColor("#4F4F4F"))
             type = 2
         }
 
         eventBtn.setOnClickListener {
             teamBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            tournentBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
             eventBtn.setBackgroundResource(R.drawable.rounded_button)
             eventSV.visibility = View.VISIBLE
             teamCL.visibility = View.GONE
+            nameText2.hint = "Match Name"
+            descriptionText.hint = "Match Description"
             eventTxt.setTextColor(Color.parseColor("#FFFFFF"))
             teamTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            tournamentTxt.setTextColor(Color.parseColor("#4F4F4F"))
             type = 0
+        }
+
+        tournentBtn.setOnClickListener {
+            teamBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            eventBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            tournentBtn.setBackgroundResource(R.drawable.rounded_button)
+            eventSV.visibility = View.VISIBLE
+            teamCL.visibility = View.GONE
+            nameText2.hint = "Tournament Name"
+            descriptionText.hint = "Tournament Description"
+            tournamentTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            teamTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            eventTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            type = 1
         }
 
         val sportBtn: LinearLayout = findViewById(R.id.sportButton)
@@ -297,6 +319,59 @@ class CreateActivity : AppCompatActivity() {
             }
         }
 
+        fun addTournament() {
+            val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
+            val user = sharedPref.getString("userUID", "").toString()
+
+
+            if ((nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and maxPlayer2.text.isNotEmpty() and dateSelected and sportSelected and (matchType == 1)) or (nameText2.text.isNotEmpty() and descriptionText.text.isNotEmpty() and locationText.text.isNotEmpty() and dateSelected and sportSelected and (teamID != ""))) {
+                val playersTemp: MutableList<String>
+                var maxPlayers = 1
+                if (matchType == 1) {
+                    playersTemp = mutableListOf(user)
+                    maxPlayers = maxPlayer2.text.toString().toInt()
+                } else {
+                    playersTemp = mutableListOf(teamID)
+                    maxPlayers = maxPlayer2.text.toString().toInt()
+                }
+                val tournament = hashMapOf(
+                    "name" to nameText2.text.toString(),
+                    "teams" to playersTemp,
+                    "sport" to sport,
+                    "location" to locationText.text.toString(),
+                    "startdate" to timestamp,
+                    "teamMaxNum" to maxPlayers,
+                    "type" to matchType
+                )
+
+                val db = FirebaseFirestore.getInstance()
+                db.collection("tournaments").document()
+                    .set(tournament)
+                    .addOnCompleteListener { dbTask ->
+                        if (dbTask.isSuccessful) {
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            Toast.makeText(
+                                this,
+                                "Error saving user data: ${dbTask.exception?.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Error saving user data: $e", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+            } else {
+                Toast.makeText(
+                    this,
+                    "You must enter a name, description, maximum players, and select a date and sport to create a tournament.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
         fun addTeam() {
             val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
             val user = sharedPref.getString("userUID", "")
@@ -343,6 +418,7 @@ class CreateActivity : AppCompatActivity() {
         checkBtnBg.setOnClickListener {
             when (type) {
                 0 -> add()
+                1 -> addTournament()
                 2 -> addTeam()
             }
         }

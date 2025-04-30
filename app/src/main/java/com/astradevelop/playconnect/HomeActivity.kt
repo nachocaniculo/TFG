@@ -234,6 +234,13 @@ class HomeActivity : AppCompatActivity() {
             matchesRV.adapter = HomeMatchesRV(matchList, this, user)
         }
 
+        fun tournaments(tournaments: ArrayList<Tournament>) {
+            noResultsText.visibility = View.GONE
+            matchesRV.visibility = View.VISIBLE
+            matchesRV.layoutManager = LinearLayoutManager(this)
+            matchesRV.adapter = HomeTournamentsRV(tournaments, this, user)
+        }
+
         val teamsRV1: RecyclerView = findViewById(R.id.teamsRV1)
         val teamsRV2: RecyclerView = findViewById(R.id.teamsRV2)
 
@@ -281,11 +288,32 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         }
+        var teamList: ArrayList<Team> = arrayListOf()
+
+        fun loadTournaments() {
+            val databaseConnection = FirebaseDBConnection()
+            val dialog2 = loadingDialog.showLoadingDialog(this)
+            lifecycleScope.launch {
+                var tournamentList = databaseConnection.findTournamentsByPlayerID(user)
+                for (team in teamList){
+                    val tournamentListTemp = databaseConnection.findTournamentsByTeamID(team.id)
+                    for (temp in tournamentListTemp) {
+                        tournamentList.add(temp)
+                    }
+                }
+                dialog2.dismiss()
+                if (tournamentList.isEmpty()) {
+                    noMatches()
+                } else {
+                    tournaments(tournamentList)
+                }
+            }
+        }
 
         fun loadTeams() {
             GlobalScope.launch {
                 val databaseConnection = FirebaseDBConnection()
-                val teamList = databaseConnection.findTeams(user)
+                teamList = databaseConnection.findTeams(user)
                 withContext(Dispatchers.Main) {
                     if (teamList.isEmpty()) {
                         noTeams()
@@ -314,6 +342,7 @@ class HomeActivity : AppCompatActivity() {
             tournamentsTxt.setTextColor(Color.parseColor("#FFFFFF"))
             matchesTxt.setTextColor(Color.parseColor("#4F4F4F"))
             pastTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            loadTournaments()
         }
 
         pastBtn.setOnClickListener {
