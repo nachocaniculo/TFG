@@ -41,68 +41,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/starLL"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center|center_horizontal"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <ImageView
-                android:id="@+id/star1"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_weight="1"
-                android:tint="?attr/colorContrast"
-                app:srcCompat="@drawable/star_empty" />
-
-            <ImageView
-                android:id="@+id/star2"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="4dp"
-                android:layout_weight="1"
-                android:tint="?attr/colorContrast"
-                app:srcCompat="@drawable/star_empty" />
-
-            <ImageView
-                android:id="@+id/star3"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="4dp"
-                android:layout_weight="1"
-                android:tint="?attr/colorContrast"
-                app:srcCompat="@drawable/star_empty" />
-
-            <ImageView
-                android:id="@+id/star4"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="4dp"
-                android:layout_weight="1"
-                android:tint="?attr/colorContrast"
-                app:srcCompat="@drawable/star_empty" />
-
-            <ImageView
-                android:id="@+id/star5"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="4dp"
-                android:layout_weight="1"
-                android:tint="?attr/colorContrast"
-                app:srcCompat="@drawable/star_empty" />
-
-            <TextView
-                android:id="@+id/ratingText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:text="0"
-                android:textColor="?attr/colorTextSecondary"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </LinearLayout>
     </LinearLayout>
 
     <ImageView

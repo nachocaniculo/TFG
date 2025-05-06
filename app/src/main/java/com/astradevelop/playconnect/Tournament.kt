@@ -10,6 +10,7 @@ class Tournament(
     val teams: List<Any?>,
     val type: Long,
     val teamMaxNum: Long,
-    val startDate: Timestamp
+    val startDate: Timestamp,
+    val admin: String
 ) {
 }

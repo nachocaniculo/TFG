@@ -14,6 +14,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Date
+import kotlin.math.*
 
 
 class FirebaseDBConnection {
@@ -778,6 +779,7 @@ class FirebaseDBConnection {
                                 document.getLong("type")!!,
                                 document.getLong("teamMaxNum")!!,
                                 document.get("startdate") as Timestamp,
+                                document.getString("admin")!!
                             )
                         )
                     }
@@ -812,6 +814,7 @@ class FirebaseDBConnection {
                                 document.getLong("type")!!,
                                 document.getLong("teamMaxNum")!!,
                                 document.get("startdate") as Timestamp,
+                                document.getString("admin")!!
                             )
                         )
                     }
@@ -820,5 +823,92 @@ class FirebaseDBConnection {
         }
 
         return tournamentData
+    }
+
+    suspend fun findTournamentsByID(tournamentID: String): Tournament {
+        val query1 = FirebaseFirestore.getInstance()
+            .collection("tournaments").document(tournamentID).get().await()
+
+        val tournament = Tournament(
+            query1.id,
+            query1.getString("name")!!,
+            query1.getString("location")!!,
+            query1.getLong("sport")!!,
+            query1.get("teams") as? List<*> ?: emptyList<Any>(),
+            query1.getLong("type")!!,
+            query1.getLong("teamMaxNum")!!,
+            query1.get("startdate") as Timestamp,
+            query1.getString("admin")!!
+        )
+
+        return tournament
+    }
+
+    data class EquipoSlot(
+        val nombre: String? = null,
+        val origenMatchId: String? = null
+    )
+
+    data class PartidoDB(
+        val ronda: Int,
+        val equipo1: EquipoSlot,
+        val equipo2: EquipoSlot,
+        val estado: String = "pendiente"
+    )
+
+    suspend fun generarTorneoFirestore(tournamentId: String, totalEquipos: Int) {
+        val db = FirebaseFirestore.getInstance()
+        val torneoRef = db.collection("tournaments").document(tournamentId)
+        val matchesRef = torneoRef.collection("matches")
+
+        val equipos = (1..totalEquipos).map { EquipoSlot(nombre = "Equipo $it") }.toMutableList()
+        val nextPower = 2.0.pow(floor(log2(totalEquipos.toDouble()))).toInt()
+        val equiposRondaPrev = totalEquipos - nextPower
+
+        val rondaActual = mutableListOf<String>() // IDs de partidos ganadores
+        val idsPrevRonda = mutableListOf<EquipoSlot>()
+
+        // 🟢 Ronda 1: ronda previa si hay equipos extra
+        if (equiposRondaPrev > 0) {
+            val equiposPrev = equipos.takeLast(equiposRondaPrev * 2)
+            equipos.removeAll(equiposPrev)
+
+            for (i in 0 until equiposPrev.size step 2) {
+                val p = PartidoDB(
+                    ronda = 1,
+                    equipo1 = equiposPrev[i],
+                    equipo2 = equiposPrev[i + 1]
+                )
+
+                val matchRef = matchesRef.document()
+                matchRef.set(p).await()
+                idsPrevRonda.add(EquipoSlot(origenMatchId = matchRef.id))
+            }
+        }
+
+        // 🟢 Agregar equipos con bye
+        idsPrevRonda.addAll(equipos)
+
+        var ronda = 2
+        var equiposRonda = idsPrevRonda
+
+        while (equiposRonda.size > 1) {
+            val nuevaRonda = mutableListOf<EquipoSlot>()
+
+            for (i in 0 until equiposRonda.size step 2) {
+                val p = PartidoDB(
+                    ronda = ronda,
+                    equipo1 = equiposRonda[i],
+                    equipo2 = equiposRonda[i + 1]
+                )
+
+                val matchRef = matchesRef.document()
+                matchRef.set(p).await()
+                nuevaRonda.add(EquipoSlot(origenMatchId = matchRef.id))
+            }
+
+            equiposRonda = nuevaRonda
+            ronda++
+        }
     }
 }

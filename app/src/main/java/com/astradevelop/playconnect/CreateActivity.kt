@@ -341,7 +341,8 @@ class CreateActivity : AppCompatActivity() {
                     "location" to locationText.text.toString(),
                     "startdate" to timestamp,
                     "teamMaxNum" to maxPlayers,
-                    "type" to matchType
+                    "type" to matchType,
+                    "admin" to user
                 )
 
                 val db = FirebaseFirestore.getInstance()

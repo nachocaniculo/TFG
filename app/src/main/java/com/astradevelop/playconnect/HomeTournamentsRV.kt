@@ -26,11 +26,8 @@ class HomeTournamentsRV(
         val sportText: TextView = view.findViewById(R.id.sportText)
         val dateText: TextView = view.findViewById(R.id.dateText)
         val locationText: TextView = view.findViewById(R.id.locationText)
-        val editButton: LinearLayout = view.findViewById(R.id.editButton)
-        val editText: TextView = view.findViewById(R.id.editText)
-        val leaveButton: LinearLayout = view.findViewById(R.id.leaveButton)
-        val leaveText: TextView = view.findViewById(R.id.leaveText)
         val sportIcon: ImageView = view.findViewById(R.id.sportIcon)
+        val sportButton: LinearLayout = view.findViewById(R.id.sportButton)
     }
 
 
@@ -45,14 +42,11 @@ class HomeTournamentsRV(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val matchId = items[position].id
         val matchName = items[position].name
-        val team1 = items[position].teams[0]
         val sport = items[position].sport.toString()
 
         val timestamp: Timestamp = items[position].startDate
 
         val date = timestamp.toDate()
-
-        val currentDate = Date()
 
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
         val formattedDate = dateFormat.format(date)
@@ -62,22 +56,10 @@ class HomeTournamentsRV(
         holder.sportText.text = matchName
 
         holder.locationText.text = items[position].location
-        holder.editButton.setOnClickListener {
-            if (date <= currentDate) {
-                val intent = Intent(homeActivity, EndMatchActivity::class.java)
-                intent.putExtra("players", items[position].teams.joinToString(","))
-                intent.putExtra("match", matchId)
-                homeActivity.startActivity(intent)
-            } else {
-                val intent = Intent(homeActivity, UpdateActivity::class.java)
-                intent.putExtra("id", matchId)
-                intent.putExtra("date", items[position].startDate.seconds)
-                intent.putExtra("location", items[position].location)
-                homeActivity.startActivity(intent)
-            }
-        }
-        holder.leaveButton.setOnClickListener {
-            showDeleteConfirmationDialog(homeActivity, matchId)
+        holder.sportButton.setOnClickListener {
+            val intent = Intent(homeActivity, TournamentActivity::class.java)
+            intent.putExtra("tournament", matchId)
+            homeActivity.startActivity(intent)
         }
         when (sport){
             "0" -> holder.sportIcon.setImageResource(R.drawable.padelicon)
