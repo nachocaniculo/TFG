@@ -9,26 +9,6 @@
     tools:context=".TournamentActivity">
 
     <LinearLayout
-        android:id="@+id/pastMatchesLL"
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/rounded_button_black_nostroke"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toEndOf="@+id/matchesLL"
-        app:layout_constraintTop_toBottomOf="@+id/sportButton">
-
-        <TextView
-            android:id="@+id/pastMatchesText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Past Matches"
-            android:visibility="invisible" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/playersLL"
         android:layout_width="wrap_content"
         android:layout_height="32dp"
@@ -108,21 +88,6 @@
         app:layout_constraintEnd_toEndOf="@+id/matchesLL"
         app:layout_constraintStart_toStartOf="@+id/matchesLL"
         app:layout_constraintTop_toTopOf="@+id/matchesLL" />
-
-    <TextView
-        android:id="@+id/pastMacthesText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Past Matches"
-        android:textColor="#4F4F4F"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/pastMatchesLL"
-        app:layout_constraintEnd_toEndOf="@+id/pastMatchesLL"
-        app:layout_constraintStart_toStartOf="@+id/pastMatchesLL"
-        app:layout_constraintTop_toTopOf="@+id/pastMatchesLL" />
 
     <ImageView
         android:id="@+id/arrow1"

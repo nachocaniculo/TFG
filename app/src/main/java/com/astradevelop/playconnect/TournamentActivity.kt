@@ -3,6 +3,7 @@ package com.astradevelop.playconnect
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -12,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,7 +27,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class TournamentActivity : AppCompatActivity() {
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -58,6 +60,17 @@ class TournamentActivity : AppCompatActivity() {
         val startBtn: LinearLayout = findViewById(R.id.deleteTV)
         val startText: TextView = findViewById(R.id.deleteText)
 
+        val noMatchesFoundText: TextView = findViewById(R.id.noMatches)
+
+        fun noMatches(){
+            noMatchesFoundText.visibility = View.VISIBLE
+            playersRV.visibility = View.GONE
+        }
+        fun matches(){
+            noMatchesFoundText.visibility = View.GONE
+            playersRV.visibility = View.VISIBLE
+        }
+
         GlobalScope.launch {
             val tournament = firebaseDBConnection.findTournamentsByID(tournamentID!!)
             withContext(Dispatchers.Main) {
@@ -82,83 +95,140 @@ class TournamentActivity : AppCompatActivity() {
                 }
 
                 playersNumText.text = tournament.teams.size.toString()
-                if (tournament.type.toString().toInt() == 1) {
-                    teamsOrPlayersText.text = "Players"
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val playerNameList = mutableListOf<String>()
-                        val playerRatingsList = mutableListOf<String>()
 
-                        val deferredList = tournament.teams.map { playerId ->
-                            async {
-                                val documentRef = db.collection("players").document(playerId.toString())
-                                val document = documentRef.get().await()
-                                if (document.exists()) {
-                                    val playerName = document.getString("name") ?: "?"
-                                    val playerRatings =
-                                        document.get("ratings") as? List<Long> ?: emptyList()
-                                    val ratingsString = playerRatings.joinToString(",")
+                fun loadTeams() {
+                    noMatchesFoundText.visibility = View.GONE
+                    playersRV.visibility = View.VISIBLE
+                    if (tournament.type.toString().toInt() == 1) {
+                        teamsOrPlayersText.text = "Players"
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            val playerNameList = mutableListOf<String>()
+                            val playerRatingsList = mutableListOf<String>()
 
-                                    playerName to ratingsString
-                                } else {
-                                    "?" to ""
+                            val deferredList = tournament.teams.map { playerId ->
+                                async {
+                                    val documentRef =
+                                        db.collection("players").document(playerId.toString())
+                                    val document = documentRef.get().await()
+                                    if (document.exists()) {
+                                        val playerName = document.getString("name") ?: "?"
+                                        val playerRatings =
+                                            document.get("ratings") as? List<Long> ?: emptyList()
+                                        val ratingsString = playerRatings.joinToString(",")
+
+                                        playerName to ratingsString
+                                    } else {
+                                        "?" to ""
+                                    }
                                 }
                             }
-                        }
-                        val results = deferredList.awaitAll()
+                            val results = deferredList.awaitAll()
 
-                        results.forEach { (name, ratings) ->
-                            playerNameList.add(name)
-                            playerRatingsList.add(ratings)
-                        }
+                            results.forEach { (name, ratings) ->
+                                playerNameList.add(name)
+                                playerRatingsList.add(ratings)
+                            }
 
-                        withContext(Dispatchers.Main) {
-                            playersRV.layoutManager = LinearLayoutManager(this@TournamentActivity)
-                            playersRV.adapter =
-                                TournamentPlayersRV(
-                                    playerNameList
-                                )
+                            withContext(Dispatchers.Main) {
+                                playersRV.layoutManager =
+                                    LinearLayoutManager(this@TournamentActivity)
+                                playersRV.adapter =
+                                    TournamentPlayersRV(
+                                        playerNameList
+                                    )
+                            }
+                        }
+                    } else if (tournament.type.toString().toInt() == 2) {
+                        teamsOrPlayersText.text = "Teams"
+                        GlobalScope.launch(Dispatchers.IO) {
+                            val playerNameList = mutableListOf<String>()
+                            val playerRatingsList = mutableListOf<String>()
+
+                            val deferredList = tournament.teams.map { playerId ->
+                                async {
+                                    val documentRef =
+                                        db.collection("teams").document(playerId.toString())
+                                    val document = documentRef.get().await()
+                                    if (document.exists()) {
+                                        val playerName = document.getString("name") ?: "?"
+                                        val playerRatings =
+                                            document.get("ratings") as? List<Long> ?: emptyList()
+                                        val ratingsString = playerRatings.joinToString(",")
+
+                                        playerName to ratingsString
+                                    } else {
+                                        "?" to ""
+                                    }
+                                }
+                            }
+                            val results = deferredList.awaitAll()
+
+                            results.forEach { (name, ratings) ->
+                                playerNameList.add(name)
+                                playerRatingsList.add(ratings)
+                            }
+
+                            withContext(Dispatchers.Main) {
+                                playersRV.layoutManager =
+                                    LinearLayoutManager(this@TournamentActivity)
+                                playersRV.adapter =
+                                    TournamentPlayersRV(
+                                        playerNameList
+                                    )
+                            }
                         }
                     }
                 }
-                else if (tournament.type.toString().toInt() == 2) {
-                    teamsOrPlayersText.text = "Teams"
-                    GlobalScope.launch(Dispatchers.IO) {
-                        val playerNameList = mutableListOf<String>()
-                        val playerRatingsList = mutableListOf<String>()
+                loadTeams()
 
-                        val deferredList = tournament.teams.map { playerId ->
-                            async {
-                                val documentRef =
-                                    db.collection("teams").document(playerId.toString())
-                                val document = documentRef.get().await()
-                                if (document.exists()) {
-                                    val playerName = document.getString("name") ?: "?"
-                                    val playerRatings =
-                                        document.get("ratings") as? List<Long> ?: emptyList()
-                                    val ratingsString = playerRatings.joinToString(",")
+                fun loadMatches(){
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val documentRef = db.collection("tournaments").document(tournamentID).collection("matches")
+                        val documents = documentRef.get().await()
+                        withContext(Dispatchers.Main) {
+                            if (documents.isEmpty) {
+                                noMatches()
+                            } else {
+                                matches()
+                                val matches = mutableListOf<TournamentMatch>()
+                                for (document in documents) {
+                                    val data = document.data
+                                    val team1Map = data["team1"] as? Map<String?, String?> ?: emptyMap()
+                                    val team2Map = data["team2"] as? Map<String?, String> ?: emptyMap()
 
-                                    playerName to ratingsString
-                                } else {
-                                    "?" to ""
+                                    val team1 = EquipoSlot(
+                                        name = team1Map["name"],
+                                        previousMatch = team1Map["previousMatch"]
+                                    )
+
+                                    val team2 = EquipoSlot(
+                                        name = team2Map["name"],
+                                        previousMatch = team2Map["previousMatch"]
+                                    )
+
+                                    val match = TournamentMatch(
+                                        team1 = team1,
+                                        team2 = team2,
+                                        status = data["status"] as? String ?: "Pending",
+                                        round = (data["round"] as? Number)?.toLong() ?: 0L
+                                    )
+                                    matches.add(match)
+                                }
+                                val sortedMatches = matches.sortedBy { it.round }
+                                withContext(Dispatchers.Main) {
+                                    playersRV.layoutManager =
+                                        LinearLayoutManager(this@TournamentActivity)
+                                    playersRV.adapter =
+                                        TournamentMatchesRV(
+                                            sortedMatches,
+                                            tournament.type.toInt()
+                                        )
                                 }
                             }
                         }
-                        val results = deferredList.awaitAll()
-
-                        results.forEach { (name, ratings) ->
-                            playerNameList.add(name)
-                            playerRatingsList.add(ratings)
-                        }
-
-                        withContext(Dispatchers.Main) {
-                            playersRV.layoutManager = LinearLayoutManager(this@TournamentActivity)
-                            playersRV.adapter =
-                                TournamentPlayersRV(
-                                    playerNameList
-                                )
-                        }
                     }
                 }
+
                 if (user == tournament.admin){
                     startBtn.visibility = View.VISIBLE
                     startText.visibility = View.VISIBLE
@@ -170,7 +240,7 @@ class TournamentActivity : AppCompatActivity() {
 
                     builder.setPositiveButton("Continue") { _, _ ->
                         CoroutineScope(Dispatchers.IO).launch {
-                            firebaseDBConnection.generarTorneoFirestore(tournamentID, tournament.teamMaxNum.toInt())
+                            firebaseDBConnection.generarTorneoFirestore(tournamentID, tournament.teams.size)
                         }
                     }
 
@@ -180,6 +250,27 @@ class TournamentActivity : AppCompatActivity() {
 
                     val dialog = builder.create()
                     dialog.show()
+                }
+
+                val teamsButton: LinearLayout = findViewById(R.id.playersLL)
+                val matchesButton: LinearLayout = findViewById(R.id.matchesLL)
+                val teamsText: TextView = findViewById(R.id.playersText)
+                val matchesText: TextView = findViewById(R.id.macthesText)
+
+                teamsButton.setOnClickListener {
+                    teamsButton.setBackgroundResource(R.drawable.rounded_button)
+                    matchesButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+                    teamsText.setTextColor(Color.parseColor("#FFFFFF"))
+                    matchesText.setTextColor(Color.parseColor("#4F4F4F"))
+                    loadTeams()
+                }
+
+                matchesButton.setOnClickListener {
+                    matchesButton.setBackgroundResource(R.drawable.rounded_button)
+                    teamsButton.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+                    matchesText.setTextColor(Color.parseColor("#FFFFFF"))
+                    teamsText.setTextColor(Color.parseColor("#4F4F4F"))
+                    loadMatches()
                 }
             }
         }
