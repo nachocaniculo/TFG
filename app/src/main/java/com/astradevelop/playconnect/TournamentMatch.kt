@@ -6,6 +6,7 @@ data class EquipoSlot(
     val previousMatch: String?
 )
 data class TournamentMatch(
+    val id: String,
     val team1: EquipoSlot,
     val team2: EquipoSlot,
     val status: String,

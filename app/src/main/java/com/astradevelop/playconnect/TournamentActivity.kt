@@ -73,6 +73,19 @@ class TournamentActivity : AppCompatActivity() {
 
         GlobalScope.launch {
             val tournament = firebaseDBConnection.findTournamentsByID(tournamentID!!)
+            db.collection("tournaments")
+                .document(tournamentID)
+                .collection("matches")
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    if (!querySnapshot.isEmpty) {
+                        startBtn.visibility = View.GONE
+                        startText.visibility = View.GONE
+                    } else {
+                        startBtn.visibility = View.VISIBLE
+                        startText.visibility = View.VISIBLE
+                    }
+                }
             withContext(Dispatchers.Main) {
                 tournamentNameText.text = tournament.name
                 when (tournament.sport.toString().toInt()){
@@ -207,6 +220,7 @@ class TournamentActivity : AppCompatActivity() {
                                     )
 
                                     val match = TournamentMatch(
+                                        id = document.id,
                                         team1 = team1,
                                         team2 = team2,
                                         status = data["status"] as? String ?: "Pending",
@@ -221,7 +235,8 @@ class TournamentActivity : AppCompatActivity() {
                                     playersRV.adapter =
                                         TournamentMatchesRV(
                                             sortedMatches,
-                                            tournament.type.toInt()
+                                            tournament.type.toInt(),
+                                            tournamentID
                                         )
                                 }
                             }

@@ -10,7 +10,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class TournamentMatchesRV(
     private val items: List<TournamentMatch>,
-    private val type: Int
+    private val type: Int,
+    private val tournamentID: String
 ) : RecyclerView.Adapter<TournamentMatchesRV.ViewHolder>() {
 
     val db = FirebaseFirestore.getInstance()
@@ -40,6 +41,15 @@ class TournamentMatchesRV(
                         team1 = document.getString("name") ?: "?"
                         holder.teams.text = "$team1 VS $team2"
                     }
+            } else {
+                var tempPos = 0
+                for (match in items){
+                    if (match.id == items[position].team1.previousMatch){
+                        team1 = "Winner Match ${tempPos+1}"
+                        holder.teams.text = "$team1 VS $team2"
+                    }
+                    tempPos+=1
+                }
             }
             if (items[position].team2.name != null) {
                 db.collection("players")
@@ -49,6 +59,15 @@ class TournamentMatchesRV(
                         team2 = document.getString("name") ?: "?"
                         holder.teams.text = "$team1 VS $team2"
                     }
+            } else {
+                var tempPos = 0
+                for (match in items){
+                    if (match.id == items[position].team2.previousMatch){
+                        team2 = "Winner Match ${tempPos+1}"
+                        holder.teams.text = "$team1 VS $team2"
+                    }
+                    tempPos+=1
+                }
             }
         } else if (type == 2) {
             if (items[position].team1.name != null) {
@@ -59,6 +78,15 @@ class TournamentMatchesRV(
                         team1 = document.getString("name") ?: "?"
                         holder.teams.text = "$team1 VS $team2"
                     }
+            } else {
+                var tempPos = 0
+                for (match in items){
+                    if (match.id == items[position].team1.previousMatch){
+                        team1 = "Winner Match ${tempPos+1}"
+                        holder.teams.text = "$team1 VS $team2"
+                    }
+                    tempPos+=1
+                }
             }
             if (items[position].team2.name != null) {
                 db.collection("teams")
@@ -68,6 +96,15 @@ class TournamentMatchesRV(
                         team2 = document.getString("name") ?: "?"
                         holder.teams.text = "$team1 VS $team2"
                     }
+            } else {
+                var tempPos = 0
+                for (match in items){
+                    if (match.id == items[position].team2.previousMatch){
+                        team2 = "Winner Match ${tempPos+1}"
+                        holder.teams.text = "$team1 VS $team2"
+                    }
+                    tempPos+=1
+                }
             }
         }
         holder.teams.text = "$team1 VS $team2"
