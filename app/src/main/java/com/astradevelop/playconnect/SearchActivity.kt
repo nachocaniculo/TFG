@@ -44,6 +44,8 @@ class SearchActivity : AppCompatActivity() {
     private var user = ""
 
     private var matchType = 1
+
+    private var type = 0
     @SuppressLint("MissingInflatedId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,33 +79,54 @@ class SearchActivity : AppCompatActivity() {
 
         val teamBtn: LinearLayout = findViewById(R.id.teamTV)
         val eventBtn: LinearLayout = findViewById(R.id.eventTV)
+        val tournamentBtn: LinearLayout = findViewById(R.id.tournamentsTV)
 
         val teamTxt: TextView = findViewById(R.id.teamText)
         val eventTxt: TextView = findViewById(R.id.scheduledText)
+        val tournamentsTxt: TextView = findViewById(R.id.tournamentsText)
 
         val searchCL: ConstraintLayout = findViewById(R.id.searchCL)
         val teamCL: ConstraintLayout = findViewById(R.id.teamCL)
 
         val addBtnBg: ImageView = findViewById(R.id.addBtnBg)
 
-        teamBtn.setOnClickListener {
-            teamBtn.setBackgroundResource(R.drawable.rounded_button)
-            eventBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
-            teamTxt.setTextColor(Color.parseColor("#FFFFFF"))
-            eventTxt.setTextColor(Color.parseColor("#4F4F4F"))
-            searchCL.visibility = View.GONE
-            teamCL.visibility = View.VISIBLE
-            addBtnBg.visibility = View.VISIBLE
+        eventBtn.setOnClickListener {
+            eventBtn.setBackgroundResource(R.drawable.rounded_button)
+            teamBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            tournamentBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            eventTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            teamTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            tournamentsTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            searchCL.visibility = View.VISIBLE
+            teamCL.visibility = View.GONE
+            addBtnBg.visibility = View.GONE
+            type = 0
         }
 
-        eventBtn.setOnClickListener {
+        tournamentBtn.setOnClickListener {
+            tournamentBtn.setBackgroundResource(R.drawable.rounded_button)
+            eventBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
             teamBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
-            eventBtn.setBackgroundResource(R.drawable.rounded_button)
-            eventTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            tournamentsTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            eventTxt.setTextColor(Color.parseColor("#4F4F4F"))
             teamTxt.setTextColor(Color.parseColor("#4F4F4F"))
             searchCL.visibility = View.VISIBLE
             teamCL.visibility = View.GONE
             addBtnBg.visibility = View.GONE
+            type = 1
+        }
+
+        teamBtn.setOnClickListener {
+            teamBtn.setBackgroundResource(R.drawable.rounded_button)
+            eventBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            tournamentBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
+            teamTxt.setTextColor(Color.parseColor("#FFFFFF"))
+            eventTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            tournamentsTxt.setTextColor(Color.parseColor("#4F4F4F"))
+            searchCL.visibility = View.GONE
+            teamCL.visibility = View.VISIBLE
+            addBtnBg.visibility = View.VISIBLE
+            type = 2
         }
 
         val teamSwitch: Switch = findViewById(R.id.switch2)
@@ -156,12 +179,34 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateTournaments(tournamentList: ArrayList<Tournament>) {
+        if (tournamentList.isEmpty()){
+            matchesRV.visibility = View.GONE
+            noResultsText.visibility = View.VISIBLE
+        } else {
+            matchesRV.layoutManager = LinearLayoutManager(this)
+            matchesRV.adapter = SearchTournamentsRV(tournamentList, user, this, sport)
+            matchesRV.visibility = View.VISIBLE
+            noResultsText.visibility = View.GONE
+        }
+    }
+
     private fun searchBySport(){
         GlobalScope.launch {
             val databaseConnection = FirebaseDBConnection()
             val matchList = databaseConnection.findMatchesBySport(sport, user, matchType.toLong())
             withContext(Dispatchers.Main) {
                 updateMatches(matchList)
+            }
+        }
+    }
+
+    private fun searchTournament(){
+        GlobalScope.launch {
+            val databaseConnection = FirebaseDBConnection()
+            val tournamentList = databaseConnection.findTournaments(sport, user, matchType.toLong())
+            withContext(Dispatchers.Main) {
+                updateTournaments(tournamentList)
             }
         }
     }
@@ -181,7 +226,10 @@ class SearchActivity : AppCompatActivity() {
         sportRV.visibility = View.GONE
         sportSelected = true
         sport = sportTemp
-        searchBySport()
+        when (type) {
+            0 -> searchBySport()
+            1 -> searchTournament()
+        }
 
     }
 }

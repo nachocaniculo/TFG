@@ -71,6 +71,8 @@ class TournamentActivity : AppCompatActivity() {
             playersRV.visibility = View.VISIBLE
         }
 
+        var join = false
+
         GlobalScope.launch {
             val tournament = firebaseDBConnection.findTournamentsByID(tournamentID!!)
             db.collection("tournaments")
@@ -82,8 +84,31 @@ class TournamentActivity : AppCompatActivity() {
                         startBtn.visibility = View.GONE
                         startText.visibility = View.GONE
                     } else {
-                        startBtn.visibility = View.VISIBLE
-                        startText.visibility = View.VISIBLE
+                        db.collection("tournaments")
+                            .document(tournamentID)
+                            .get()
+                            .addOnSuccessListener {querySnapshot ->
+                                var tempFound = false
+                                val tempTeams = querySnapshot.get("teams") as? List<Any> ?: emptyList<Any>()
+                                for (i in tempTeams){
+                                    if (i.toString() == user){
+                                        tempFound = true
+                                    }
+                                }
+                                if (!tempFound){
+                                    startBtn.visibility = View.VISIBLE
+                                    startText.visibility = View.VISIBLE
+                                    startText.text = "Join"
+                                    join = true
+                                } else {
+                                    if (user == tempTeams[0]) {
+                                        startBtn.visibility = View.VISIBLE
+                                        startText.visibility = View.VISIBLE
+                                        startText.text = "Start"
+                                    }
+                                }
+
+                            }
                     }
                 }
             withContext(Dispatchers.Main) {
@@ -249,22 +274,30 @@ class TournamentActivity : AppCompatActivity() {
                     startText.visibility = View.VISIBLE
                 }
                 startBtn.setOnClickListener {
-                    val builder = AlertDialog.Builder(this@TournamentActivity)
-                    builder.setTitle("Confirm Tournament Start")
-                    builder.setMessage("Are you sure you want to start the tournament? Matches will be drawn and new teams won't be able to join.")
+                    if (!join) {
+                        val builder = AlertDialog.Builder(this@TournamentActivity)
+                        builder.setTitle("Confirm Tournament Start")
+                        builder.setMessage("Are you sure you want to start the tournament? Matches will be drawn and new teams won't be able to join.")
 
-                    builder.setPositiveButton("Continue") { _, _ ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            firebaseDBConnection.generarTorneoFirestore(tournamentID, tournament.teams.size)
+                        builder.setPositiveButton("Continue") { _, _ ->
+                            CoroutineScope(Dispatchers.IO).launch {
+                                firebaseDBConnection.generarTorneoFirestore(
+                                    tournamentID,
+                                    tournament.teams.size
+                                )
+                            }
                         }
-                    }
 
-                    builder.setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
-                    }
+                        builder.setNegativeButton("Cancel") { dialog, _ ->
+                            dialog.dismiss()
+                        }
 
-                    val dialog = builder.create()
-                    dialog.show()
+                        val dialog = builder.create()
+                        dialog.show()
+                    } else {
+                        firebaseDBConnection.addTeamToTournament(tournamentID, user!!)
+                        finish()
+                    }
                 }
 
                 val teamsButton: LinearLayout = findViewById(R.id.playersLL)

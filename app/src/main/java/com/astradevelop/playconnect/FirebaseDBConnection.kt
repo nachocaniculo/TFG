@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Patterns
+import android.view.View
 import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -912,5 +914,50 @@ class FirebaseDBConnection {
             equiposRonda = nuevaRonda
             ronda++
         }
+    }
+
+    suspend fun findTournaments(sport: Int, userId: String, type: Long): ArrayList<Tournament> {
+        val matchTournament = ArrayList<Tournament>()
+        val db = FirebaseFirestore.getInstance()
+
+        try {
+            val result = db.collection("tournaments").get().await()
+            for (document in result) {
+                val players = document.get("teams") as? List<*> ?: emptyList<Any>()
+                val matches = db.collection("tournaments").document(document.id).collection("matches").get().await()
+                if (matches.isEmpty) {
+
+                    if (document.get("sport").toString().toIntOrNull() == sport &&
+                        userId !in players && document.getLong("type")!! == type
+                    ) {
+
+                        val matchEntry = Tournament(
+                            document.id,
+                            document.getString("name")!!,
+                            document.getString("location")!!,
+                            document.getLong("sport")!!,
+                            document.get("teams") as? List<*> ?: emptyList<Any>(),
+                            document.getLong("type")!!,
+                            document.getLong("teamMaxNum")!!,
+                            document.get("startdate") as Timestamp,
+                            document.getString("admin")!!
+                        )
+
+                        matchTournament.add(matchEntry)
+                    }
+                }
+            }
+        } catch (_: Exception) {
+        }
+
+        return matchTournament
+    }
+
+    fun addTeamToTournament(tournamentID: String, teamID: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("tournaments")
+            .document(tournamentID)
+            .update("teams", FieldValue.arrayUnion(teamID))
     }
 }
