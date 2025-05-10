@@ -22,6 +22,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -46,7 +47,7 @@ class SearchActivity : AppCompatActivity() {
     private var matchType = 1
 
     private var type = 0
-    @SuppressLint("MissingInflatedId", "SetTextI18n")
+    @SuppressLint("MissingInflatedId", "SetTextI18n", "UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -90,6 +91,32 @@ class SearchActivity : AppCompatActivity() {
 
         val addBtnBg: ImageView = findViewById(R.id.addBtnBg)
 
+        val teamSwitch: Switch = findViewById(R.id.switch2)
+        val teamOrPlayersText: TextView = findViewById(R.id.teamOrPlayersText)
+        teamSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (type == 0) {
+                    teamOrPlayersText.text = "Search team matches"
+                    matchType = 2
+                    searchBySport()
+                } else {
+                    teamOrPlayersText.text = "Search team tournaments"
+                    matchType = 2
+                    searchTournament()
+                }
+            } else {
+                if (type == 0) {
+                    teamOrPlayersText.text = "Search player matches"
+                    matchType = 1
+                    searchBySport()
+                } else {
+                    teamOrPlayersText.text = "Search player tournaments"
+                    matchType = 1
+                    searchTournament()
+                }
+            }
+        }
+
         eventBtn.setOnClickListener {
             eventBtn.setBackgroundResource(R.drawable.rounded_button)
             teamBtn.setBackgroundResource(R.drawable.rounded_button_black_nostroke)
@@ -101,6 +128,12 @@ class SearchActivity : AppCompatActivity() {
             teamCL.visibility = View.GONE
             addBtnBg.visibility = View.GONE
             type = 0
+            if (teamSwitch.isChecked) {
+                teamOrPlayersText.text = "Search team matches"
+            } else {
+                teamOrPlayersText.text = "Search player matches"
+            }
+            searchBySport()
         }
 
         tournamentBtn.setOnClickListener {
@@ -114,6 +147,12 @@ class SearchActivity : AppCompatActivity() {
             teamCL.visibility = View.GONE
             addBtnBg.visibility = View.GONE
             type = 1
+            if (teamSwitch.isChecked) {
+                teamOrPlayersText.text = "Search team tournaments"
+            } else {
+                teamOrPlayersText.text = "Search player tournaments"
+            }
+            searchTournament()
         }
 
         teamBtn.setOnClickListener {
@@ -127,20 +166,6 @@ class SearchActivity : AppCompatActivity() {
             teamCL.visibility = View.VISIBLE
             addBtnBg.visibility = View.VISIBLE
             type = 2
-        }
-
-        val teamSwitch: Switch = findViewById(R.id.switch2)
-        val teamOrPlayersText: TextView = findViewById(R.id.teamOrPlayersText)
-        teamSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                teamOrPlayersText.text = "Search team matches"
-                matchType = 2
-                searchBySport()
-            } else {
-                teamOrPlayersText.text = "Search player matches"
-                matchType = 1
-                searchBySport()
-            }
         }
 
         val teamText: EditText = findViewById(R.id.teamInviteText)
@@ -191,6 +216,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun searchBySport(){
         GlobalScope.launch {
             val databaseConnection = FirebaseDBConnection()
@@ -201,6 +227,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun searchTournament(){
         GlobalScope.launch {
             val databaseConnection = FirebaseDBConnection()
@@ -211,6 +238,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     fun setSport(sportTemp: Int){
         when (sportTemp){
             0 -> {sportText.text = "Padel"

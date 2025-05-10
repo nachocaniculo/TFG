@@ -919,31 +919,43 @@ class FirebaseDBConnection {
     suspend fun findTournaments(sport: Int, userId: String, type: Long): ArrayList<Tournament> {
         val matchTournament = ArrayList<Tournament>()
         val db = FirebaseFirestore.getInstance()
+        val teams = findTeamsByPlayerAndSport(userId, sport.toLong())
 
         try {
             val result = db.collection("tournaments").get().await()
             for (document in result) {
                 val players = document.get("teams") as? List<*> ?: emptyList<Any>()
-                val matches = db.collection("tournaments").document(document.id).collection("matches").get().await()
-                if (matches.isEmpty) {
+                var found = false
+                for (i in teams){
+                    if (i.id in players){
+                        found = true
+                    }
+                }
+                if (!found) {
+                    val matches =
+                        db.collection("tournaments").document(document.id).collection("matches")
+                            .get().await()
+                    if (matches.isEmpty) {
 
-                    if (document.get("sport").toString().toIntOrNull() == sport &&
-                        userId !in players && document.getLong("type")!! == type
-                    ) {
+                        if (document.get("sport").toString().toIntOrNull() == sport &&
+                            userId !in players && document.getLong("type")!! == type
+                        ) {
+                            println("HOLA")
 
-                        val matchEntry = Tournament(
-                            document.id,
-                            document.getString("name")!!,
-                            document.getString("location")!!,
-                            document.getLong("sport")!!,
-                            document.get("teams") as? List<*> ?: emptyList<Any>(),
-                            document.getLong("type")!!,
-                            document.getLong("teamMaxNum")!!,
-                            document.get("startdate") as Timestamp,
-                            document.getString("admin")!!
-                        )
+                            val matchEntry = Tournament(
+                                document.id,
+                                document.getString("name")!!,
+                                document.getString("location")!!,
+                                document.getLong("sport")!!,
+                                document.get("teams") as? List<*> ?: emptyList<Any>(),
+                                document.getLong("type")!!,
+                                document.getLong("teamMaxNum")!!,
+                                document.get("startdate") as Timestamp,
+                                document.getString("admin")!!
+                            )
 
-                        matchTournament.add(matchEntry)
+                            matchTournament.add(matchEntry)
+                        }
                     }
                 }
             }

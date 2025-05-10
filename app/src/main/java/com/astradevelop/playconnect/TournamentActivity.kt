@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -27,6 +28,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class TournamentActivity : AppCompatActivity() {
+    private var tournamentID = ""
     @SuppressLint("SetTextI18n", "CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +57,7 @@ class TournamentActivity : AppCompatActivity() {
 
         val playersRV: RecyclerView = findViewById(R.id.playerRV)
 
-        val tournamentID = intent.extras!!.getString("tournament")
+        tournamentID = intent.extras!!.getString("tournament").toString()
         val firebaseDBConnection = FirebaseDBConnection()
         val startBtn: LinearLayout = findViewById(R.id.deleteTV)
         val startText: TextView = findViewById(R.id.deleteText)
@@ -72,6 +74,7 @@ class TournamentActivity : AppCompatActivity() {
         }
 
         var join = false
+        var type = 0
 
         GlobalScope.launch {
             val tournament = firebaseDBConnection.findTournamentsByID(tournamentID!!)
@@ -90,28 +93,34 @@ class TournamentActivity : AppCompatActivity() {
                             .addOnSuccessListener {querySnapshot ->
                                 var tempFound = false
                                 val tempTeams = querySnapshot.get("teams") as? List<Any> ?: emptyList<Any>()
-                                for (i in tempTeams){
-                                    if (i.toString() == user){
-                                        tempFound = true
-                                    }
-                                }
-                                if (!tempFound){
-                                    startBtn.visibility = View.VISIBLE
-                                    startText.visibility = View.VISIBLE
-                                    startText.text = "Join"
-                                    join = true
+                                val teamsSize = tempTeams.size
+                                if (teamsSize >= tournament.teamMaxNum){
+                                    startBtn.visibility = View.GONE
+                                    startText.visibility = View.GONE
                                 } else {
-                                    if (user == tempTeams[0]) {
+                                    for (i in tempTeams) {
+                                        if (i.toString() == user) {
+                                            tempFound = true
+                                        }
+                                    }
+                                    if (!tempFound) {
                                         startBtn.visibility = View.VISIBLE
                                         startText.visibility = View.VISIBLE
-                                        startText.text = "Start"
+                                        startText.text = "Join"
+                                        join = true
+                                    } else {
+                                        if (user == tempTeams[0]) {
+                                            startBtn.visibility = View.VISIBLE
+                                            startText.visibility = View.VISIBLE
+                                            startText.text = "Start"
+                                        }
                                     }
                                 }
-
                             }
                     }
                 }
             withContext(Dispatchers.Main) {
+                type = tournament.type.toInt()
                 tournamentNameText.text = tournament.name
                 when (tournament.sport.toString().toInt()){
                     0 -> {
@@ -172,7 +181,8 @@ class TournamentActivity : AppCompatActivity() {
                                     LinearLayoutManager(this@TournamentActivity)
                                 playersRV.adapter =
                                     TournamentPlayersRV(
-                                        playerNameList
+                                        playerNameList,
+                                        playerRatingsList
                                     )
                             }
                         }
@@ -211,13 +221,18 @@ class TournamentActivity : AppCompatActivity() {
                                     LinearLayoutManager(this@TournamentActivity)
                                 playersRV.adapter =
                                     TournamentPlayersRV(
-                                        playerNameList
+                                        playerNameList,
+                                        playerRatingsList
                                     )
                             }
                         }
                     }
                 }
                 loadTeams()
+
+                val joinTeamsText: TextView = findViewById(R.id.teamsText)
+                val teamsRV: RecyclerView = findViewById(R.id.teamsRV)
+                val addBg: TextView = findViewById(R.id.addBg)
 
                 fun loadMatches(){
                     lifecycleScope.launch(Dispatchers.IO) {
@@ -285,6 +300,10 @@ class TournamentActivity : AppCompatActivity() {
                                     tournamentID,
                                     tournament.teams.size
                                 )
+                                withContext(Dispatchers.Main) {
+                                    startBtn.visibility = View.GONE
+                                    startText.visibility = View.GONE
+                                }
                             }
                         }
 
@@ -295,8 +314,33 @@ class TournamentActivity : AppCompatActivity() {
                         val dialog = builder.create()
                         dialog.show()
                     } else {
-                        firebaseDBConnection.addTeamToTournament(tournamentID, user!!)
-                        finish()
+                        if (tournament.type.toInt() == 1) {
+                            firebaseDBConnection.addTeamToTournament(tournamentID, user!!)
+                            finish()
+                        } else {
+                            addBg.visibility = View.VISIBLE
+                            joinTeamsText.visibility = View.VISIBLE
+                            teamsRV.visibility = View.VISIBLE
+                            GlobalScope.launch {
+                                val databaseConnection = FirebaseDBConnection()
+                                val teamList = databaseConnection.findTeamsByPlayerAndSport(user!!, tournament.sport)
+                                withContext(Dispatchers.Main) {
+                                    if (teamList.isEmpty()) {
+                                        addBg.visibility = View.GONE
+                                        joinTeamsText.visibility = View.GONE
+                                        teamsRV.visibility = View.GONE
+                                        Toast.makeText(
+                                            this@TournamentActivity,
+                                            "No teams found for this sport",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        teamsRV.layoutManager = LinearLayoutManager(this@TournamentActivity)
+                                        teamsRV.adapter = TournamentTeamsSearchRV(teamList, this@TournamentActivity)
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -322,5 +366,14 @@ class TournamentActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+    fun chooseTeam(id:String){
+        FirebaseDBConnection().addTeamToTournament(tournamentID, id)
+        Toast.makeText(
+            this,
+            "Joined!",
+            Toast.LENGTH_SHORT
+        ).show()
+        finish()
     }
 }

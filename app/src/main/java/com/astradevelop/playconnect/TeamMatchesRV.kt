@@ -1,22 +1,18 @@
 package com.astradevelop.playconnect
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TeamMatchesRV(
-    private val items: ArrayList<Match>
+    private val items: ArrayList<Match>,
+    private val teamId: String
 ) : RecyclerView.Adapter<TeamMatchesRV.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -33,12 +29,21 @@ class TeamMatchesRV(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (items[position].players.size == 2) {
-            val team2 = items[position].players[1]
-            holder.sportText.text = team2.toString()
+            for (team in items[position].players) {
+                if (team != teamId) {
+                    val db = FirebaseFirestore.getInstance()
+                    db.collection("teams").document(team.toString()).get()
+                        .addOnSuccessListener { document ->
+                            val nameTemp = document.getString("name") ?: ""
+                            holder.sportText.text = nameTemp
+                        }.addOnFailureListener {
+                            holder.sportText.text = "Pending rival"
+                        }
+                }
+            }
         } else {
             holder.sportText.text = "Pending rival"
         }
-        val sport = items[position].sport.toString()
 
         val timestamp: Timestamp = items[position].date
 

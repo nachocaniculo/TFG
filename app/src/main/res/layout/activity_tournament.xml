@@ -319,4 +319,42 @@
         app:srcCompat="@drawable/mailicon"
         app:tint="#FBFBFB" />
 
+    <TextView
+        android:id="@+id/addBg"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#801A1A1A"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/teamsText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="16dp"
+        android:text="Choose your team"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:tint="?attr/colorContrast"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/teamsRV"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/teamsRV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

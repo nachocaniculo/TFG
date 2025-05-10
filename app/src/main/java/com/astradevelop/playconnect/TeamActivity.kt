@@ -206,7 +206,7 @@ class TeamActivity : AppCompatActivity() {
                 val matchData = databaseConnection.findMatchesByTeam(teamId!!)
                 if (matchData.isNotEmpty()) {
                     playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
-                    playerRV.adapter = TeamMatchesRV(matchData)
+                    playerRV.adapter = TeamMatchesRV(matchData, teamId)
                     noMatches.visibility = View.GONE
                     playerRV.visibility = View.VISIBLE
                 } else {
@@ -221,7 +221,7 @@ class TeamActivity : AppCompatActivity() {
                 val matchData = databaseConnection.findPastMatchesByTeam(teamId!!)
                 if (matchData.isNotEmpty()) {
                     playerRV.layoutManager = LinearLayoutManager(this@TeamActivity)
-                    playerRV.adapter = TeamMatchesRV(matchData)
+                    playerRV.adapter = TeamMatchesRV(matchData, teamId)
                     noMatches.visibility = View.GONE
                     playerRV.visibility = View.VISIBLE
                 } else {
