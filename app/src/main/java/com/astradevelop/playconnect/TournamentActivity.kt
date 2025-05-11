@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -374,6 +375,7 @@ class TournamentActivity : AppCompatActivity() {
             "Joined!",
             Toast.LENGTH_SHORT
         ).show()
+        NotificationHandler().scheduleNotificationTournament(this, Timestamp.now(), "Your tournament starts soon!", "The tournament starts in 2 hours. Get ready!", tournamentID)
         finish()
     }
 }

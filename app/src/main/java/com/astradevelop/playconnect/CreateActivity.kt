@@ -346,10 +346,13 @@ class CreateActivity : AppCompatActivity() {
                 )
 
                 val db = FirebaseFirestore.getInstance()
-                db.collection("tournaments").document()
-                    .set(tournament)
+                val docRef = db.collection("tournaments").document()
+                val tournamentId = docRef.id
+
+                docRef.set(tournament)
                     .addOnCompleteListener { dbTask ->
                         if (dbTask.isSuccessful) {
+                            NotificationHandler().scheduleNotificationTournament(this, Timestamp.now(), "Your tournament starts soon!", "The tournament starts in 2 hours. Get ready!", tournamentId)
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
                         } else {

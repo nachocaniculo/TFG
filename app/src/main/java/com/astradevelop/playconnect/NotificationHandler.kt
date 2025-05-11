@@ -177,4 +177,46 @@ class NotificationHandler {
 
     }
 
+    fun scheduleNotificationTournament(context: Context, timestamp: Timestamp ,title: String, body: String, match: String) {
+        val triggerTime = timestamp.toDate().time
+        val twoHoursInMillis = 2 * 60 * 60 * 1000
+        val adjustedTime = triggerTime.minus(twoHoursInMillis)
+
+        val intent = Intent(context, NotificationReceiver::class.java).apply {
+            putExtra("title", title)
+            putExtra("body", body)
+        }
+
+        val code = System.currentTimeMillis().toInt()
+
+        val repo = NotificationRepository(context)
+        repo.insertNotification(code, title, body, match, "1", adjustedTime.toString())
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            code,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (context.getSystemService(AlarmManager::class.java).canScheduleExactAlarms()) {
+                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    adjustedTime,
+                    pendingIntent
+                )
+            }
+        } else {
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                adjustedTime,
+                pendingIntent
+            )
+        }
+
+    }
+
 }
