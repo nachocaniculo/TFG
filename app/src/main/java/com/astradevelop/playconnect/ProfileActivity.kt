@@ -15,7 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class ProfileActivity : AppCompatActivity() {
-    @SuppressLint("MissingInflatedId", "DefaultLocale")
+    @SuppressLint("MissingInflatedId", "DefaultLocale", "UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -29,6 +29,7 @@ class ProfileActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val userUID = sharedPref.getString("userUID", "")
         val nightMode = sharedPref.getBoolean("nightMode", true)
+        val notifications = sharedPref.getBoolean("notifications", true)
 
         if (nightMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -62,28 +63,28 @@ class ProfileActivity : AppCompatActivity() {
 
         fun printStars(){
             if (ratingMean > 0){
-                if (ratingMean > 1) {
+                if (ratingMean >= 1) {
                     star1.setImageResource(R.drawable.star_full)
                 } else {
                     star1.setImageResource(R.drawable.star_half)
                 }
             }
             if (ratingMean > 1){
-                if (ratingMean > 2) {
+                if (ratingMean >= 2) {
                     star2.setImageResource(R.drawable.star_full)
                 } else {
                     star2.setImageResource(R.drawable.star_half)
                 }
             }
             if (ratingMean > 2){
-                if (ratingMean > 3) {
+                if (ratingMean >= 3) {
                     star3.setImageResource(R.drawable.star_full)
                 } else {
                     star3.setImageResource(R.drawable.star_half)
                 }
             }
             if (ratingMean > 3){
-                if (ratingMean > 4) {
+                if (ratingMean >= 4) {
                     star4.setImageResource(R.drawable.star_full)
                 } else {
                     star4.setImageResource(R.drawable.star_half)
@@ -101,7 +102,11 @@ class ProfileActivity : AppCompatActivity() {
         printStars()
 
         val ratingTV: TextView = findViewById(R.id.ratingText)
-        ratingTV.text = ratingMean.toString()
+        if (ratingMean.toString() == "NaN"){
+            ratingTV.text = "-"
+        } else {
+            ratingTV.text = ratingMean.toString()
+        }
 
         val userTxt: TextView = findViewById(R.id.userTxt)
         userTxt.text = user
@@ -116,6 +121,18 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         val editor = sharedPref.edit()
+
+        val notificationSwitch: Switch = findViewById(R.id.switch1)
+        notificationSwitch.isChecked = notifications
+        notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                editor.putBoolean("notifications", true)
+                editor.apply()
+            } else {
+                editor.putBoolean("notifications", false)
+                editor.apply()
+            }
+        }
 
         val switchNightMode: Switch = findViewById(R.id.switch2)
 

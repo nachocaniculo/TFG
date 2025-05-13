@@ -362,6 +362,7 @@
         android:layout_height="16dp"
         android:layout_marginEnd="16dp"
         android:tint="?attr/colorContrast"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/profilePic"
         app:layout_constraintEnd_toStartOf="@+id/profilePic"
         app:layout_constraintTop_toTopOf="@+id/profilePic"

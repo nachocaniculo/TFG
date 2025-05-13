@@ -6,11 +6,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 class RatePlayersRV(
     private val items: List<String>,
     private val endMatchActivity: EndMatchActivity
 ) : RecyclerView.Adapter<RatePlayersRV.ViewHolder>() {
+
+    val playersDB = FirebaseFirestore.getInstance()
+        .collection("players")
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameText: TextView = view.findViewById(R.id.sportText)
@@ -28,7 +33,9 @@ class RatePlayersRV(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.nameText.text = items[position]
+        playersDB.document(items[position]).get().addOnSuccessListener {
+            holder.nameText.text = it.getString("name")
+        }
         endMatchActivity.updateList(0,position)
         holder.star1.setOnClickListener {
             holder.star1.setImageResource(R.drawable.star_full)

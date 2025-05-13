@@ -19,6 +19,9 @@ import android.app.TimePickerDialog
 import android.text.Editable
 import android.widget.EditText
 import android.widget.TextView
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -69,33 +72,42 @@ class UpdateActivity : AppCompatActivity() {
         var dateSelected = false
 
         dateBtn.setOnClickListener {
-            DatePickerDialog(
-                this,
-                { _, year, month, dayOfMonth ->
-                    calendar.set(year, month, dayOfMonth)
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    dateText.text = dateFormat.format(calendar.time)
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select a date")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setTheme(R.style.ThemeOverlay_App_DatePicker)
+                .build()
 
-                    TimePickerDialog(
-                        this,
-                        { _, hourOfDay, minute ->
-                            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                            calendar.set(Calendar.MINUTE, minute)
-                            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                            dateText.text = "${dateFormat.format(calendar.time)} ${timeFormat.format(calendar.time)}"
+            datePicker.addOnPositiveButtonClickListener { selection ->
+                val selectedDate = Date(selection)
+                calendar.time = selectedDate
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                dateText.text = dateFormat.format(selectedDate)
 
-                            timestamp = Timestamp(calendar.time)
-                            dateSelected = true
-                        },
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
-                        true
-                    ).show()
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
+                // MATERIAL TIME PICKER
+                val timePicker = MaterialTimePicker.Builder()
+                    .setTimeFormat(TimeFormat.CLOCK_24H)
+                    .setHour(calendar.get(Calendar.HOUR_OF_DAY))
+                    .setMinute(calendar.get(Calendar.MINUTE))
+                    .setTitleText("Select time")
+                    .setTheme(R.style.ThemeOverlay_App_TimePicker)
+                    .build()
+
+                timePicker.addOnPositiveButtonClickListener {
+                    calendar.set(Calendar.HOUR_OF_DAY, timePicker.hour)
+                    calendar.set(Calendar.MINUTE, timePicker.minute)
+
+                    val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    dateText.text = "${dateFormat.format(calendar.time)} ${timeFormat.format(calendar.time)}"
+
+                    timestamp = Timestamp(calendar.time)
+                    dateSelected = true
+                }
+
+                timePicker.show(supportFragmentManager, "TIME_PICKER")
+            }
+
+            datePicker.show(supportFragmentManager, "DATE_PICKER")
         }
 
         fun deleteMatch(){

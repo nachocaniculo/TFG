@@ -940,7 +940,6 @@ class FirebaseDBConnection {
                         if (document.get("sport").toString().toIntOrNull() == sport &&
                             userId !in players && document.getLong("type")!! == type
                         ) {
-                            println("HOLA")
 
                             val matchEntry = Tournament(
                                 document.id,

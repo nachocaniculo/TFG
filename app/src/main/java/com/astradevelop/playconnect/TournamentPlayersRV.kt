@@ -54,28 +54,28 @@ class TournamentPlayersRV(
                 holder.ratingTV.text = ratingMean.toString()
 
                 if (ratingMean > 0) {
-                    if (ratingMean > 1) {
+                    if (ratingMean >= 1) {
                         holder.star1.setImageResource(R.drawable.star_full)
                     } else {
                         holder.star1.setImageResource(R.drawable.star_half)
                     }
                 }
                 if (ratingMean > 1) {
-                    if (ratingMean > 2) {
+                    if (ratingMean >= 2) {
                         holder.star2.setImageResource(R.drawable.star_full)
                     } else {
                         holder.star2.setImageResource(R.drawable.star_half)
                     }
                 }
                 if (ratingMean > 2) {
-                    if (ratingMean > 3) {
+                    if (ratingMean >= 3) {
                         holder.star3.setImageResource(R.drawable.star_full)
                     } else {
                         holder.star3.setImageResource(R.drawable.star_half)
                     }
                 }
                 if (ratingMean > 3) {
-                    if (ratingMean > 4) {
+                    if (ratingMean >= 4) {
                         holder.star4.setImageResource(R.drawable.star_full)
                     } else {
                         holder.star4.setImageResource(R.drawable.star_half)

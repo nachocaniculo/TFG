@@ -27,6 +27,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet.Constraint
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -137,18 +141,32 @@ class CreateActivity : AppCompatActivity() {
         val teamSwitch: Switch = findViewById(R.id.switch2)
         teamSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                teamOrPlayersText.text = "Teams can join"
-                maxPlayer2.visibility = View.GONE
-                maxPlayersButton.visibility = View.GONE
-                maxPlayersIcon.visibility = View.GONE
-                matchType = 2
-                chooseTeamButton.visibility = View.VISIBLE
-                teamText.visibility = View.VISIBLE
-                arrowV2.visibility = View.VISIBLE
-                loadTeams()
+                if (type != 1) {
+                    teamOrPlayersText.text = "Teams can join"
+                    maxPlayer2.visibility = View.GONE
+                    maxPlayersButton.visibility = View.GONE
+                    maxPlayersIcon.visibility = View.GONE
+                    matchType = 2
+                    chooseTeamButton.visibility = View.VISIBLE
+                    teamText.visibility = View.VISIBLE
+                    arrowV2.visibility = View.VISIBLE
+                    loadTeams()
+                } else {
+                    teamOrPlayersText.text = "Teams can join"
+                    maxPlayer2.visibility = View.VISIBLE
+                    maxPlayer2.hint = "Maximun teams"
+                    maxPlayersButton.visibility = View.VISIBLE
+                    maxPlayersIcon.visibility = View.VISIBLE
+                    matchType = 2
+                    chooseTeamButton.visibility = View.VISIBLE
+                    teamText.visibility = View.VISIBLE
+                    arrowV2.visibility = View.VISIBLE
+                    loadTeams()
+                }
             } else {
                 teamOrPlayersText.text = "Players can join"
                 maxPlayer2.visibility = View.VISIBLE
+                maxPlayer2.hint = "Maximun players"
                 maxPlayersButton.visibility = View.VISIBLE
                 maxPlayersIcon.visibility = View.VISIBLE
                 matchType = 1
@@ -183,6 +201,28 @@ class CreateActivity : AppCompatActivity() {
             teamTxt.setTextColor(Color.parseColor("#4F4F4F"))
             tournamentTxt.setTextColor(Color.parseColor("#4F4F4F"))
             type = 0
+            if (teamSwitch.isChecked) {
+                teamOrPlayersText.text = "Teams can join"
+                maxPlayer2.visibility = View.GONE
+                maxPlayersButton.visibility = View.GONE
+                maxPlayersIcon.visibility = View.GONE
+                matchType = 2
+                chooseTeamButton.visibility = View.VISIBLE
+                teamText.visibility = View.VISIBLE
+                arrowV2.visibility = View.VISIBLE
+                loadTeams()
+            } else {
+                teamOrPlayersText.text = "Players can join"
+                maxPlayer2.visibility = View.VISIBLE
+                maxPlayer2.hint = "Maximun players"
+                maxPlayersButton.visibility = View.VISIBLE
+                maxPlayersIcon.visibility = View.VISIBLE
+                matchType = 1
+                chooseTeamButton.visibility = View.GONE
+                teamText.visibility = View.GONE
+                arrowV2.visibility = View.GONE
+                teamsRV.visibility = View.GONE
+            }
         }
 
         tournentBtn.setOnClickListener {
@@ -197,6 +237,29 @@ class CreateActivity : AppCompatActivity() {
             teamTxt.setTextColor(Color.parseColor("#4F4F4F"))
             eventTxt.setTextColor(Color.parseColor("#4F4F4F"))
             type = 1
+            if (teamSwitch.isChecked){
+                teamOrPlayersText.text = "Teams can join"
+                maxPlayer2.visibility = View.VISIBLE
+                maxPlayer2.hint = "Maximun teams"
+                maxPlayersButton.visibility = View.VISIBLE
+                maxPlayersIcon.visibility = View.VISIBLE
+                matchType = 2
+                chooseTeamButton.visibility = View.VISIBLE
+                teamText.visibility = View.VISIBLE
+                arrowV2.visibility = View.VISIBLE
+                loadTeams()
+            } else {
+                teamOrPlayersText.text = "Players can join"
+                maxPlayer2.visibility = View.VISIBLE
+                maxPlayer2.hint = "Maximun players"
+                maxPlayersButton.visibility = View.VISIBLE
+                maxPlayersIcon.visibility = View.VISIBLE
+                matchType = 1
+                chooseTeamButton.visibility = View.GONE
+                teamText.visibility = View.GONE
+                arrowV2.visibility = View.GONE
+                teamsRV.visibility = View.GONE
+            }
         }
 
         val sportBtn: LinearLayout = findViewById(R.id.sportButton)
@@ -213,33 +276,63 @@ class CreateActivity : AppCompatActivity() {
         }
 
         dateBtn.setOnClickListener {
-            DatePickerDialog(
-                this,
-                { _, year, month, dayOfMonth ->
-                    calendar.set(year, month, dayOfMonth)
-                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    dateText.text = dateFormat.format(calendar.time)
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText("Select a date")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setTheme(R.style.ThemeOverlay_App_DatePicker)
+                .build()
 
-                    TimePickerDialog(
-                        this,
-                        { _, hourOfDay, minute ->
-                            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                            calendar.set(Calendar.MINUTE, minute)
-                            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                            dateText.text = "${dateFormat.format(calendar.time)} ${timeFormat.format(calendar.time)}"
+            datePicker.addOnPositiveButtonClickListener { selection ->
+                dateSelected = false
+                dateText.text = "Date"
+                val selectedDate = Date(selection)
+                calendar.time = selectedDate
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-                            timestamp = Timestamp(calendar.time)
+                val timePicker = MaterialTimePicker.Builder()
+                    .setTimeFormat(TimeFormat.CLOCK_24H)
+                    .setHour(calendar.get(Calendar.HOUR_OF_DAY))
+                    .setMinute(calendar.get(Calendar.MINUTE))
+                    .setTitleText("Select time")
+                    .setTheme(R.style.ThemeOverlay_App_TimePicker)
+                    .build()
+
+                timePicker.addOnPositiveButtonClickListener {
+                        val selectedHour = timePicker.hour
+                        val selectedMinute = timePicker.minute
+
+                        calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
+                        calendar.set(Calendar.MINUTE, selectedMinute)
+
+                        timestamp = Timestamp(calendar.time)
+
+                        val date = timestamp.toDate()
+
+                        val currentDate = Date()
+
+                        println("Fecha seleccionada: $date")
+                        println("Fecha actual: $currentDate")
+
+                        if (date > currentDate) {
                             dateSelected = true
-                        },
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
-                        true
-                    ).show()
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
+                            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                            dateText.text =
+                                "${dateFormat.format(calendar.time)} ${timeFormat.format(calendar.time)}"
+                        } else {
+                            dateSelected = false
+                            dateText.text = "Date"
+                            Toast.makeText(
+                                this,
+                                "Please select a future date and time",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                timePicker.show(supportFragmentManager, "TIME_PICKER")
+            }
+
+            datePicker.show(supportFragmentManager, "DATE_PICKER")
         }
 
         fun add() {

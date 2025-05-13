@@ -17,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -291,26 +292,21 @@ class TournamentActivity : AppCompatActivity() {
                 }
                 startBtn.setOnClickListener {
                     if (!join) {
-                        val builder = AlertDialog.Builder(this@TournamentActivity)
-                        builder.setTitle("Confirm Tournament Start")
-                        builder.setMessage("Are you sure you want to start the tournament? Matches will be drawn and new teams won't be able to join.")
-
-                        builder.setPositiveButton("Continue") { _, _ ->
-                            CoroutineScope(Dispatchers.IO).launch {
-                                firebaseDBConnection.generarTorneoFirestore(
-                                    tournamentID,
-                                    tournament.teams.size
-                                )
-                                withContext(Dispatchers.Main) {
-                                    startBtn.visibility = View.GONE
-                                    startText.visibility = View.GONE
+                        val builder = MaterialAlertDialogBuilder(this@TournamentActivity, R.style.MyAlertDialogTheme)
+                            .setTitle("Confirm Tournament Start")
+                            .setMessage("Are you sure you want to start the tournament? Matches will be drawn and new teams won't be able to join.")
+                            .setPositiveButton("Continue") { _, _ ->
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    firebaseDBConnection.generarTorneoFirestore(tournamentID, tournament.teams.size)
+                                    withContext(Dispatchers.Main) {
+                                        startBtn.visibility = View.GONE
+                                        startText.visibility = View.GONE
+                                    }
                                 }
                             }
-                        }
-
-                        builder.setNegativeButton("Cancel") { dialog, _ ->
-                            dialog.dismiss()
-                        }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
+                            }
 
                         val dialog = builder.create()
                         dialog.show()
