@@ -53,6 +53,7 @@ class SearchTournamentsRV(
             } else {
                 val intent = Intent(searchActivity, MatchActivity::class.java)
                 intent.putExtra("MatchID", items[position].id)
+                intent.putExtra("Home", "false")
                 searchActivity.startActivity(intent)
             }
         }

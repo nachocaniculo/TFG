@@ -1,7 +1,10 @@
 package com.astradevelop.playconnect
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -30,6 +33,7 @@ class MatchActivity : AppCompatActivity() {
 
     private lateinit var matchData: Match
     private var matchID = ""
+    private var userUID = ""
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,9 +46,10 @@ class MatchActivity : AppCompatActivity() {
         }
 
         matchID = intent.extras!!.getString("MatchID")!!
+        val home = intent.extras!!.getString("Home")!!
 
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
-        val userUID = sharedPref.getString("userUID", "")
+        userUID = sharedPref.getString("userUID", "").toString()
 
         val backButton: ImageView = findViewById(R.id.arrow1)
         backButton.setOnClickListener {
@@ -59,6 +64,11 @@ class MatchActivity : AppCompatActivity() {
         val matchTypeText: TextView = findViewById(R.id.playersText)
 
         val joinButton: LinearLayout = findViewById(R.id.joinButton)
+        val joinText: TextView = findViewById(R.id.joinText)
+
+        if (home == "true"){
+            joinText.text = "Leave"
+        }
 
         var maxPlayers = 0
         var players: MutableList<String> = mutableListOf()
@@ -94,6 +104,7 @@ class MatchActivity : AppCompatActivity() {
                 GlobalScope.launch(Dispatchers.IO) {
                     val playerNameList = mutableListOf<String>()
                     val playerRatingsList = mutableListOf<String>()
+                    val playerPicturesList = mutableListOf<String>()
 
                     val deferredList = players.map { playerId ->
                         async {
@@ -101,27 +112,28 @@ class MatchActivity : AppCompatActivity() {
                             val document = documentRef.get().await()
                             if (document.exists()) {
                                 val playerName = document.getString("name") ?: "?"
-                                val playerRatings =
-                                    document.get("ratings") as? List<Long> ?: emptyList()
+                                val picture = document.getString("picture") ?: "1"
+                                val playerRatings = document.get("ratings") as? List<Long> ?: emptyList()
                                 val ratingsString = playerRatings.joinToString(",")
 
-                                playerName to ratingsString
+                                Triple(playerName, ratingsString, picture)
                             } else {
-                                "?" to ""
+                                Triple("?", "", "1")
                             }
                         }
                     }
                     val results = deferredList.awaitAll()
 
-                    results.forEach { (name, ratings) ->
+                    results.forEach { (name, ratings, picture) ->
                         playerNameList.add(name)
                         playerRatingsList.add(ratings)
+                        playerPicturesList.add(picture)
                     }
 
                     withContext(Dispatchers.Main) {
                         playersRV.layoutManager = LinearLayoutManager(this@MatchActivity)
                         playersRV.adapter =
-                            MatchPlayersRV(playerNameList, playerRatingsList, players, matchID!!)
+                            MatchPlayersRV(playerNameList, playerRatingsList, playerPicturesList, players, matchID!!)
                     }
                 }
             } else {
@@ -154,7 +166,7 @@ class MatchActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         playersRV.layoutManager = LinearLayoutManager(this@MatchActivity)
                         playersRV.adapter =
-                            MatchPlayersRV(playerNameList, playerRatingsList, players, matchID!!)
+                            MatchPlayersRV(playerNameList, playerRatingsList, mutableListOf(), players, matchID!!)
                     }
                 }
             }
@@ -182,45 +194,50 @@ class MatchActivity : AppCompatActivity() {
         }
 
         joinButton.setOnClickListener {
-            if (matchData.type == 1.toLong()) {
-                if (maxPlayers > players.size) {
-                    FirebaseDBConnection().updateTeam(matchID, userUID!!, this)
-                    Toast.makeText(
-                        this,
-                        "Joined!",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    finish()
+            if (home == "false") {
+                if (matchData.type == 1.toLong()) {
+                    if (maxPlayers > players.size) {
+                        FirebaseDBConnection().updateTeam(matchID, userUID!!, this)
+                        Toast.makeText(
+                            this,
+                            "Joined!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        finish()
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Match is already full",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 } else {
-                    Toast.makeText(
-                        this,
-                        "Match is already full",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                addBg.visibility = View.VISIBLE
-                teamsText.visibility = View.VISIBLE
-                teamsRV.visibility = View.VISIBLE
-                GlobalScope.launch {
-                    val databaseConnection = FirebaseDBConnection()
-                    val teamList = databaseConnection.findTeamsByPlayerAndSport(userUID!!, matchData.sport)
-                    withContext(Dispatchers.Main) {
-                        if (teamList.isEmpty()) {
-                            addBg.visibility = View.GONE
-                            teamsText.visibility = View.GONE
-                            teamsRV.visibility = View.GONE
-                            Toast.makeText(
-                                this@MatchActivity,
-                                "No teams found for this sport",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            teamsRV.layoutManager = LinearLayoutManager(this@MatchActivity)
-                            teamsRV.adapter = TeamsSearchRV(teamList, this@MatchActivity)
+                    addBg.visibility = View.VISIBLE
+                    teamsText.visibility = View.VISIBLE
+                    teamsRV.visibility = View.VISIBLE
+                    GlobalScope.launch {
+                        val databaseConnection = FirebaseDBConnection()
+                        val teamList =
+                            databaseConnection.findTeamsByPlayerAndSport(userUID!!, matchData.sport)
+                        withContext(Dispatchers.Main) {
+                            if (teamList.isEmpty()) {
+                                addBg.visibility = View.GONE
+                                teamsText.visibility = View.GONE
+                                teamsRV.visibility = View.GONE
+                                Toast.makeText(
+                                    this@MatchActivity,
+                                    "No teams found for this sport",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                teamsRV.layoutManager = LinearLayoutManager(this@MatchActivity)
+                                teamsRV.adapter = TeamsSearchRV(teamList, this@MatchActivity)
+                            }
                         }
                     }
                 }
+            } else if (home == "true"){
+                showDeleteConfirmationDialog(this, matchID)
             }
         }
     }
@@ -233,5 +250,27 @@ class MatchActivity : AppCompatActivity() {
             Toast.LENGTH_SHORT
         ).show()
         finish()
+    }
+
+    private fun showDeleteConfirmationDialog(context: Context, matchId: String) {
+        val firebaseDBConnection = FirebaseDBConnection()
+
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Confirm Deletion")
+        builder.setMessage("Are you sure you want to leave this match?")
+
+        builder.setPositiveButton("Leave") { _, _ ->
+            firebaseDBConnection.updateTeam2(matchId, userUID)
+            val intent = Intent(context, HomeActivity::class.java)
+            context.startActivity(intent)
+            (context as? Activity)?.finish()
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 }

@@ -13,6 +13,7 @@ import com.google.api.Distribution.BucketOptions.Linear
 class MatchPlayersRV(
     private val items: MutableList<String>,
     private val playerRatingsList: MutableList<String>,
+    private val playerPictureList: MutableList<String>,
     private val playerList: MutableList<*>,
     private val teamId: String
 ) : RecyclerView.Adapter<MatchPlayersRV.ViewHolder>() {
@@ -43,6 +44,16 @@ class MatchPlayersRV(
         val player = playerList[position]
         val ratings = playerRatingsList[position]
         val ratingList = ratings.split(",").mapNotNull { it.toIntOrNull() }
+
+        if (playerPictureList.isEmpty()){
+            holder.profilePic.visibility = View.GONE
+        } else {
+            if (playerPictureList[position] == "2") {
+                holder.profilePic.setImageResource(R.drawable.woman)
+            } else {
+                holder.profilePic.setImageResource(R.drawable.man)
+            }
+        }
 
         if (ratingList.isNotEmpty()) {
             if (ratingList[0] != 6) {

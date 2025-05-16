@@ -31,6 +31,7 @@ class HomeMatchesRV(
         val leaveButton: LinearLayout = view.findViewById(R.id.leaveButton)
         val leaveText: TextView = view.findViewById(R.id.leaveText)
         val sportIcon: ImageView = view.findViewById(R.id.sportIcon)
+        val matchButton: LinearLayout = view.findViewById(R.id.sportButton)
     }
 
 
@@ -111,6 +112,12 @@ class HomeMatchesRV(
             "1" -> holder.sportIcon.setImageResource(R.drawable.tennisicon)
             "2" -> holder.sportIcon.setImageResource(R.drawable.basketicon)
             "3" -> holder.sportIcon.setImageResource(R.drawable.footballicon)
+        }
+        holder.matchButton.setOnClickListener {
+            val intent = Intent(homeActivity, MatchActivity::class.java)
+            intent.putExtra("MatchID", matchId)
+            intent.putExtra("Home", "true")
+            homeActivity.startActivity(intent)
         }
     }
 

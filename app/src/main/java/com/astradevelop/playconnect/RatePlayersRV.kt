@@ -24,6 +24,7 @@ class RatePlayersRV(
         val star3: ImageView = view.findViewById(R.id.star3)
         val star4: ImageView = view.findViewById(R.id.star4)
         val star5: ImageView = view.findViewById(R.id.star5)
+        val profilePic: ImageView = view.findViewById(R.id.profilePic)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,6 +36,11 @@ class RatePlayersRV(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         playersDB.document(items[position]).get().addOnSuccessListener {
             holder.nameText.text = it.getString("name")
+            if (it.getString("picture") == "2"){
+                holder.profilePic.setImageResource(R.drawable.woman)
+            } else {
+                holder.profilePic.setImageResource(R.drawable.man)
+            }
         }
         endMatchActivity.updateList(0,position)
         holder.star1.setOnClickListener {

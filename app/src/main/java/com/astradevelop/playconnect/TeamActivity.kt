@@ -161,6 +161,7 @@ class TeamActivity : AppCompatActivity() {
                 GlobalScope.launch(Dispatchers.IO) {
                     val playerNameList = mutableListOf<String>()
                     val playerRatingsList = mutableListOf<String>()
+                    val playerPicturesList = mutableListOf<String>()
 
                     val deferredList = players.map { playerId ->
                         async {
@@ -168,21 +169,22 @@ class TeamActivity : AppCompatActivity() {
                             val document = documentRef.get().await()
                             if (document.exists()) {
                                 val playerName = document.getString("name") ?: "?"
-                                val playerRatings =
-                                    document.get("ratings") as? List<Long> ?: emptyList()
+                                val picture = document.getString("picture") ?: "1"
+                                val playerRatings = document.get("ratings") as? List<Long> ?: emptyList()
                                 val ratingsString = playerRatings.joinToString(",")
 
-                                playerName to ratingsString
+                                Triple(playerName, ratingsString, picture)
                             } else {
-                                "?" to ""
+                                Triple("?", "", "1")
                             }
                         }
                     }
                     val results = deferredList.awaitAll()
 
-                    results.forEach { (name, ratings) ->
+                    results.forEach { (name, ratings, picture) ->
                         playerNameList.add(name)
                         playerRatingsList.add(ratings)
+                        playerPicturesList.add(picture)
                     }
 
                     withContext(Dispatchers.Main) {
@@ -190,6 +192,7 @@ class TeamActivity : AppCompatActivity() {
                         playerRV.adapter = TeamPlayersRV(
                             playerNameList.toMutableList(),
                             playerRatingsList,
+                            playerPicturesList,
                             players,
                             teamId!!,
                             user,

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 class TeamPlayersRV(
     private val items: MutableList<String>,
     private val playerRatingsList: MutableList<String>,
+    private val playerPicturesList: MutableList<String>,
     private val playerList: MutableList<String>,
     private val teamId: String,
     private val user: String?,
@@ -26,6 +27,7 @@ class TeamPlayersRV(
         val star4: ImageView = view.findViewById(R.id.star4)
         val star5: ImageView = view.findViewById(R.id.star5)
         val ratingTV: TextView = view.findViewById(R.id.ratingText)
+        val profilePic: ImageView = view.findViewById(R.id.profilePic)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,6 +42,12 @@ class TeamPlayersRV(
 
         val ratings = playerRatingsList[position]
         val ratingList = ratings.split(",").mapNotNull { it.toIntOrNull() }
+
+        if (playerPicturesList[position] == "2") {
+            holder.profilePic.setImageResource(R.drawable.woman)
+        } else {
+            holder.profilePic.setImageResource(R.drawable.man)
+        }
 
         if (ratingList.isNotEmpty()) {
             var ratingTotal = 0
