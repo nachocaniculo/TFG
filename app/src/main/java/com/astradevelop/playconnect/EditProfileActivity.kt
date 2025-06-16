@@ -42,9 +42,6 @@ class EditProfileActivity : AppCompatActivity() {
         val backBtn: ImageView = findViewById(R.id.backBtn)
         backBtn.setOnClickListener { onBackPressed() }
 
-        val emailET: EditText = findViewById(R.id.emailET)
-        emailET.setText(email)
-
         val nameET: EditText = findViewById(R.id.nameET)
         nameET.setText(user)
 
@@ -57,7 +54,6 @@ class EditProfileActivity : AppCompatActivity() {
         saveBtn.setOnClickListener {
             user = nameET.text.toString()
             username = usernameET.text.toString()
-            email = emailET.text.toString()
             dbConnection.updatePlayerInfo(
                 Player(
                     userUID!!,

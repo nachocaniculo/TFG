@@ -44,6 +44,8 @@ class SearchMatchesRV(
 
         holder.dateText.text = formattedDate
 
+        holder.sportText.text = items[position].name
+
         holder.locationText.text = items[position].place
         holder.joinButton.setOnClickListener {
             if (items[position].type == 1.toLong()) {
@@ -58,14 +60,10 @@ class SearchMatchesRV(
             }
         }
         when (sport){
-            0 -> {holder.sportIcon.setImageResource(R.drawable.padelicon)
-                holder.sportText.text = "Padel"}
-            1 -> {holder.sportIcon.setImageResource(R.drawable.tennisicon)
-                holder.sportText.text = "Tennis"}
-            2 -> {holder.sportIcon.setImageResource(R.drawable.basketicon)
-                holder.sportText.text = "Basketball"}
-            3 -> {holder.sportIcon.setImageResource(R.drawable.footballicon)
-                holder.sportText.text = "Football"}
+            0 -> holder.sportIcon.setImageResource(R.drawable.padelicon)
+            1 -> holder.sportIcon.setImageResource(R.drawable.tennisicon)
+            2 -> holder.sportIcon.setImageResource(R.drawable.basketicon)
+            3 -> holder.sportIcon.setImageResource(R.drawable.footballicon)
         }
         holder.sportButton.setOnClickListener {
             val intent = Intent(searchActivity, MatchActivity::class.java)

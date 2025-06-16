@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Patterns
-import android.view.View
 import android.widget.Toast
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
@@ -14,7 +13,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.util.Calendar
 import java.util.Date
 import kotlin.math.*
 
@@ -846,15 +844,15 @@ class FirebaseDBConnection {
         return tournament
     }
 
-    data class EquipoSlot(
+    data class TeamSlot(
         val name: String? = null,
         val previousMatch: String? = null
     )
 
-    data class PartidoDB(
+    data class TournamentMatch(
         val round: Int,
-        val team1: EquipoSlot,
-        val team2: EquipoSlot,
+        val team1: TeamSlot,
+        val team2: TeamSlot,
         val status: String = "pending"
     )
 
@@ -865,12 +863,12 @@ class FirebaseDBConnection {
         val teams = query1.get("teams") as? List<*> ?: emptyList<Any>()
         val matchesRef = torneoRef.collection("matches")
 
-        val equipos = (1..totalEquipos).map { EquipoSlot(name = teams[it-1].toString()) }.toMutableList()
+        val equipos = (1..totalEquipos).map { TeamSlot(name = teams[it-1].toString()) }.toMutableList()
         val nextPower = 2.0.pow(floor(log2(totalEquipos.toDouble()))).toInt()
         val equiposRondaPrev = totalEquipos - nextPower
 
 
-        val idsPrevRonda = mutableListOf<EquipoSlot>()
+        val idsPrevRonda = mutableListOf<TeamSlot>()
 
         // Ronda 1: ronda previa si hay equipos extra
         if (equiposRondaPrev > 0) {
@@ -878,7 +876,7 @@ class FirebaseDBConnection {
             equipos.removeAll(equiposPrev)
 
             for (i in 0 until equiposPrev.size step 2) {
-                val p = PartidoDB(
+                val p = TournamentMatch(
                     round = 1,
                     team1 = equiposPrev[i],
                     team2 = equiposPrev[i + 1]
@@ -886,7 +884,7 @@ class FirebaseDBConnection {
 
                 val matchRef = matchesRef.document()
                 matchRef.set(p).await()
-                idsPrevRonda.add(EquipoSlot(previousMatch = matchRef.id))
+                idsPrevRonda.add(TeamSlot(previousMatch = matchRef.id))
             }
         }
 
@@ -897,10 +895,10 @@ class FirebaseDBConnection {
         var equiposRonda = idsPrevRonda
 
         while (equiposRonda.size > 1) {
-            val nuevaRonda = mutableListOf<EquipoSlot>()
+            val nuevaRonda = mutableListOf<TeamSlot>()
 
             for (i in 0 until equiposRonda.size step 2) {
-                val p = PartidoDB(
+                val p = TournamentMatch(
                     round = ronda,
                     team1 = equiposRonda[i],
                     team2 = equiposRonda[i + 1]
@@ -908,7 +906,7 @@ class FirebaseDBConnection {
 
                 val matchRef = matchesRef.document()
                 matchRef.set(p).await()
-                nuevaRonda.add(EquipoSlot(previousMatch = matchRef.id))
+                nuevaRonda.add(TeamSlot(previousMatch = matchRef.id))
             }
 
             equiposRonda = nuevaRonda

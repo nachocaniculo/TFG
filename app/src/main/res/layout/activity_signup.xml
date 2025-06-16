@@ -166,7 +166,8 @@
             android:background="@drawable/rounded_button_black"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="12dp">
+            android:padding="12dp"
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="24dp"

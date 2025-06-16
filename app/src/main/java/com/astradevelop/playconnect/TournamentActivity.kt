@@ -28,6 +28,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class TournamentActivity : AppCompatActivity() {
     private var tournamentID = ""
@@ -49,8 +51,9 @@ class TournamentActivity : AppCompatActivity() {
         val sharedPref = getSharedPreferences("playconnectlogintoken", Context.MODE_PRIVATE)
         val user = sharedPref.getString("userUID", "")
 
-        val tournamentNameText: TextView = findViewById(R.id.sportText)
-        val sportNameText: TextView = findViewById(R.id.dateText)
+        val tournamentNameText: TextView = findViewById(R.id.nameText)
+        val sportNameText: TextView = findViewById(R.id.sportText)
+        val dateText: TextView = findViewById(R.id.dateText)
         val sportIcon: ImageView = findViewById(R.id.sportIcon)
         val playersNumText: TextView = findViewById(R.id.playersTxt)
         val teamsOrPlayersText: TextView = findViewById(R.id.playersText)
@@ -95,26 +98,65 @@ class TournamentActivity : AppCompatActivity() {
                             .addOnSuccessListener {querySnapshot ->
                                 var tempFound = false
                                 val tempTeams = querySnapshot.get("teams") as? List<Any> ?: emptyList<Any>()
+                                val startData = querySnapshot.getTimestamp("startdate")
+
+                                val date = startData!!.toDate()
+
+                                val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                                val formattedDate = dateFormat.format(date)
+
+                                dateText.text = formattedDate
                                 val teamsSize = tempTeams.size
                                 if (teamsSize >= tournament.teamMaxNum){
                                     startBtn.visibility = View.GONE
                                     startText.visibility = View.GONE
                                 } else {
-                                    for (i in tempTeams) {
-                                        if (i.toString() == user) {
-                                            tempFound = true
+                                    if (querySnapshot.getLong("type")!!.toInt() == 1) {
+                                        for (i in tempTeams) {
+                                            if (i.toString() == user) {
+                                                tempFound = true
+                                            }
                                         }
-                                    }
-                                    if (!tempFound) {
-                                        startBtn.visibility = View.VISIBLE
-                                        startText.visibility = View.VISIBLE
-                                        startText.text = "Join"
-                                        join = true
-                                    } else {
-                                        if (user == tempTeams[0]) {
+                                        if (!tempFound) {
                                             startBtn.visibility = View.VISIBLE
                                             startText.visibility = View.VISIBLE
-                                            startText.text = "Start"
+                                            startText.text = "Join"
+                                            join = true
+                                        } else {
+                                            if (user == tempTeams[0]) {
+                                                startBtn.visibility = View.VISIBLE
+                                                startText.visibility = View.VISIBLE
+                                                startText.text = "Start"
+                                            }
+                                        }
+                                    } else if (querySnapshot.getLong("type")!!.toInt() == 2){
+                                        GlobalScope.launch {
+                                            val databaseConnection = FirebaseDBConnection()
+                                            val teamList = databaseConnection.findTeams(user!!)
+                                            withContext(Dispatchers.Main) {
+                                                if (teamList.isNotEmpty()) {
+                                                    for (i in tempTeams) {
+                                                        for (a in teamList){
+                                                            if (i == a.id){
+                                                                tempFound = true
+                                                            }
+                                                        }
+                                                    }
+                                                    if (!tempFound) {
+                                                        startBtn.visibility = View.VISIBLE
+                                                        startText.visibility = View.VISIBLE
+                                                        startText.text = "Join"
+                                                        join = true
+                                                    } else {
+                                                        if (user == querySnapshot.getString("admin")) {
+                                                            println(querySnapshot.getString("admin"))
+                                                            startBtn.visibility = View.VISIBLE
+                                                            startText.visibility = View.VISIBLE
+                                                            startText.text = "Start"
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -184,7 +226,8 @@ class TournamentActivity : AppCompatActivity() {
                                 playersRV.adapter =
                                     TournamentPlayersRV(
                                         playerNameList,
-                                        playerRatingsList
+                                        playerRatingsList,
+                                        true
                                     )
                             }
                         }
@@ -224,7 +267,8 @@ class TournamentActivity : AppCompatActivity() {
                                 playersRV.adapter =
                                     TournamentPlayersRV(
                                         playerNameList,
-                                        playerRatingsList
+                                        playerRatingsList,
+                                        false
                                     )
                             }
                         }

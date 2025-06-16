@@ -13,7 +13,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:rotation="180"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,30 +21,17 @@
         app:tint="?attr/colorContrast" />
 
     <TextView
-        android:id="@+id/emailTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:text="Email"
-        android:textColor="?attr/colorTextSecondary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backBtn" />
-
-    <TextView
         android:id="@+id/nameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="Full Name"
         android:textColor="?attr/colorTextSecondary"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailButton" />
+        app:layout_constraintTop_toBottomOf="@+id/backBtn" />
 
     <TextView
         android:id="@+id/usernameTV"
@@ -58,23 +45,6 @@
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nameButton" />
-
-    <LinearLayout
-        android:id="@+id/emailButton"
-        android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:background="@drawable/rounded_button_grey"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailTV">
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/nameButton"
@@ -109,21 +79,6 @@
         app:layout_constraintTop_toBottomOf="@+id/usernameTV">
 
     </LinearLayout>
-
-    <EditText
-        android:id="@+id/emailET"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="email@email.com"
-        android:textColor="?attr/colorTextSecondary"
-        android:textColorHint="?attr/colorTextSecondary"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/emailButton"
-        app:layout_constraintEnd_toEndOf="@+id/emailButton"
-        app:layout_constraintStart_toStartOf="@+id/emailButton"
-        app:layout_constraintTop_toTopOf="@+id/emailButton" />
 
     <EditText
         android:id="@+id/nameET"

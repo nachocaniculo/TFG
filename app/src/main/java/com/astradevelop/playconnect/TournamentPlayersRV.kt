@@ -11,7 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class TournamentPlayersRV(
     private val items: MutableList<String>,
-    private val playerRatingsList: MutableList<String>
+    private val playerRatingsList: MutableList<String>,
+    private val players: Boolean
 ) : RecyclerView.Adapter<TournamentPlayersRV.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -38,7 +39,9 @@ class TournamentPlayersRV(
         holder.nameText.text = items[position]
         holder.deleteBtn.visibility = View.GONE
         val ratings = playerRatingsList[position]
-        println("Rating: {$ratings}")
+        if (!players){
+            holder.profilePic.visibility = View.GONE
+        }
         val ratingList = ratings.split(",").mapNotNull { it.toIntOrNull() }
         if (ratingList.isNotEmpty()) {
 

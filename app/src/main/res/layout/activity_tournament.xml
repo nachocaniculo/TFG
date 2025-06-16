@@ -117,7 +117,7 @@
     <LinearLayout
         android:id="@+id/sportButton"
         android:layout_width="0dp"
-        android:layout_height="136dp"
+        android:layout_height="160dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
@@ -132,21 +132,21 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/sportText"
+        android:id="@+id/nameText"
         android:layout_width="0dp"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="90dp"
+        android:layout_marginEnd="8dp"
         android:text="Name"
         android:textColor="?attr/colorContrast"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/sportButton"
+        app:layout_constraintEnd_toStartOf="@+id/eventTV"
         app:layout_constraintStart_toStartOf="@+id/sportButton"
-        app:layout_constraintTop_toBottomOf="@+id/dateText" />
+        app:layout_constraintTop_toBottomOf="@+id/sportText" />
 
     <TextView
-        android:id="@+id/dateText"
+        android:id="@+id/sportText"
         android:layout_width="0dp"
         android:layout_height="22dp"
         android:layout_marginTop="8dp"
@@ -154,9 +154,21 @@
         android:textColor="?attr/colorTextSecondary"
         android:textSize="16sp"
         android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="@+id/sportText"
+        app:layout_constraintEnd_toEndOf="@+id/nameText"
         app:layout_constraintStart_toStartOf="@+id/sportIconBg"
         app:layout_constraintTop_toBottomOf="@+id/sportIconBg" />
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
+        android:text="01/01/1990 00:00"
+        android:textColor="?attr/colorTextSecondary"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toEndOf="@+id/nameText"
+        app:layout_constraintStart_toStartOf="@+id/sportIconBg"
+        app:layout_constraintTop_toBottomOf="@+id/nameText" />
 
     <LinearLayout
         android:id="@+id/sportIconBg"

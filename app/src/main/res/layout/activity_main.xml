@@ -10,14 +10,14 @@
 
     <ImageView
         android:id="@+id/sportIcon"
-        android:layout_width="192dp"
-        android:layout_height="192dp"
+        android:layout_width="208dp"
+        android:layout_height="208dp"
         android:layout_marginTop="64dp"
         android:tint="?attr/colorContrast"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/tennisicon" />
+        app:srcCompat="@drawable/logonobackground" />
 
     <TextView
         android:id="@+id/esloganText"
