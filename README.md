@@ -84,13 +84,12 @@ Para más detalles sobre el uso y la estructura del proyecto, consulta los comen
 
 ## Licencia
 
-**Borrador:**  
-La licencia de este proyecto aún no ha sido definida. El uso, modificación y distribución del código se encuentra pendiente de la elección de una licencia definitiva. Por favor, consulta este archivo en futuras actualizaciones para conocer los términos de uso.
+La aplicación PlayConnect, desarrollada como parte de este Trabajo de Fin de Grado, se encuentra actualmente protegida bajo una licencia privativa con todos los derechos reservados. Esto implica que no se permite la copia, modificación, distribución o uso del código fuente, ya sea total o parcial, sin el consentimiento expreso del autor.
 
 ---
 
 ## Contacto
 
 - Ignacio Canículo Domínguez  
-- Email: [tu-email@ejemplo.com]  
+- Email: [nachocaniculo@gmail.com]  
 - Universidad Rey Juan Carlos
